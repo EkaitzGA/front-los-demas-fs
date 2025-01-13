@@ -1,4 +1,4 @@
-:root {
+/* :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -65,4 +65,48 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+} */
+
+/* body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: #EAEAEA;
+} */
+
+* {
+  box-sizing: border-box;
+}
+
+.root-phone__content {
+  background-color:  #EAEAEA;
+  min-height: 100vh;
+}
+
+html, body {
+  margin: 0; 
+  height: 100%; 
+  background-color: #EAEAEA;
+  flex-direction: column;
+  display: flex;
+}
+
+a {
+  text-decoration: none; 
+  color: inherit; 
+}
+
+
+
+#root {
+  min-height: 100vh;
+  background-color: #EAEAEA;
+}
+
+main {
+  flex: 1;
+  margin-top: 10vh;
+  background-color: #EAEAEA;
 }
