@@ -82,7 +82,7 @@ const router = createBrowserRouter([
         />,
       },
       {
-        path: "/myprofile",     
+        path: "/myprofile/:id",     
         element: <ResponsiveComponent 
           MobileVersion={MobileClientProfile} 
           DesktopVersion={ClientProfile} 
