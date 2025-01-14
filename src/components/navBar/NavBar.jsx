@@ -1,16 +1,26 @@
 import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import SearchFilter from '../searchFilter/SearchFilter';
-import './NavBar.css'
+import './NavBar.css';
 
 function NavBar() {
     const location = useLocation();
+    const navigate = useNavigate();
     const [showSubmenu, setShowSubmenu] = useState(false);
+
+    const handleLoginClick = (e) => {
+        e.preventDefault();
+        navigate('/auth?mode=login');
+    };
+
+    const handleRegisterClick = (e) => {
+        e.preventDefault();
+        navigate('/auth?mode=register');
+    };
 
     return (
         <>
             <div className='nav-bar-dsk'>
-
                 <div className='nav-logo-wrapper'>
                     <img src="/images/59C5B3B8-3718-42B1-AFAD-F82AF582B5BF.PNG" alt="Logo" />
                     <Link to="/" className="title-link">
@@ -41,16 +51,23 @@ function NavBar() {
                     </Link>
                     {showSubmenu && (
                         <div className="submenu">
-                            <Link to="/login" className="submenu-item">Login</Link>
-                            <Link to="/register" className="submenu-item">Register</Link>
+                            <a href="#" 
+                               onClick={handleLoginClick} 
+                               className="submenu-item">
+                                Login
+                            </a>
+                            <a href="#" 
+                               onClick={handleRegisterClick} 
+                               className="submenu-item">
+                                Register
+                            </a>
                         </div>
                     )}
                 </div>
-                
             </div>
             {location.pathname === '/' && <SearchFilter />}
         </>
-    )
+    );
 }
 
 export default NavBar;

@@ -29,8 +29,8 @@ const Chat = React.lazy(() => import('./routes/chat/Chat.jsx'));
 const ClientProfile = React.lazy(() => import('./routes/clientProfile/ClientProfile.jsx'));
 const Home = React.lazy(() => import('./routes/home/Home.jsx'));
 const ProjectPage = React.lazy(() => import('./routes/projectPage/ProjectPage.jsx'));
-const Register = React.lazy(() => import('./routes/register/Register.jsx'));
-const Login = React.lazy(() => import('./routes/login/Login.jsx'));
+const AuthPage = React.lazy(() => import('./routes/auth/Auth.jsx'));
+
 
 
 const MobileAllProfiles = React.lazy(() => import('./routes/allProfiles/AllProfilesPhone.jsx'));
@@ -38,8 +38,8 @@ const MobileChat = React.lazy(() => import('./routes/chat/ChatPphone.jsx'));
 const MobileClientProfile = React.lazy(() => import('./routes/clientProfile/ClientProfilePhone.jsx'));
 const MobileHome = React.lazy(() => import('./routes/home/HomePhone.jsx'));
 const MobileProjectPage = React.lazy(() => import('./routes/projectPage/ProjectPagePhone.jsx'));
-const MobileRegister = React.lazy(() => import('./routes/register/RegisterPhone.jsx'));
-const MobileLogin = React.lazy(() => import('./routes/login/LoginPhone.jsx'));
+const MobileAuthPage = React.lazy(() => import('./routes/auth/AuthPhone.jsx'));
+
 
 
 const ResponsiveComponent = ({ MobileVersion, DesktopVersion }) => {
@@ -96,19 +96,13 @@ const router = createBrowserRouter([
         />,
       },
       {
-        path: "/login",    
+        path: "/auth",    
         element: <ResponsiveComponent 
-          MobileVersion={MobileLogin} 
-          DesktopVersion={Login} 
+          MobileVersion={MobileAuthPage} 
+          DesktopVersion={AuthPage} 
         />,
       },
-      {
-        path: "/register",    
-        element: <ResponsiveComponent 
-          MobileVersion={MobileRegister} 
-          DesktopVersion={Register} 
-        />,
-      },
+     
     ],
   },
 ]);
