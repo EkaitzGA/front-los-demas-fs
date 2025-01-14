@@ -45,7 +45,8 @@ function NavBar() {
 
                 <div className='nav-dsk-login'
                     onMouseEnter={() => setShowSubmenu(true)}
-                    onMouseLeave={() => setShowSubmenu(false)}>
+                    onMouseLeave={() => setShowSubmenu(false)}
+                    >
                     <Link to="/" className="title-link">
                         <h1>Account</h1>
                     </Link>
