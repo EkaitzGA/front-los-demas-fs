@@ -58,6 +58,7 @@
     top: 100%;
     right: 0;
     background: white;
+    z-index: 100;
 }
 
 .submenu-item {

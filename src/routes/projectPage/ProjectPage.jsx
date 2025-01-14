@@ -12,10 +12,10 @@ function ProjectPage () {
 
     return (
         <div>
-            <h1>Proyecto de {project.user_name}</h1>
+            <h1>Project from {project.user_name}</h1>
             <img src={project.img} alt="Project" />
-            <p>Publicado: {project.publication_date}</p>
-            <a href={project.link}>Visitar sitio</a>
+            <p>Published: {project.publication_date}</p>
+            <a href={project.link}>Visit Website</a>
         </div>
     );
 }
