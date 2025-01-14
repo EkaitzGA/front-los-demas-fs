@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import './ClientProfile.css';
-import ProjectContainer from '../ProjectContainer/ProjectContainer';
+import ProjectContainer from '../../components/projectContainer/ProjectContainer';
 import { projects } from '../../data/projects';
 
 const Section1 = ({ userName }) => (

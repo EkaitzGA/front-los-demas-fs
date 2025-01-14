@@ -1,1 +1,1 @@
-Crear componentes perfil de usuario
+Hay que cambiar ClientProfile cuando tengamos llamada a la API ya que los datos del usuario se cogerán de la API. ENn caso de nuevo registro, aparecerá como está actualmente, si no, con datos de API. 
