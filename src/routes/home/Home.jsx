@@ -36,7 +36,7 @@ function Home() {
             <div className='projects-grid'>
                 {currentProjects.map(project => (
                     <ProjectContainer
-                        key={project.id}
+                        key={project._id}
                         _id={project._id}          
                         img={project.img}
                         owner={project.owner}

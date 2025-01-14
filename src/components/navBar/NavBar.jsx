@@ -1,12 +1,22 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import SearchFilter from '../searchFilter/SearchFilter';
+import { useFilters } from '../../context/FilterProvider';
 import './NavBar.css';
 
 function NavBar() {
     const location = useLocation();
     const navigate = useNavigate();
     const [showSubmenu, setShowSubmenu] = useState(false);
+    const { setSelectedFilters } = useFilters();
+
+    const resetFilters = () => {
+        setSelectedFilters({
+            styles: [],
+            types: [],
+            subjects: []
+        });
+    };
 
     const handleLoginClick = (e) => {
         e.preventDefault();
@@ -22,8 +32,10 @@ function NavBar() {
         <>
             <div className='nav-bar-dsk'>
                 <div className='nav-logo-wrapper'>
-                    <img src="/images/59C5B3B8-3718-42B1-AFAD-F82AF582B5BF.PNG" alt="Logo" />
-                    <Link to="/" className="title-link">
+                    <Link onClick={resetFilters} to="/">
+                        <img src="/images/59C5B3B8-3718-42B1-AFAD-F82AF582B5BF.PNG" alt="Logo" />
+                    </Link>
+                    <Link onClick={resetFilters} to="/" className="title-link">
                         <h1>Kazoku</h1>
                     </Link>
                 </div>
@@ -31,12 +43,12 @@ function NavBar() {
                 <div className='nav-links-dsk'>
                     <ul className='ul-dsk'>
                         <li className="nav-li-item">
-                            <Link to="/">
+                            <Link onClick={resetFilters} to="/">
                                 Websites
                             </Link>
                         </li>
                         <li className="nav-li-item">
-                            <Link to="/profiles">
+                            <Link onClick={resetFilters} to="/profiles">
                                 Users
                             </Link>
                         </li>
@@ -46,20 +58,20 @@ function NavBar() {
                 <div className='nav-dsk-login'
                     onMouseEnter={() => setShowSubmenu(true)}
                     onMouseLeave={() => setShowSubmenu(false)}
-                    >
-                    <Link to="/" className="title-link">
+                >
+                    <Link onClick={resetFilters} to="/" className="title-link">
                         <h1>Account</h1>
                     </Link>
                     {showSubmenu && (
                         <div className="submenu">
-                            <a href="#" 
-                               onClick={handleLoginClick} 
-                               className="submenu-item">
+                            <a href="#"
+                                onClick={handleLoginClick}
+                                className="submenu-item">
                                 Login
                             </a>
-                            <a href="#" 
-                               onClick={handleRegisterClick} 
-                               className="submenu-item">
+                            <a href="#"
+                                onClick={handleRegisterClick}
+                                className="submenu-item">
                                 Register
                             </a>
                         </div>
