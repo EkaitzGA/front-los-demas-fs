@@ -1,24 +1,40 @@
 import { useState } from 'react';
 import ProjectContainer from '../../components/projectContainer/ProjectContainer';
 import { projects } from '../../data/projects';
+import { useFilters } from '../../context/FilterProvider';
 import './Home.css'
 
 function Home() {
-
+    const { selectedFilters } = useFilters();
     const [currentPage, setCurrentPage] = useState(1);
     const projectsPerPage = 12;
+    const totalPages = Math.ceil(projects.length / projectsPerPage);
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+    const filteredProjects = projects.filter(project => {
+        if (!Object.values(selectedFilters).some(arr => arr.length > 0)) {
+            return true;
+        }
+
+        const matchesStyles = selectedFilters.styles.length === 0 || 
+            selectedFilters.styles.some(style => project.styles.includes(style));
+        
+        const matchesTypes = selectedFilters.types.length === 0 || 
+            selectedFilters.types.some(type => project.types.includes(type));
+        
+        const matchesSubjects = selectedFilters.subjects.length === 0 || 
+            selectedFilters.subjects.some(subject => project.subjects.includes(subject));
+
+        return matchesStyles && matchesTypes && matchesSubjects;
+    });
+
     const indexOfLastProject = currentPage * projectsPerPage;
     const indexOfFirstProject = indexOfLastProject - projectsPerPage;
-    const currentProjects = projects.slice(indexOfFirstProject, indexOfLastProject);
-
-    const totalPages = Math.ceil(projects.length / projectsPerPage);
-
-    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+    const currentProjects = filteredProjects.slice(indexOfFirstProject, indexOfLastProject);
 
     return (
         <div className='projects-page'>
             <div className='projects-grid'>
-                {projects.map(project => (
+                {currentProjects.map(project => (
                     <ProjectContainer
                         key={project.id}
                         id={project.id}          
