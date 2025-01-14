@@ -83,7 +83,7 @@ return(
                 <input type="password" id="confirmPassword" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} />
                 {errors.confirmPassword && <span className="error">{errors.confirmPassword}</span>}
             </div>
-            <button type="submit">Register</button>
+            <button className="register-button-dsk" type="submit">Register</button>
         </form>
         {successMessage && <p className="success-dsk">{successMessage}</p>}
         <p>Already have an account? <Link to="/login">Login</Link></p>

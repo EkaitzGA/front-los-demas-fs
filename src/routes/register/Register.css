@@ -57,7 +57,7 @@
     border-radius: 4px;
 }
 
-button {
+.register-button-dsk{
     width: 100%;
     padding: 0.75rem;
     background-color: #4299e1;
@@ -71,11 +71,11 @@ button {
     margin-top: 1rem;
 }
 
-button:hover {
+.register-button-dsk:hover {
     background-color: #3182ce;
 }
 
-button:focus {
+.register-button-dsk:focus {
     outline: none;
     box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
 }

@@ -58,7 +58,7 @@
     border-radius: 4px;
 }
 
-button {
+.login-button-dsk {
     width: 100%;
     padding: 0.75rem;
     background-color: #4299e1;
@@ -72,11 +72,11 @@ button {
     margin-top: 1rem;
 }
 
-button:hover {
+.login-button-dsk:hover {
     background-color: #3182ce;
 }
 
-button:focus {
+.login-button-dsk:focus {
     outline: none;
     box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
 }
