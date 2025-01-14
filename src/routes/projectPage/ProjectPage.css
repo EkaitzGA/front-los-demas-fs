@@ -1,0 +1,122 @@
+.single-project-container-dsk {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 2fr 1fr; 
+    grid-template-areas: 
+        "header header"
+        "main-image sidebar"
+        "categories sidebar";
+    gap: 20px;
+}
+
+.first-line-dsk {
+    grid-area: header;
+    border-bottom: 1px solid white;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+}
+
+.first-line-dsk h1 {
+    font-size: 2rem;
+    margin: 0;
+}
+
+.left-column-first-line {
+    grid-area: main-image;
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%; 
+    background-color: #0066cc;
+    border: 10px solid white;
+}
+
+.left-column-first-line img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+/* .left-column-second-line {
+    grid-area: categories;
+    background-color: #f8f8f8;
+    padding: 0px;
+    border-radius: 0cap;
+}
+
+.left-column-second-line p {
+    margin: 0px 0;
+    padding: 20px;
+    font-size: 0.9rem;
+    color: #555;
+    border-bottom: 1px solid #EAEAEA;
+} */
+
+.left-column-second-line {
+    grid-area: categories;
+    background-color: #f8f8f8;
+    padding: 0px;
+    border-radius: 0px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Crear un contenedor para cada par de h5 y p */
+.left-column-second-line > div {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #EAEAEA;
+}
+
+.left-column-second-line h5 {
+    margin: 0;
+    min-width: 80px; /* Ancho fijo para alinear los títulos */
+}
+
+.left-column-second-line p {
+    margin: 0;
+}
+
+.second-column {
+    grid-area: sidebar;
+    /* background-color: #f8f8f8; */
+    background-color: transparent;
+    padding: 20px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.second-column a {
+    color: #0066cc;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.second-column a:hover {
+    text-decoration: underline;
+}
+
+.second-column p {
+    margin: 0;
+    line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+    .single-project-container-dsk {
+        grid-template-columns: 1fr;
+        grid-template-areas: 
+            "header"
+            "main-image"
+            "categories"
+            "sidebar";
+    }
+}

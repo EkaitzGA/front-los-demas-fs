@@ -37,11 +37,11 @@ function Home() {
                 {currentProjects.map(project => (
                     <ProjectContainer
                         key={project.id}
-                        id={project.id}          
+                        _id={project._id}          
                         img={project.img}
-                        user_name={project.user_name}
-                        publication_date={project.publication_date}
-                        link={project.link}     
+                        owner={project.owner}
+                        date={project.date}
+                        url={project.url}     
                     />
                 ))}
             </div>

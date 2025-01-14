@@ -89,7 +89,7 @@ const router = createBrowserRouter([
         />,
       },
       {
-        path: "/webproject/:id",    
+        path: "/webproject/:_id",    
         element: <ResponsiveComponent 
           MobileVersion={MobileProjectPage} 
           DesktopVersion={ProjectPage} 
