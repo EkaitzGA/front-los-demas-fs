@@ -72,7 +72,7 @@ const loginForm = () => {
                     />
                     {errors.password && <span className="error">{errors.password}</span>}
                 </div>
-                <button type="submit">Login</button>
+                <button className="login-button-dsk" type="submit">Login</button>
             </form>
             {successMessage && <p className="success-dsk">{successMessage}</p>}
             <p>Don't have an account? <Link to="/register">Register</Link></p>
