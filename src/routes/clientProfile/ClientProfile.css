@@ -1,0 +1,167 @@
+/* Container principal */
+.client-profile-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f5f5f5;
+}
+
+/* Section 1 - Heading */
+.section-heading {
+    margin-bottom: 40px;
+}
+
+.breadcrumb {
+    margin-bottom: 10px;
+    color: #666;
+    font-size: 14px;
+}
+
+.breadcrumb .separator {
+    margin: 0 8px;
+}
+
+.section-heading h1 {
+    font-size: 32px;
+    color: #333;
+    margin: 0;
+}
+
+/* Section 2 - Profile */
+.section-profile {
+    background: #fff;
+    padding: 30px;
+    margin-bottom: 40px;
+    border-radius: 4px;
+    position: relative;
+}
+
+.profile-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+.profile-container h3 {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 15px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* Estilos para el modo visualización */
+.location-block address {
+    font-style: normal;
+    line-height: 1.6;
+}
+
+.agency-block p {
+    line-height: 1.6;
+    color: #333;
+}
+
+.contact-info .contact-row {
+    margin-bottom: 10px;
+    display: flex;
+    gap: 15px;
+}
+
+.contact-info .label {
+    color: #666;
+    min-width: 60px;
+}
+
+.contact-info a {
+    color: #333;
+    text-decoration: none;
+}
+
+.contact-info a:hover {
+    text-decoration: underline;
+}
+
+.empty-field {
+    color: #999;
+    font-style: italic;
+}
+
+/* Estilos para el modo edición */
+.profile-form {
+    width: 100%;
+}
+
+.profile-form input,
+.profile-form textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.profile-form textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.form-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+/* Botones */
+.edit-button,
+.save-button,
+.cancel-button {
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    border: none;
+    color: white;
+}
+
+.edit-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #4299e1;
+}
+
+.save-button {
+    background-color: #48bb78;
+}
+
+.cancel-button {
+    background-color: #e53e3e;
+}
+
+.edit-button:hover {
+    background-color: #3182ce;
+}
+
+.save-button:hover {
+    background-color: #38a169;
+}
+
+.cancel-button:hover {
+    background-color: #c53030;
+}
+
+/* Section 3 - Grid */
+.section-grid {
+    margin-top: 40px;
+}
+
+.projects-grid-dsk {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    width: 100%;
+}
+
