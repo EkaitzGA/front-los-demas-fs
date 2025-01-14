@@ -12,9 +12,9 @@ function NavBar() {
             <div className='nav-bar-dsk'>
 
                 <div className='nav-logo-wrapper'>
-                    <img src="" alt="Logo" />
+                    <img src="/images/59C5B3B8-3718-42B1-AFAD-F82AF582B5BF.PNG" alt="Logo" />
                     <Link to="/" className="title-link">
-                        <h1>CodeOrbit</h1>
+                        <h1>KAZOKU</h1>
                     </Link>
                 </div>
 
