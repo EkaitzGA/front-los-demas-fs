@@ -12,7 +12,7 @@ const SearchFilter = () => {
     types: filterData.types,
     subjects: filterData.subjects
   });
-
+  // Object.entries(filterData).map(([section, options]) => console.log(section,options));
   const [openSections, setOpenSections] = useState({
     styles: false,
     types: false,
@@ -148,8 +148,7 @@ const SearchFilter = () => {
           
           {openSections[section] && (
             <div className="options-container">
-              {options
-                .map((option) => {
+              {options.map((option) => {
                   const dynamicCount = getDynamicOptionCount(section, option);
                   const isSelected = selectedFilters[section].includes(option);
                   // Solo consideramos disponible si tiene conteo > 0 o está seleccionado

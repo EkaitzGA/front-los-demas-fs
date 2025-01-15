@@ -92,12 +92,14 @@ function ProjectPage() {
                 </div>
                 <div>
                     <h5>CREATOR</h5>
-                    <p>{project.owner.username}</p>
+                    <p>{project.owner.name} {project.owner.lastname}</p>
                 </div>
                 {project.team_members && project.team_members.length > 0 && (
                     <div>
                         <h5>COLLABORATORS</h5>
-                        <p>{project.team_members.map(member => member.username).join(', ')}</p>
+                        <p>
+                            {project.team_members.map(member => `${member.name} ${member.lastname}`).join(', ')}
+                        </p>
                     </div>
                 )}
                 <div>
