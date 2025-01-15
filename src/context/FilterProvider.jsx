@@ -9,8 +9,18 @@ export function FilterProvider({ children }) {
         subjects: []
     });
 
+    const [userFilters, setUserFilters] = useState({
+        country: '',
+        username: ''
+    });
+
     return (
-        <FilterContext.Provider value={{ selectedFilters, setSelectedFilters }}>
+        <FilterContext.Provider value={{ 
+            selectedFilters, 
+            setSelectedFilters,
+            userFilters,
+            setUserFilters 
+        }}>
             {children}
         </FilterContext.Provider>
     );
