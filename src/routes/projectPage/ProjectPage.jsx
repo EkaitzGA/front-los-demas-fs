@@ -92,7 +92,9 @@ function ProjectPage() {
                 </div>
                 <div>
                     <h5>CREATOR</h5>
-                    <p>{project.owner.name} {project.owner.lastname}</p>
+                    <Link to={`/myprofile/${project.owner._id}`}>
+                        <p>{project.owner.name} {project.owner.lastname}</p>
+                    </Link>
                 </div>
                 {project.team_members && project.team_members.length > 0 && (
                     <div>
