@@ -93,10 +93,12 @@ function ProjectPage() {
                     <h5>CREATOR</h5>
                     <p>{project.owner}</p>
                 </div>
-                <div>
-                    <h5>COLLABORATORS</h5>
-                    <p>{project.team_members}</p>
-                </div>
+                {project.team_members && (
+                    <div>
+                        <h5>COLLABORATORS</h5>
+                        <p>{project.team_members}</p>
+                    </div>
+                )}
                 <div>
                     <h5>DESCRIPTION</h5>
                     <p>{project.description}</p>

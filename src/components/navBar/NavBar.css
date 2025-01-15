@@ -1,4 +1,4 @@
-.nav-bar-dsk {
+/* .nav-bar-dsk {
     position: fixed;
     top: 0;
     left: 0;
@@ -10,7 +10,6 @@
     padding: 0 20px;
     background-color: white;
     height: 120px; 
-    /* box-shadow: 0 2px 4px rgba(0,0,0,0.1); */
 }
 
 
@@ -42,15 +41,61 @@
     gap: 20px;
     margin: 0;
     padding: 0;
+} */
+
+.nav-bar-dsk {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background-color: white;
+    height: auto;
+    padding: 10px 20px;
 }
 
-.nav-li-item {
-    display: inline-flex;
+.nav-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
 }
 
-.nav-li-item a:hover {
-    color: red;
+.logo-section {
+    text-align: center;
 }
+
+.logo-section img {
+    width: 90px;
+    height: 90px;
+    object-fit: contain;
+}
+
+.title-section {
+    text-align: center;
+}
+
+.title-section h1 {
+    font-size: 1.5rem;
+    margin: 10px 0;
+}
+
+.nav-links-dsk {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.ul-dsk {
+    display: flex;
+    list-style: none;
+    gap: 30px;
+    margin: 10px 0;
+    padding: 0;
+    justify-content: center;
+}
+
+
 
 .nav-dsk-login {
     display: flex;
@@ -59,6 +104,54 @@
     position: relative;
 
 }
+
+
+.active-link {
+    /* Ejemplo de estilos */
+    color: #59C5B3; /* Color que coincida con tu diseño */
+    font-weight: bold;
+    position: relative;
+}
+/* Si quieres añadir una línea debajo del elemento activo */
+.active-link::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #59C5B3;
+}
+
+/* Para asegurarte que los enlaces no activos mantienen su estilo normal */
+.nav-li-item a {
+    color: #333; /* Color para enlaces no activos */
+    text-decoration: none;
+    position: relative;
+}
+
+/* Efecto hover para enlaces no activos */
+.nav-li-item a:hover:not(.active-link) {
+    color: #59C5B3;
+}
+
+
+
+
+.nav-li-item {
+    position: relative;
+    display: inline-flex;
+}
+
+.account-trigger {
+    cursor: pointer;
+    color: #333;
+}
+
+.account-trigger:hover {
+    color: #59C5B3;
+}
+
 
 .submenu {
     position: absolute;
