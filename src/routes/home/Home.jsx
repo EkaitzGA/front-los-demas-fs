@@ -50,7 +50,7 @@ function Home() {
                         key={project._id}
                         _id={project._id}
                         img={project.images && project.images.length > 0 ? project.images[0].url : ''} // Validación completa
-                        owner={project.owner.username} // Ahora owner es un objeto, probablemente quieras mostrar el username
+                        owner={project.owner}
                         date={project.date}
                         url={project.url}
                     />

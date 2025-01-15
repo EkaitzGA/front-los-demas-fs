@@ -19,7 +19,7 @@ function ProjectContainer({ img, owner, _id, date, url }) {
 
             </div>
             <div className='project-info-dsk'>
-                <p>{owner.username}</p>
+                <p>{owner.name} {owner.lastname}</p>
                 <p>{getRelativeTime(date)}</p>
             </div>
         </div>
