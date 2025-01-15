@@ -2,6 +2,8 @@ import { useState } from 'react';
 import ProjectContainer from '../../components/projectContainer/ProjectContainer';
 import { projects } from '../../data/projects';
 import { useFilters } from '../../context/FilterProvider';
+import SearchFilter from '../../components/searchFilter/SearchFilter';
+
 import './Home.css'
 
 function Home() {
@@ -15,13 +17,13 @@ function Home() {
             return true;
         }
 
-        const matchesStyles = selectedFilters.styles.length === 0 || 
+        const matchesStyles = selectedFilters.styles.length === 0 ||
             selectedFilters.styles.some(style => project.styles.includes(style));
-        
-        const matchesTypes = selectedFilters.types.length === 0 || 
+
+        const matchesTypes = selectedFilters.types.length === 0 ||
             selectedFilters.types.some(type => project.types.includes(type));
-        
-        const matchesSubjects = selectedFilters.subjects.length === 0 || 
+
+        const matchesSubjects = selectedFilters.subjects.length === 0 ||
             selectedFilters.subjects.some(subject => project.subjects.includes(subject));
 
         return matchesStyles && matchesTypes && matchesSubjects;
@@ -33,22 +35,31 @@ function Home() {
 
     return (
         <div className='projects-page'>
+            <SearchFilter />
             <div className='projects-grid'>
                 {currentProjects.map(project => (
+                    // <ProjectContainer
+                    //     key={project._id}
+                    //     _id={project._id}          
+                    //     img={project.img}
+                    //     owner={project.owner}
+                    //     date={project.date}
+                    //     url={project.url}     
+                    // />
                     <ProjectContainer
                         key={project._id}
-                        _id={project._id}          
-                        img={project.img}
-                        owner={project.owner}
+                        _id={project._id}
+                        img={project.images && project.images.length > 0 ? project.images[0].url : ''} // Validación completa
+                        owner={project.owner.username} // Ahora owner es un objeto, probablemente quieras mostrar el username
                         date={project.date}
-                        url={project.url}     
+                        url={project.url}
                     />
                 ))}
             </div>
 
             <div className='pagination'>
-                <button 
-                    onClick={() => paginate(currentPage - 1)} 
+                <button
+                    onClick={() => paginate(currentPage - 1)}
                     disabled={currentPage === 1}
                     className='pagination-button'
                 >
@@ -63,7 +74,7 @@ function Home() {
                         {index + 1}
                     </button>
                 ))}
-                <button 
+                <button
                     onClick={() => paginate(currentPage + 1)}
                     disabled={currentPage === totalPages}
                     className='pagination-button'

@@ -10,7 +10,7 @@ function ProjectContainer({ img, owner, _id, date, url }) {
                 <Link to={`/webproject/${_id}`} className="image-link">
                     <img
                         src={img}
-                        alt={`Project by ${owner}`} 
+                        alt={`Project by ${owner.username}`} 
                     />
                 </Link>
                 <a href={url} target="_blank" rel="noopener noreferrer">
@@ -19,7 +19,7 @@ function ProjectContainer({ img, owner, _id, date, url }) {
 
             </div>
             <div className='project-info-dsk'>
-                <p>{owner}</p>
+                <p>{owner.username}</p>
                 <p>{getRelativeTime(date)}</p>
             </div>
         </div>

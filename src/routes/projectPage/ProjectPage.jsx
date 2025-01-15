@@ -7,13 +7,14 @@ import './ProjectPage.css'
 function ProjectPage() {
     const navigate = useNavigate();
     const { _id } = useParams();
-    const project = projects.find(p => p._id === parseInt(_id));
+    // const project = projects.find(p => p._id === parseInt(_id));
+    const project = projects.find(p => p._id === _id);
     const { setSelectedFilters } = useFilters();
 
     const handleFilterClick = (section, value) => {
         setSelectedFilters(prev => ({
             ...prev,
-            [section]: [value]
+            [section]: [value.name]
         }));
     };
 
@@ -27,12 +28,12 @@ function ProjectPage() {
                 <button onClick={() => navigate(-1)}>BACK</button>
             </div>
             <div className='first-line-dsk'>
-                <h1>{project.name} by {project.owner}</h1>
+                <h1>{project.name} by {project.owner.name} {project.owner.lastname}</h1>
             </div>
 
             <div className='left-column-first-line'>
                 <a href={project.url} target="_blank" rel="noopener noreferrer">
-                    <img src={project.img} alt="Project" />
+                    <img src={project.images[0]?.url} alt="Project" />
                 </a>
             </div>
 
@@ -43,11 +44,11 @@ function ProjectPage() {
                         {project.styles.map((style, index) => (
                             <Link
                                 to="/"
-                                key={index}
+                                key={style._id}
                                 className="tag"
                                 onClick={() => handleFilterClick('styles', style)}
                             >
-                                {style}
+                                {style.name}
                             </Link>
                         ))}
                     </div>
@@ -58,11 +59,11 @@ function ProjectPage() {
                         {project.types.map((type, index) => (
                             <Link
                                 to="/"
-                                key={index}
+                                key={type._id}
                                 className="tag"
                                 onClick={() => handleFilterClick('types', type)}
                             >
-                                {type}
+                                {type.name}
                             </Link>
                         ))}
                     </div>
@@ -73,11 +74,11 @@ function ProjectPage() {
                         {project.subjects.map((subject, index) => (
                             <Link
                                 to="/"
-                                key={index}
+                                key={subject._id}
                                 className="tag"
                                 onClick={() => handleFilterClick('subjects', subject)}
                             >
-                                {subject}
+                                {subject.name}
                             </Link>
                         ))}
                     </div>
@@ -91,12 +92,12 @@ function ProjectPage() {
                 </div>
                 <div>
                     <h5>CREATOR</h5>
-                    <p>{project.owner}</p>
+                    <p>{project.owner.username}</p>
                 </div>
-                {project.team_members && (
+                {project.team_members && project.team_members.length > 0 && (
                     <div>
                         <h5>COLLABORATORS</h5>
-                        <p>{project.team_members}</p>
+                        <p>{project.team_members.map(member => member.username).join(', ')}</p>
                     </div>
                 )}
                 <div>
