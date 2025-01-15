@@ -10,15 +10,39 @@
     margin: 0 auto;
 }
 
-/* Media query para hacerlo responsivo */
-@media (max-width: 768px) {
-    .projects-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+.user-card {
+    padding: 20px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    background-color: white;
+    transition: all 0.2s ease;
 }
 
-@media (max-width: 480px) {
-    .projects-grid {
-        grid-template-columns: 1fr;
-    }
+.user-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.user-card h3 {
+    margin: 0 0 10px 0;
+    color: #333;
+}
+
+.user-card p {
+    margin: 5px 0;
+    color: #666;
+}
+
+.username-search {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.username-search:focus {
+    outline: none;
+    border-color: #999;
 }
