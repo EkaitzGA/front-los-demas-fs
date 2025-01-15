@@ -5,12 +5,12 @@ Tengo que modificar cómo recibo los datos de clientprofile con el objeto que vi
 
 En la página users habría que modificar la caja de búsqueda para que no sea un desplegable
 
-Crer página de users
-
-Los filtros de búsqueda de proyecto se tienen que actualizar para descartar opciones que no den resultados.
-
  AL clicar en Account o icono que haya en un futuro debe dirigir al perfil del usuario si ya esta logueado, si no, redirigir al login
 
  Añadir likes a cada proyecto.
 
  Añadir followers a cada usuario
+
+ En la sección de perfil del usuario tiene que haber un botón de "añadir nuevo proyecto"
+
+ en la sección de ProjectPage debe habe un botón para editar cada proyecto. 
