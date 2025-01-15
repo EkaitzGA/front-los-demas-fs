@@ -9,8 +9,8 @@
     align-items: center;
     padding: 0 20px;
     background-color: white;
-    height: 120px; /* Altura fija basada en el tamaño del logo */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Opcional: añade una sombra sutil */
+    height: 120px; 
+    /* box-shadow: 0 2px 4px rgba(0,0,0,0.1); */
 }
 
 
@@ -26,8 +26,8 @@
 }
 
 .nav-logo-wrapper img {
-    width: 70px; 
-    height: 70px; 
+    width: 90px; 
+    height: 90px; 
     object-fit: contain; 
 }
 
