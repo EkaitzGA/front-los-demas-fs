@@ -16,9 +16,9 @@ function AllProfiles() {
     });
 
     return (
-        <div className="projects-page">
+        <div className="users-page">
             <UserFilter />
-            <div className="projects-grid">
+            <div className="users-grid">
                 {filteredUsers.map(user => (
                     <Link 
                         to={`/myprofile/${user._id}`} 
