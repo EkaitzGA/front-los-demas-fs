@@ -136,7 +136,7 @@ function NavBar() {
                             onMouseEnter={() => setShowSubmenu(true)}
                             onMouseLeave={() => setShowSubmenu(false)}
                         >
-                            <span className="account-trigger">Account</span>
+                            <span className={`account-trigger ${showSubmenu ? 'active-trigger' : ''}`}>Account</span>
                             {showSubmenu && (
                                 <div className="submenu">
                                     <NavLink
@@ -159,7 +159,7 @@ function NavBar() {
                     </ul>
                 </nav>
             </div>
-        {location.pathname === '/' && <SearchFilter />}
+        {/* {location.pathname === '/' && <SearchFilter />} */}
 
         </div>
     );
