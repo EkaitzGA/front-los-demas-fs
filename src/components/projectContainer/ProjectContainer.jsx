@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
 import { getRelativeTime } from '../../utils/dateUtils'
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
 import './ProjectContainer.css'
 
-function ProjectContainer({ img, owner, _id, date, url, showInfo = true }) {
+function ProjectContainer({ img, owner, _id, date, url, likes, showInfo = true }) {
     return (
         <div className='project-container-dsk'>
             <div className='image-container'>
@@ -14,16 +15,23 @@ function ProjectContainer({ img, owner, _id, date, url, showInfo = true }) {
                     />
                 </Link>
                 <a href={url} target="_blank" rel="noopener noreferrer">
-                    <button></button>
+                    <button>Go!</button>
                 </a>
 
             </div>
-            {showInfo && (  // Solo muestra esta sección si showInfo es true
+
+            {showInfo && (
                 <div className='project-info-dsk'>
-                    <Link to={`/myprofile/${owner._id}`}>
-                        <p>{owner.name} {owner.lastname}</p>
-                    </Link>
-                    <p>{getRelativeTime(date)}</p>
+                    <div className='info-main-row'>
+                        <Link to={`/myprofile/${owner._id}`}>
+                            <p>{owner.name} {owner.lastname}</p>
+                        </Link>
+                        <div className='likes-container'>
+                            <FavoriteBorderIcon />
+                            <span>{likes}</span>
+                        </div>
+                    </div>
+                    <p className='date-text'>{getRelativeTime(date)}</p>
                 </div>
             )}
         </div>

@@ -2,12 +2,12 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { projects } from '../../data/projects';
 import { getRelativeTime } from '../../utils/dateUtils'
 import { useFilters } from '../../context/FilterProvider';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import './ProjectPage.css'
 
 function ProjectPage() {
     const navigate = useNavigate();
     const { _id } = useParams();
-    // const project = projects.find(p => p._id === parseInt(_id));
     const project = projects.find(p => p._id === _id);
     const { setSelectedFilters } = useFilters();
 
@@ -110,7 +110,10 @@ function ProjectPage() {
                 </div>
                 <div>
                     <h5>LIKES</h5>
-                    <p>{project.likes}</p>
+                    <div className="likes-wrapper">
+                        <FavoriteBorderIcon className="heart-icon" />
+                        <span>{project.likes}</span>
+                    </div>
                 </div>
                 <div>
                     <h5>PUBLICATION</h5>

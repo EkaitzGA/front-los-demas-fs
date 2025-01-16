@@ -1,7 +1,7 @@
 .single-project-container-dsk {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 10px;
     padding-left: 120px;
     padding-right: 120px;
     display: grid;
@@ -12,7 +12,6 @@
         "main-image sidebar"
         "categories sidebar";
     gap: 25px;
-    /* margin-top: 130px; */
 }
 
 
@@ -174,6 +173,27 @@ background-color: #f8f8f8;
 
 .second-column a:hover {
     text-decoration: underline;
+}
+
+.likes-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.heart-icon {
+    font-size: 20px !important; 
+    color: #333;
+}
+
+.likes-wrapper:hover .heart-icon {
+    color: red;
+    cursor: pointer;
+}
+
+.likes-wrapper span {
+    font-size: 16px;
+    color: #333;
 }
 
 @media (max-width: 768px) {

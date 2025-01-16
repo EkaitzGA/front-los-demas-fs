@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { NavLink, Link, useLocation, useNavigate } from 'react-router-dom';
 import SearchFilter from '../searchFilter/SearchFilter';
 import { useFilters } from '../../context/FilterProvider';
@@ -9,6 +9,8 @@ function NavBar() {
     const navigate = useNavigate();
     const [showSubmenu, setShowSubmenu] = useState(false);
     const { setSelectedFilters } = useFilters();
+    const [isVisible, setIsVisible] = useState(true);
+    const [lastScrollY, setLastScrollY] = useState(0);
 
     const resetFilters = () => {
         setSelectedFilters({
@@ -28,87 +30,42 @@ function NavBar() {
         navigate('/auth?mode=register');
     };
 
-    // return (
-    //     <>
-    //         <div className='nav-bar-dsk'>
-    //             <div className='nav-logo-wrapper'>
-    //                 <Link onClick={resetFilters} to="/">
-    //                     <img src="/images/59C5B3B8-3718-42B1-AFAD-F82AF582B5BF.PNG" alt="Logo" />
-    //                 </Link>
-    //                 <Link onClick={resetFilters} to="/" className="title-link">
-    //                     <h1>Kazoku</h1>
-    //                 </Link>
-    //             </div>
-
-    //             <div className='nav-links-dsk'>
-    //                 <ul className='ul-dsk'>
-
-    //                     <li className="nav-li-item">
-    //                         <NavLink
-    //                             onClick={resetFilters}
-    //                             to="/"
-    //                             className={({ isActive }) => isActive ? 'active-link' : ''}
-    //                         >
-    //                             Websites
-    //                         </NavLink>
-    //                     </li>
-
-    //                     <li className="nav-li-item">
-    //                         <NavLink
-    //                             onClick={resetFilters}
-    //                             to="/profiles"
-    //                             className={({ isActive }) => isActive ? 'active-link' : ''}
-    //                         >
-    //                             Users
-    //                         </NavLink>
-    //                     </li>
-
-    //                     <li className="nav-li-item"
-    //                         onMouseEnter={() => setShowSubmenu(true)}
-    //                         onMouseLeave={() => setShowSubmenu(false)}
-    //                     >
-    //                         <span className="account-trigger">Account</span>
-    //                         {showSubmenu && (
-    //                             <div className="submenu">
-    //                                 <NavLink
-    //                                     to="/auth?mode=login"
-    //                                     onClick={handleLoginClick}
-    //                                     className="submenu-item"
-    //                                 >
-    //                                     Login
-    //                                 </NavLink>
-    //                                 <NavLink
-    //                                     to="/auth?mode=register"
-    //                                     onClick={handleRegisterClick}
-    //                                     className="submenu-item"
-    //                                 >
-    //                                     Register
-    //                                 </NavLink>
-    //                             </div>
-    //                         )}
-    //                     </li>
-
-    //                 </ul>
-    //             </div>
-    //         </div>
-    //         {location.pathname === '/' && <SearchFilter />}
-    //     </>
-    // );
+    useEffect(() => {
+        const controlNavbar = () => {
+            const currentScrollY = window.scrollY;
+            
+            if (currentScrollY > lastScrollY) { 
+                setIsVisible(false);
+            } else { 
+                setIsVisible(true);
+            }
+            
+            setLastScrollY(currentScrollY);
+        };
+    
+        window.addEventListener('scroll', controlNavbar);
+    
+        return () => {
+            window.removeEventListener('scroll', controlNavbar);
+        };
+    }, [lastScrollY]);
 
     return (
-        <div className='nav-bar-dsk'>
+            <div className={`nav-bar-dsk ${isVisible ? 'nav-visible' : 'nav-hidden'}`}>
+
+
             <div className='nav-content-wrapper'>
                 <div className='logo-section'>
                     <Link onClick={resetFilters} to="/">
                         <img src="/images/59C5B3B8-3718-42B1-AFAD-F82AF582B5BF.PNG" alt="Logo" />
                     </Link>
                 </div>
-
+{/* 
                 <div className='title-section'>
                     <Link onClick={resetFilters} to="/" className="title-link">
                         <h1>Kazoku</h1>
                     </Link>
-                </div>
+                </div> */}
 
                 <nav className='nav-links-dsk'>
                     <ul className='ul-dsk'>
@@ -132,7 +89,8 @@ function NavBar() {
                             </NavLink>
                         </li>
 
-                        <li className="nav-li-item"
+                        <li className={`nav-li-item ${location.pathname.includes('/auth') ? 'auth-active' : ''}`}
+
                             onMouseEnter={() => setShowSubmenu(true)}
                             onMouseLeave={() => setShowSubmenu(false)}
                         >
@@ -159,7 +117,6 @@ function NavBar() {
                     </ul>
                 </nav>
             </div>
-        {/* {location.pathname === '/' && <SearchFilter />} */}
 
         </div>
     );

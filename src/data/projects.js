@@ -318,7 +318,7 @@ export const projects = [
         date: "2024-01-15T00:00:00.000Z",
         description: "A fan project inspired by the wildly imaginative and adventurous universe of Rick and Morty, showcasing creative designs and interactive elements that bring the multiverse to life.",
         status: "active",
-        likes: 0,
+        likes: 10,
         url: "https://enlace-externo.com",
         owner: {
             _id: "6787aff4ed35bca641f90e78",
@@ -683,7 +683,7 @@ export const projects = [
         "date": "2024-01-14T00:00:00.000Z",
         "description": "An online store offering bold, trendy fashion and accessories with a unique shopping experience.",
         "status": "active",
-        "likes": 0,
+        "likes": 7,
         "url": "https://enlace-externo.com",
         "owner": {
             "_id": "6787aff4ed35bca641f90e75",
@@ -756,7 +756,7 @@ export const projects = [
         "date": "2024-01-06T00:00:00.000Z",
         "description": "A platform connecting chefs, restaurants, and food lovers, offering personalized dining experiences and innovative dishes.",
         "status": "active",
-        "likes": 0,
+        "likes": 9,
         "url": "https://enlace-externo.com",
         "owner": {
             "_id": "6787aff4ed35bca641f90e76",
@@ -829,7 +829,7 @@ export const projects = [
         "date": "2024-01-08T00:00:00.000Z",
         "description": "An interactive site for manga and anime fans, featuring reviews, news, and a vast library of titles.",
         "status": "active",
-        "likes": 0,
+        "likes": 12,
         "url": "https://enlace-externo.com",
         "owner": {
             "_id": "6787aff4ed35bca641f90e77",

@@ -54,6 +54,7 @@ function Home() {
                         owner={project.owner}
                         date={project.date}
                         url={project.url}
+                        likes={project.likes}
                     />
                 ))}
             </div>
