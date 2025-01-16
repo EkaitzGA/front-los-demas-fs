@@ -3,6 +3,7 @@ import ProjectContainer from '../../components/projectContainer/ProjectContainer
 import { projects } from '../../data/projects';
 import { useFilters } from '../../context/FilterProvider';
 import SearchFilter from '../../components/searchFilter/SearchFilter';
+import Carousel from '../../components/carousel/Carousel';
 
 import './Home.css'
 
@@ -10,6 +11,7 @@ function Home() {
     const { selectedFilters } = useFilters();
     const [currentPage, setCurrentPage] = useState(1);
     const projectsPerPage = 12;
+    const hasActiveFilters = Object.values(selectedFilters).some(arr => arr.length > 0);
     const totalPages = Math.ceil(projects.length / projectsPerPage);
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
     const filteredProjects = projects.filter(project => {
@@ -18,13 +20,19 @@ function Home() {
         }
 
         const matchesStyles = selectedFilters.styles.length === 0 ||
-            selectedFilters.styles.some(style => project.styles.includes(style));
+            selectedFilters.styles.some(style => 
+                project.styles.some(projectStyle => projectStyle.name === style)
+            );
 
         const matchesTypes = selectedFilters.types.length === 0 ||
-            selectedFilters.types.some(type => project.types.includes(type));
+            selectedFilters.types.some(type => 
+                project.types.some(projectType => projectType.name === type)
+            );
 
         const matchesSubjects = selectedFilters.subjects.length === 0 ||
-            selectedFilters.subjects.some(subject => project.subjects.includes(subject));
+            selectedFilters.subjects.some(subject => 
+                project.subjects.some(projectSubject => projectSubject.name === subject)
+            );
 
         return matchesStyles && matchesTypes && matchesSubjects;
     });
@@ -35,17 +43,10 @@ function Home() {
 
     return (
         <div className='projects-page'>
+            {!hasActiveFilters && <Carousel />} 
             <SearchFilter />
             <div className='projects-grid'>
                 {currentProjects.map(project => (
-                    // <ProjectContainer
-                    //     key={project._id}
-                    //     _id={project._id}          
-                    //     img={project.img}
-                    //     owner={project.owner}
-                    //     date={project.date}
-                    //     url={project.url}     
-                    // />
                     <ProjectContainer
                         key={project._id}
                         _id={project._id}

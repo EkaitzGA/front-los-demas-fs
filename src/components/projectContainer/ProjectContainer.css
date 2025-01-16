@@ -70,3 +70,8 @@
     color: #666;
     font-size: 0.9em;
 }
+
+.project-info-dsk a:hover p {
+    color: red;
+}
+
