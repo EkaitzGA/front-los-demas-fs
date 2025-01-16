@@ -33,9 +33,10 @@
 
 .image-container button {
     position: absolute;
-    bottom: 0px;
-    right: 0px;
-    background-color: brown;
+    bottom: 1px;
+    right: 1px;
+    background-color: rgba(0, 0, 0, 0.686);
+    color: white;
     border: none;
     width: 30px;
     height: 30px;
@@ -59,13 +60,40 @@
     background-color: transparent;
 }
 
-.project-info-dsk p:first-child {
+.info-main-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.likes-container {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #666;
+}
+
+.likes-container svg {
+    font-size: 20px;
+}
+
+.likes-container svg:hover {
+    color: red;
+    cursor: pointer;
+}
+
+.likes-container span {
+    font-size: 0.9em;
+}
+
+.project-info-dsk a p {
     font-weight: bold;
-    margin: 0 0 8px 0;
+    margin: 0;
     color: black;
 }
 
-.project-info-dsk p:last-child {
+.date-text {
     margin: 0;
     color: #666;
     font-size: 0.9em;
@@ -74,4 +102,3 @@
 .project-info-dsk a:hover p {
     color: red;
 }
-
