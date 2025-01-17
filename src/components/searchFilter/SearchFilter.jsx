@@ -12,12 +12,15 @@ const SearchFilter = () => {
     types: filterData.types,
     subjects: filterData.subjects
   });
-  // Object.entries(filterData).map(([section, options]) => console.log(section,options));
+  
   const [openSections, setOpenSections] = useState({
     styles: false,
     types: false,
     subjects: false
   });
+
+  // Función auxiliar para obtener el nombre de un objeto de filtro
+  const getFilterName = (filterObj) => filterObj.name;
 
   // Función para obtener proyectos que coinciden con las selecciones de otras secciones
   const getProjectsMatchingOtherSections = (currentSection) => {
@@ -27,32 +30,25 @@ const SearchFilter = () => {
 
     return projects.filter(project => {
       return Object.entries(selectedFilters).every(([section, selected]) => {
-        // Ignoramos la sección actual
         if (section === currentSection) return true;
-        // Si no hay selecciones en esta sección, es válido
         if (selected.length === 0) return true;
-        // El proyecto debe coincidir con al menos una selección de la sección
-        return selected.some(filter => project[section].includes(filter));
+        
+        // Extraemos los nombres de los filtros del proyecto
+        const projectFilterNames = project[section].map(getFilterName);
+        // Verificamos si alguno de los filtros seleccionados está en el proyecto
+        return selected.some(filter => projectFilterNames.includes(filter));
       });
     });
   };
 
   // Función para obtener el conteo de proyectos para una opción específica
   const getDynamicOptionCount = (section, option) => {
-    // Primero obtenemos los proyectos que coinciden con las selecciones de otras secciones
     const projectsFromOtherSections = getProjectsMatchingOtherSections(section);
 
-    // Si la opción está seleccionada, contamos cuántos de los proyectos actuales la tienen
-    if (selectedFilters[section].includes(option)) {
-      return projectsFromOtherSections.filter(project => 
-        project[section].includes(option)
-      ).length;
-    }
-
-    // Para opciones no seleccionadas, contamos cuántos proyectos coincidentes tienen esta opción
-    return projectsFromOtherSections.filter(project => 
-      project[section].includes(option)
-    ).length;
+    return projectsFromOtherSections.filter(project => {
+      const projectFilterNames = project[section].map(getFilterName);
+      return projectFilterNames.includes(option);
+    }).length;
   };
 
   // Función para determinar qué opciones están disponibles
@@ -63,14 +59,13 @@ const SearchFilter = () => {
       subjects: new Set()
     };
 
-    // Para cada sección, obtenemos los proyectos disponibles basados en otras secciones
     Object.keys(available).forEach(section => {
       const projectsFromOtherSections = getProjectsMatchingOtherSections(section);
       
       projectsFromOtherSections.forEach(project => {
-        project.styles.forEach(style => available.styles.add(style));
-        project.types.forEach(type => available.types.add(type));
-        project.subjects.forEach(subject => available.subjects.add(subject));
+        project[section].forEach(filter => {
+          available[section].add(filter.name);
+        });
       });
     });
 
@@ -92,7 +87,6 @@ const SearchFilter = () => {
     setAvailableOptions(newAvailableOptions);
   }, [selectedFilters]);
 
-  // Effect para manejar clicks fuera del componente
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (filterRef.current && !filterRef.current.contains(event.target)) {
@@ -151,10 +145,8 @@ const SearchFilter = () => {
               {options.map((option) => {
                   const dynamicCount = getDynamicOptionCount(section, option);
                   const isSelected = selectedFilters[section].includes(option);
-                  // Solo consideramos disponible si tiene conteo > 0 o está seleccionado
                   const isAvailable = dynamicCount > 0 || isSelected;
                   
-                  // Si no está disponible y no está seleccionado, no lo renderizamos
                   if (!isAvailable && !isSelected) return null;
                   
                   return (
@@ -172,7 +164,7 @@ const SearchFilter = () => {
                     </label>
                   );
                 })
-                .filter(Boolean) // Eliminamos los null del mapeo
+                .filter(Boolean)
               }
             </div>
           )}
