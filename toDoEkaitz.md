@@ -14,3 +14,5 @@ En la página users habría que modificar la caja de búsqueda para que no sea u
  En la sección de perfil del usuario tiene que haber un botón de "añadir nuevo proyecto"
 
  en la sección de ProjectPage debe habe un botón para editar cada proyecto. 
+
+ EL SEARCH FILTER ahora no muestra correctamente las opciones porque la estructura de datos de las categorias ha cambiado, por lo que no capta bien los distintos tipos de categorías. 
