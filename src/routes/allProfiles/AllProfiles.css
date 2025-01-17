@@ -1,8 +1,10 @@
 .users-page {
     padding: 20px;
+    background-color: white;
 }
 
 .users-grid {
+    padding-top: 50px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
@@ -10,12 +12,69 @@
     margin: 0 auto;
 }
 
+.users-grid > a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 250px; /* Ancho fijo para el Link */
+    justify-self: center; /* Centra el Link en su celda del grid */
+
+}
+
 .user-card {
     padding: 20px;
-    border: 1px solid #eee;
+    /* border: 1px solid #eee; */
     border-radius: 8px;
     background-color: white;
     transition: all 0.2s ease;
+    text-align: center;
+    aspect-ratio: 1 / 1; /* Hace la tarjeta cuadrada */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 20%;
+    height: auto;
+}
+
+/* Estilos para el contenedor de la imagen */
+.user-image {
+    width: 120px; /* Tamaño fijo para el contenedor */
+    height: 120px; /* Mismo tamaño que el ancho para mantener la proporción */
+    margin: 0 auto 15px; /* Centrar horizontalmente y añadir espacio abajo */
+    border-radius: 50%; /* Hacer el contenedor circular */
+    overflow: hidden; /* Asegurar que la imagen no sobresalga del círculo */
+    display: flex; /* Para centrar la imagen dentro del contenedor */
+    align-items: center;
+    justify-content: center;
+}
+
+/* Estilos para la imagen */
+.user-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Para que la imagen cubra todo el espacio sin deformarse */
+}
+
+/* Specialization backgrounds */
+.user-card.ux-ui {
+    border: 2px solid #FEFF00;
+}
+
+.user-card.frontend {
+    border: 2px solid #D876D0;
+}
+
+.user-card.backend {
+    border: 2px solid #00A8A4;
+}
+
+.user-card.fullstack {
+    border: 2px solid #0156C1;
+}
+
+.user-card.none {
+    border: 2px solid #FF4101;
 }
 
 .user-card:hover {
@@ -45,4 +104,38 @@
 .username-search:focus {
     outline: none;
     border-color: #999;
+}
+
+
+
+.specialization-tag {
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.specialization-tag.ux-ui {
+    background-color: #FEFF00;
+    color: #000;
+}
+
+.specialization-tag.frontend {
+    background-color: #D876D0;
+    color: white;
+}
+
+.specialization-tag.backend {
+    background-color: #00A8A4;
+    color: white;
+}
+
+.specialization-tag.fullstack {
+    background-color: #0156C1;
+    color: white;
+}
+
+.specialization-tag.none {
+    background-color: #FF4101;
+    color: white;
 }

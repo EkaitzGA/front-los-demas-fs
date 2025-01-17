@@ -4,10 +4,11 @@
     left: 0;
     right: 0;
     z-index: 1000;
-    background-color: rgba(234, 234, 234, 0.8);
+    /* background-color: rgba(234, 234, 234, 0.8); */
+    background-color: white;
     height: auto;
     padding-top: 10px;
-    border-bottom: 1.5px solid red;
+    border-bottom: 1.5px solid black;
     transition: transform 0.5s ease-in-out;
 }
 
@@ -82,12 +83,14 @@
     color: black; 
     font-weight: bold;
     position: relative;
-    border-color: red;   
+    border-color: black;   
 }
 
 .nav-li-item:has(.active-link) {
-    border-color: red;
-    border-bottom: 1.5px solid #EAEAEA; 
+    border-color: black;
+    /* border-bottom: 1.5px solid #EAEAEA;  */
+    border-bottom: 1.5px solid white; 
+
 }
 
 
@@ -138,8 +141,8 @@
 }
 
 .nav-li-item.auth-active {
-    border-color: red;
-    border-bottom: 1.5px solid #EAEAEA;
+    border-color: black;
+    border-bottom: 1.5px solid white;
 }
 
 

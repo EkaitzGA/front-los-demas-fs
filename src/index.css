@@ -7,7 +7,9 @@
 }
 
 .root-phone__content {
-  background-color:  #EAEAEA;
+  /* background-color:  #EAEAEA; */
+  background-color:  white;
+
   min-height: 100vh;
 }
 
@@ -28,11 +30,14 @@ a {
 
 #root {
   min-height: 100vh;
-  background-color: #EAEAEA;
+  /* background-color: #EAEAEA; */
+  background-color: white;
+
 }
 
 main {
   flex: 1;
   margin-top: 10vh;
-  background-color: #EAEAEA;
+  /* background-color: #EAEAEA; */
+  background-color: white;
 }
