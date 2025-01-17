@@ -19,11 +19,11 @@ function AllProfiles() {
         switch (specialization) {
             case 'UX/UI':
                 return 'ux-ui';
-            case 'Front-end':
+            case 'Frontend':
                 return 'frontend';
-            case 'Back-end':
+            case 'Backend':
                 return 'backend';
-            case 'Full-stack':
+            case 'Fullstack':
                 return 'fullstack';
             default:
                 return 'none';

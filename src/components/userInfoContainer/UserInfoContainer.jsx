@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import EditIcon from '@mui/icons-material/Edit';
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
 
 const UserInfoContainer = ({ userData }) => {
     const [isEditing, setIsEditing] = useState(false);
@@ -128,9 +131,9 @@ const UserInfoContainer = ({ userData }) => {
                         </div>
                     </div>
                     <div className="form-actions">
-                        <button type="submit" className="save-button">Save</button>
+                        <button type="submit" className="save-button"> <CheckIcon /></button>
                         <button type="button" className="cancel-button" onClick={() => setIsEditing(false)}>
-                            Cancel
+                            <CloseIcon />
                         </button>
                     </div>
                 </form>
@@ -204,7 +207,7 @@ const UserInfoContainer = ({ userData }) => {
                 </div>
             </div>
             <button className="edit-button" onClick={() => setIsEditing(true)}>
-                Edit Profile
+                <EditIcon />
             </button>
         </section>
     );

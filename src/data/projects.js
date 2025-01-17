@@ -102,7 +102,7 @@ export const projects = [
         likes: 0,
         url: "https://enlace-externo.com",
         owner: {
-            _id: "6787aff4ed35bca641f90e74",
+            _id: "6787aff4ed35bca641f90e44",
             name: "Another",
             lastname: "User",
             username: "anotheruser",
@@ -175,7 +175,7 @@ export const projects = [
         likes: 0,
         url: "https://enlace-externo.com",
         owner: {
-            _id: "6787aff4ed35bca641f90e75",
+            _id: "6787aff4ed35bca641f90e35",
             name: "Emily",
             lastname: "Carter",
             username: "emilycarter",
@@ -540,7 +540,7 @@ export const projects = [
         "likes": 0,
         "url": "https://enlace-externo.com",
         "owner": {
-            "_id": "6787aff4ed35bca641f90e73",
+            "_id": "6787aff4ed35bca641f90e83",
             "name": "Chris",
             "lastname": "Brown",
             "username": "subaruFan",
@@ -613,7 +613,7 @@ export const projects = [
         "likes": 0,
         "url": "https://enlace-externo.com",
         "owner": {
-            "_id": "6787aff4ed35bca641f90e74",
+            "_id": "6787aff4ed35bca641f90e95",
             "name": "Olivia",
             "lastname": "Wilson",
             "username": "trafikoUser",
@@ -686,7 +686,7 @@ export const projects = [
         "likes": 7,
         "url": "https://enlace-externo.com",
         "owner": {
-            "_id": "6787aff4ed35bca641f90e75",
+            "_id": "6787aff4ed35bca641f90e97",
             "name": "James",
             "lastname": "Davis",
             "username": "sinverguenzaUser",
@@ -833,8 +833,8 @@ export const projects = [
         "url": "https://enlace-externo.com",
         "owner": {
             "_id": "6787aff4ed35bca641f90e77",
-            "name": "William",
-            "lastname": "Taylor",
+            "name": "Samuel",
+            "lastname": "Correia",
             "username": "mangaburuUser",
             "email": "william@mangaburu.com",
             "web": [
