@@ -4,6 +4,8 @@ export const users = [
     lastname: "Urrutia",
     username: "izo",
     email: "izorrai@gmail.co",
+    specialization: "UX/UI", 
+
     password: "$2a$10$du120xiAmKKgM6v0VWs0b.cO17E5RlNPCw2xXCRGF7Tmoj6DRT1ga", // Puedes cambiar la contraseña si es necesario
     website: "www.izorrai.com",
     github: [],
@@ -24,6 +26,8 @@ export const users = [
     lastname: "Grado",
     username: "JGrado",
     email: "jonathan.grado@gmail.com",
+    specialization: "Front-end", 
+
     password: "$2a$10$du120xiAmKKgM6v0VWs0b.cO17E5RlNPCw2xXCRGF7Tmoj6DRT1ga",
     website: "www.jonathangrado.dev",
     github: "jonathangrado",
@@ -44,6 +48,8 @@ export const users = [
     lastname: "User",
     username: "anotheruser",
     email: "anotheruser@gmail.com",
+    specialization: "Back-end", 
+
     password: "$2a$10$du120xiAmKKgM6v0VWs0b.cO17E5RlNPCw2xXCRGF7Tmoj6DRT1ga", // Puedes cambiar la contraseña si es necesario
     website: "https://anotheruserportfolio.com",
     github: [],
@@ -55,7 +61,7 @@ export const users = [
     country: "Spain",
     city: "Barcelona",
     isActivated: true,
-    _id: "6787aff4ed35bca641f90e74",
+    _id: "6787aff4ed35bca641f90e44",
     createdAt: "2025-01-15T12:54:12.942Z",
     __v: 0
   },
@@ -64,6 +70,8 @@ export const users = [
     lastname: "Carter",
     username: "emilycarter",
     email: "emilycarter@gmail.com",
+    specialization: "UX/UI", 
+
     password: "$2a$10$du120xiAmKKgM6v0VWs0b.cO17E5RlNPCw2xXCRGF7Tmoj6DRT1ga", // Puedes cambiar la contraseña si es necesario
     website: "https://emilycarterdesigns.com",
     github: [],
@@ -75,7 +83,7 @@ export const users = [
     country: "USA",
     city: "New York",
     isActivated: true,
-    _id: "6787aff4ed35bca641f90e75",
+    _id: "6787aff4ed35bca641f90e35",
     createdAt: "2025-01-15T12:54:12.942Z",
     __v: 0
   },
@@ -84,6 +92,8 @@ export const users = [
     lastname: "Correia",
     username: "samuelcorreia",
     email: "samuelcorreia@gmail.com",
+    specialization: "None", 
+
     password: "$2a$10$du120xiAmKKgM6v0VWs0b.cO17E5RlNPCw2xXCRGF7Tmoj6DRT1ga", // Puedes cambiar la contraseña si es necesario
     website: "https://selene.com",
     github: [],
@@ -104,6 +114,8 @@ export const users = [
     lastname: "Johnson",
     username: "sophiajohnson",
     email: "sophiajohnson@gmail.com",
+    specialization: "UX/UI", 
+
     password: "$2a$10$du120xiAmKKgM6v0VWs0b.cO17E5RlNPCw2xXCRGF7Tmoj6DRT1ga", // Puedes cambiar la contraseña si es necesario
     website: "https://sophiajohnsondesigns.com",
     github: [],
@@ -124,6 +136,8 @@ export const users = [
     lastname: "Lee",
     username: "daniellee",
     email: "daniellee@gmail.com",
+    specialization: "Full-stack", 
+
     password: "$2a$10$du120xiAmKKgM6v0VWs0b.cO17E5RlNPCw2xXCRGF7Tmoj6DRT1ga", // Puedes cambiar la contraseña si es necesario
     website: "https://bytebites.com",
     github: [],
@@ -144,6 +158,8 @@ export const users = [
     lastname: "Martinez",
     username: "isabellam",
     email: "isabella.m@example.com",
+    specialization: "Front-end", 
+
     password: "$2a$10$du120xiAmKKgM6v0VWs0b.cO17E5RlNPCw2xXCRGF7Tmoj6DRT1ga", // Puedes cambiar la contraseña si es necesario
     website: "https://isabellam.com",
     github: [],
@@ -164,6 +180,8 @@ export const users = [
     lastname: "Brown",
     username: "subaruFan",
     email: "chris@subaru.com",
+    specialization: "Front-end", 
+
     password: "$2a$10$du120xiAmKKgM6v0VWs0b.cO17E5RlNPCw2xXCRGF7Tmoj6DRT1ga", // Cambia la contraseña si es necesario
     website: "www.subaru.com",
     github: [],
@@ -175,7 +193,7 @@ export const users = [
     country: "USA",
     city: "Detroit",
     isActivated: true,
-    _id: "6787aff4ed35bca641f90e73",
+    _id: "6787aff4ed35bca641f90e83",
     createdAt: "2023-12-31T00:00:00.000Z",
     __v: 0
   },
@@ -184,6 +202,8 @@ export const users = [
     lastname: "Wilson",
     username: "trafikoUser",
     email: "olivia@trafiko.com",
+    specialization: "Back-end", 
+
     password: "$2a$10$du120xiAmKKgM6v0VWs0b.cO17E5RlNPCw2xXCRGF7Tmoj6DRT1ga", // Cambia la contraseña si es necesario
     website: "www.trafiko.com",
     github: [],
@@ -195,7 +215,7 @@ export const users = [
     country: "USA",
     city: "San Francisco",
     isActivated: true,
-    _id: "6787aff4ed35bca641f90e74",
+    _id: "6787aff4ed35bca641f90e95",
     createdAt: "2023-12-24T00:00:00.000Z",
     __v: 0
   },
@@ -204,6 +224,8 @@ export const users = [
     lastname: "Davis",
     username: "sinverguenzaUser",
     email: "james@sinverguenza.com",
+    specialization: "Full-stack", 
+
     password: "$2a$10$du120xiAmKKgM6v0VWs0b.cO17E5RlNPCw2xXCRGF7Tmoj6DRT1ga", // Cambia la contraseña si es necesario
     website: "www.sinverguenza.com",
     github: [],
@@ -215,7 +237,7 @@ export const users = [
     country: "USA",
     city: "Los Angeles",
     isActivated: true,
-    _id: "6787aff4ed35bca641f90e75",
+    _id: "6787aff4ed35bca641f90e97",
     createdAt: "2024-01-14T00:00:00.000Z",
     __v: 0
   },
@@ -224,6 +246,8 @@ export const users = [
     lastname: "Miller",
     username: "plattoUser",
     email: "ava@platto.com",
+    specialization: "None", 
+
     password: "$2a$10$du120xiAmKKgM6v0VWs0b.cO17E5RlNPCw2xXCRGF7Tmoj6DRT1ga", // Cambia la contraseña si es necesario
     website: "www.platto.com",
     github: [],

@@ -5,7 +5,7 @@
     justify-content: center;
     position: relative;
     /* margin-top: 10px; */
-    background-color: aquamarine;
+    background-color: white;
 }
 
 .filter-section {
@@ -24,7 +24,7 @@
     align-items: center;
     cursor: pointer;
     font-weight: 500;
-    border-bottom: 1px solid #eee;
+    /* border-bottom: 1px solid #eee; */
 }
 
 .section-title {

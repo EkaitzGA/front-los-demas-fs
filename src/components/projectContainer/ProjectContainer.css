@@ -13,7 +13,7 @@
     aspect-ratio: 16/9;
     background-color: rgb(233, 196, 196);
     overflow: hidden;
-    border: 10px solid white; 
+    border: 5px solid #EAEAEA; 
     /* border-radius: 2%; */
 }
 
