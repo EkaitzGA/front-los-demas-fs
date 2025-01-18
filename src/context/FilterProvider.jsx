@@ -11,7 +11,8 @@ export function FilterProvider({ children }) {
 
     const [userFilters, setUserFilters] = useState({
         country: '',
-        username: ''
+        username: '',
+        specialization: ''
     });
 
     return (

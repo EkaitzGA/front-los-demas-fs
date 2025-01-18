@@ -1,22 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useFilters } from '../../context/FilterProvider';
-import { users } from '../../data/users';
+import { getUsers } from '../../utils/api/fetch';
 import './SearchFilter.css';
 
 const UserFilter = () => {
   const { userFilters, setUserFilters } = useFilters();
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await getUsers();
+        if (response.success) {
+          setUsers(response.data);
+        }
+      } catch (err) {
+        console.error('Error fetching users:', err);
+      }
+    };
+
+    fetchUsers();
+  }, []);
   
   // Get unique countries from users
-  const countries = [...new Set(users.map(user => user.country))];
+  const countries = [...new Set(users.map(user => user.country).filter(Boolean))];
   
-  // Create filter data structure similar to the original
+  // Definimos las especializaciones disponibles
+  const specializations = ['UX/UI', 'Front-end', 'Back-end', 'Full-stack'];
+  
+  // Create filter data structure
   const filterData = {
-    search: ['username'],  // This will be handled differently
+    search: ['username'],
+    specializations: specializations,
     countries: countries
   };
 
   const [openSections, setOpenSections] = useState({
     search: false,
+    specializations: false,
     countries: false
   });
 
@@ -31,6 +52,13 @@ const UserFilter = () => {
     setUserFilters(prev => ({
       ...prev,
       country: prev.country === country ? '' : country
+    }));
+  };
+
+  const handleSpecializationChange = (specialization) => {
+    setUserFilters(prev => ({
+      ...prev,
+      specialization: prev.specialization === specialization ? '' : specialization
     }));
   };
 
@@ -49,7 +77,9 @@ const UserFilter = () => {
             onClick={() => toggleSection(section)}
             className="section-toggle"
           >
-            <span className="section-title">{section}</span>
+            <span className="section-title">
+              {section.charAt(0).toUpperCase() + section.slice(1)}
+            </span>
             <span>{openSections[section] ? '−' : '+'}</span>
           </button>
           
@@ -58,11 +88,22 @@ const UserFilter = () => {
               {section === 'search' ? (
                 <input
                   type="text"
-                  value={userFilters.username}
+                  value={userFilters.username || ''}
                   onChange={handleUsernameSearch}
                   placeholder="Search by username..."
                   className="username-search"
                 />
+              ) : section === 'specializations' ? (
+                options.map((option) => (
+                  <label key={option} className="filter-option">
+                    <input
+                      type="checkbox"
+                      checked={userFilters.specialization === option}
+                      onChange={() => handleSpecializationChange(option)}
+                    />
+                    <span>{option}</span>
+                  </label>
+                ))
               ) : (
                 options.map((option) => (
                   <label key={option} className="filter-option">

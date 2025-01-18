@@ -1,18 +1,45 @@
+import React, { useState, useEffect } from 'react';
 import { useFilters } from '../../context/FilterProvider';
-import { users } from '../../data/users';
 import UserFilter from '../../components/searchFilter/UserFilter';
 import { Link } from 'react-router-dom';
+import { getUsers } from '../../utils/api/fetch';
 import './AllProfiles.css';
 
 function AllProfiles() {
     const { userFilters } = useFilters();
+    const [users, setUsers] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            setIsLoading(true);
+            try {
+                const response = await getUsers();
+                if (response.success) {
+                    setUsers(response.data);
+                } else {
+                    throw new Error(response.message || 'Error fetching users');
+                }
+            } catch (err) {
+                setError(err.message);
+                console.error('Error:', err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchUsers();
+    }, []);
 
     const filteredUsers = users.filter(user => {
         const matchesCountry = !userFilters.country || user.country === userFilters.country;
         const matchesUsername = !userFilters.username ||
             user.username.toLowerCase().includes(userFilters.username.toLowerCase());
+        const matchesSpecialization = !userFilters.specialization ||
+            user.specialization === userFilters.specialization;
 
-        return matchesCountry && matchesUsername;
+        return matchesCountry && matchesUsername && matchesSpecialization;
     });
 
     const getSpecializationClass = (specialization) => {
@@ -30,6 +57,14 @@ function AllProfiles() {
         }
     };
 
+    if (isLoading) {
+        return <div className="users-page">Loading users...</div>;
+    }
+
+    if (error) {
+        return <div className="users-page">Error: {error}</div>;
+    }
+
     return (
         <div className="users-page">
             <UserFilter />
@@ -38,20 +73,18 @@ function AllProfiles() {
                     <Link
                         to={`/myprofile/${user._id}`}
                         key={user._id}
-                        // className="user-card"
                         className={`user-card ${getSpecializationClass(user.specialization)}`}
-
                         style={{ textDecoration: 'none', color: 'inherit' }}
                     >
                         <p className={`specialization-tag ${getSpecializationClass(user.specialization)}`}>
                             {user.specialization}
-                        </p>                        <div className='user-image'>
+                        </p>
+                        <div className='user-image'>
                             <img src="./images/gato.jpg" alt="" />
                         </div>
                         <h3>{user.username}</h3>
                         <p>{user.name} {user.lastname}</p>
                         <p>{user.country}</p>
-                        {/* <p>{user.description}</p> */}
                     </Link>
                 ))}
             </div>
