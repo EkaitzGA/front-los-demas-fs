@@ -1,15 +1,40 @@
+import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { projects } from '../../data/projects';
-import { getRelativeTime } from '../../utils/dateUtils'
+import { getProjectsById } from '../../utils/api/fetch';
+import { getRelativeTime } from '../../utils/dateUtils';
 import { useFilters } from '../../context/FilterProvider';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import './ProjectPage.css'
+import './ProjectPage.css';
 
 function ProjectPage() {
     const navigate = useNavigate();
     const { _id } = useParams();
-    const project = projects.find(p => p._id === _id);
     const { setSelectedFilters } = useFilters();
+    const [project, setProject] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchProject = async () => {
+            setIsLoading(true);
+            try {
+                const response = await getProjectsById(_id);
+                if (!response.success) {
+                    throw new Error('Project not found');
+                }
+                setProject(response.data);
+            } catch (err) {
+                setError(err.message);
+                console.error('Error fetching project:', err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        if (_id) {
+            fetchProject();
+        }
+    }, [_id]);
 
     const handleFilterClick = (section, value) => {
         setSelectedFilters(prev => ({
@@ -18,7 +43,11 @@ function ProjectPage() {
         }));
     };
 
-    if (!project) {
+    if (isLoading) {
+        return <div>Loading project...</div>;
+    }
+
+    if (error || !project) {
         return <div>Proyecto no encontrado</div>;
     }
 
@@ -28,12 +57,12 @@ function ProjectPage() {
                 <button onClick={() => navigate(-1)}>BACK</button>
             </div>
             <div className='first-line-dsk'>
-                <h1>{project.name} by {project.owner.name} {project.owner.lastname}</h1>
+                <h1>{project.name} by {project.owner?.name} {project.owner?.lastname}</h1>
             </div>
 
             <div className='left-column-first-line'>
                 <a href={project.url} target="_blank" rel="noopener noreferrer">
-                    <img src={project.images[0]?.url} alt="Project" />
+                    <img src={project.images?.[0]?.url} alt="Project" />
                 </a>
             </div>
 
@@ -41,7 +70,7 @@ function ProjectPage() {
                 <div>
                     <h5>STYLES</h5>
                     <div className="tags-container">
-                        {project.styles.map((style, index) => (
+                        {project.styles?.map((style) => (
                             <Link
                                 to="/"
                                 key={style._id}
@@ -56,7 +85,7 @@ function ProjectPage() {
                 <div>
                     <h5>TYPES</h5>
                     <div className="tags-container">
-                        {project.types.map((type, index) => (
+                        {project.types?.map((type) => (
                             <Link
                                 to="/"
                                 key={type._id}
@@ -71,7 +100,7 @@ function ProjectPage() {
                 <div>
                     <h5>SUBJECTS</h5>
                     <div className="tags-container">
-                        {project.subjects.map((subject, index) => (
+                        {project.subjects?.map((subject) => (
                             <Link
                                 to="/"
                                 key={subject._id}
@@ -92,8 +121,8 @@ function ProjectPage() {
                 </div>
                 <div>
                     <h5>CREATOR</h5>
-                    <Link to={`/myprofile/${project.owner._id}`}>
-                        <p>{project.owner.name} {project.owner.lastname}</p>
+                    <Link to={`/myprofile/${project.owner?._id}`}>
+                        <p>{project.owner?.name} {project.owner?.lastname}</p>
                     </Link>
                 </div>
                 {project.team_members && project.team_members.length > 0 && (
@@ -120,7 +149,6 @@ function ProjectPage() {
                     <p>{getRelativeTime(project.date)}</p>
                 </div>
             </div>
-
         </div>
     );
 }

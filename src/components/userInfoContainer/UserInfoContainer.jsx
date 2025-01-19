@@ -1,47 +1,61 @@
 import React, { useState, useEffect } from 'react';
-import EditIcon from '@mui/icons-material/Edit';
-import CheckIcon from '@mui/icons-material/Check';
-import CloseIcon from '@mui/icons-material/Close';
 
-const UserInfoContainer = ({ userData }) => {
+import { getUserById } from '../../utils/api/fetch';
+
+
+const UserInfoContainer = ({ userId }) => {
     const [isEditing, setIsEditing] = useState(false);
+    const [userData, setUserData] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [profileData, setProfileData] = useState({
-        location: {
-            city: userData?.city || '',
-            country: userData?.country || ''
-        },
-        agency: userData?.description || '',
+        location: { city: '', country: '' },
+        agency: '',
         contact: {
-            email: userData?.email || '',
-            website: userData?.website || '',
-            github: userData?.github || '',
-            linkedin: userData?.linkedin || '',
-            instagram: userData?.instagram || ''
+            email: '',
+            website: '',
+            github: '',
+            linkedin: '',
+            instagram: ''
         }
     });
 
     useEffect(() => {
-        if (userData) {
-            setProfileData({
-                location: {
-                    city: userData.city || '',
-                    country: userData.country || ''
-                },
-                agency: userData.description || '',
-                contact: {
-                    email: userData.email || '',
-                    website: userData.website || '',
-                    github: userData.github || '',
-                    linkedin: userData.linkedin || '',
-                    instagram: userData.instagram || ''
+        const fetchUserData = async () => {
+            setIsLoading(true);
+            setError(null);
+            try {
+                const response = await getUserById(userId);
+                if (!response.success) {
+                    throw new Error(response.message || 'Error fetching user data');
                 }
-            });
-        }
-    }, [userData]);
+                setUserData(response.data);
+                setProfileData({
+                    location: {
+                        city: response.data.city || '',
+                        country: response.data.country || ''
+                    },
+                    agency: response.data.description || '',
+                    contact: {
+                        email: response.data.email || '',
+                        website: response.data.website || '',
+                        github: response.data.github || '',
+                        linkedin: response.data.linkedin || '',
+                        instagram: response.data.instagram || ''
+                    }
+                });
+            } catch (err) {
+                setError(err.message);
+                console.error('Error:', err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
 
-    if (!userData) {
-        return null;
-    }
+        if (userId) {
+            fetchUserData();
+        }
+    }, [userId]);
 
     const handleChange = (e, section, subsection = null) => {
         if (subsection) {
@@ -66,9 +80,21 @@ const UserInfoContainer = ({ userData }) => {
         setIsEditing(false);
     };
 
-    if (isEditing) {
-        return (
-            <section id="profile" className="section-profile">
+    if (isLoading) {
+        return <div>Loading user information...</div>;
+    }
+
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
+
+    if (!userData) {
+        return null;
+    }
+
+    return (
+        <section id="profile" className="section-profile">
+            {isEditing ? (
                 <form onSubmit={handleSubmit} className="profile-form">
                     <div className="profile-container">
                         <div className="location-block">
@@ -137,78 +163,79 @@ const UserInfoContainer = ({ userData }) => {
                         </button>
                     </div>
                 </form>
-            </section>
-        );
-    }
+            ) : (
+                <>
+                    <div className="profile-container">
+                        <div className="location-block">
+                            <h3>LOCATION</h3>
+                            <address>
+                                {profileData.location.city && <p>{profileData.location.city}</p>}
+                                {profileData.location.country && <p>{profileData.location.country}</p>}
+                            </address>
+                        </div>
 
-    return (
-        <section id="profile" className="section-profile">
-            <div className="profile-container">
-                <div className="location-block">
-                    <h3>LOCATION</h3>
-                    <address>
-                        {profileData.location.city && <p>{profileData.location.city}</p>}
-                        {profileData.location.country && <p>{profileData.location.country}</p>}
-                    </address>
-                </div>
+                        <div className="agency-block">
+                            <h3>DESCRIPTION</h3>
+                            {profileData.agency ? <p>{profileData.agency}</p> : <p>No description provided</p>}
+                        </div>
 
-                <div className="agency-block">
-                    <h3>DESCRIPTION</h3>
-                    {profileData.agency ? <p>{profileData.agency}</p> : <p>No description provided</p>}
-                </div>
-
-                <div className="contact-block">
-                    <h3>CONTACT</h3>
-                    <div className="contact-info">
-                        <div className="contact-row">
-                            <span className="label">Email</span>
-                            {profileData.contact.email ?
-                                <a href={`mailto:${profileData.contact.email}`}>{profileData.contact.email}</a> :
-                                <span className="empty-field">No email provided</span>
-                            }
-                        </div>
-                        <div className="contact-row">
-                            <span className="label">Website</span>
-                            {profileData.contact.website ?
-                                <a href={`https://${profileData.contact.website}`} target="_blank" rel="noopener noreferrer">
-                                    {profileData.contact.website}
-                                </a> :
-                                <span className="empty-field">No website provided</span>
-                            }
-                        </div>
-                        <div className="contact-row">
-                            <span className="label">Github</span>
-                            {profileData.contact.github ?
-                                <a href={`https://github.com/${profileData.contact.github}`} target="_blank" rel="noopener noreferrer">
-                                    {profileData.contact.github}
-                                </a> :
-                                <span className="empty-field">No Github provided</span>
-                            }
-                        </div>
-                        <div className="contact-row">
-                            <span className="label">Linkedin</span>
-                            {profileData.contact.linkedin ?
-                                <a href={`https://linkedin.com/in/${profileData.contact.linkedin}`} target="_blank" rel="noopener noreferrer">
-                                    {profileData.contact.linkedin}
-                                </a> :
-                                <span className="empty-field">No Linkedin provided</span>
-                            }
-                        </div>
-                        <div className="contact-row">
-                            <span className="label">Instagram</span>
-                            {profileData.contact.instagram ?
-                                <a href={`https://instagram.com/${profileData.contact.instagram}`} target="_blank" rel="noopener noreferrer">
-                                    {profileData.contact.instagram}
-                                </a> :
-                                <span className="empty-field">No Instagram provided</span>
-                            }
+                        <div className="contact-block">
+                            <h3>CONTACT</h3>
+                            <div className="contact-info">
+                                <div className="contact-row">
+                                    <span className="label">Email</span>
+                                    {profileData.contact.email ?
+                                        <a href={`mailto:${profileData.contact.email}`}>{profileData.contact.email}</a> :
+                                        <span className="empty-field">No email provided</span>
+                                    }
+                                </div>
+                                <div className="contact-row">
+                                    <span className="label">Website</span>
+                                    {profileData.contact.website ?
+                                        <a href={`https://${profileData.contact.website}`} target="_blank" rel="noopener noreferrer">
+                                            {profileData.contact.website}
+                                        </a> :
+                                        <span className="empty-field">No website provided</span>
+                                    }
+                                </div>
+                                <div className="contact-row">
+                                    <span className="label">Github</span>
+                                    {profileData.contact.github ?
+                                        <a href={`https://github.com/${profileData.contact.github}`} target="_blank" rel="noopener noreferrer">
+                                            {profileData.contact.github}
+                                        </a> :
+                                        <span className="empty-field">No Github provided</span>
+                                    }
+                                </div>
+                                <div className="contact-row">
+                                    <span className="label">Linkedin</span>
+                                    {profileData.contact.linkedin ?
+                                        <a href={`https://linkedin.com/in/${profileData.contact.linkedin}`} target="_blank" rel="noopener noreferrer">
+                                            {profileData.contact.linkedin}
+                                        </a> :
+                                        <span className="empty-field">No Linkedin provided</span>
+                                    }
+                                </div>
+                                <div className="contact-row">
+                                    <span className="label">Instagram</span>
+                                    {profileData.contact.instagram ?
+                                        <a href={`https://instagram.com/${profileData.contact.instagram}`} target="_blank" rel="noopener noreferrer">
+                                            {profileData.contact.instagram}
+                                        </a> :
+                                        <span className="empty-field">No Instagram provided</span>
+                                    }
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <button className="edit-button" onClick={() => setIsEditing(true)}>
-                <EditIcon />
-            </button>
+
+                    <button className="edit-button" onClick={() => setIsEditing(true)}>
+                        Edit Profile
+                    </button>
+                </>
+            )}
+
+        
         </section>
     );
 };
