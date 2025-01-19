@@ -75,7 +75,7 @@ function NavBar() {
 
                 <div className='logo-section'>
                     <Link onClick={resetFilters} to="/">
-                        <img src="/images/59C5B3B8-3718-42B1-AFAD-F82AF582B5BF.PNG" alt="Logo" />
+                        <img src="/images/gato.jpg" alt="Logo" />
                     </Link>
                 </div>
                 {/* 

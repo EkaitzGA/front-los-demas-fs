@@ -26,7 +26,7 @@ export const users = [
     lastname: "Grado",
     username: "JGrado",
     email: "jonathan.grado@gmail.com",
-    specialization: "Front-end", 
+    specialization: "Frontend", 
 
     password: "$2a$10$du120xiAmKKgM6v0VWs0b.cO17E5RlNPCw2xXCRGF7Tmoj6DRT1ga",
     website: "www.jonathangrado.dev",
@@ -48,7 +48,7 @@ export const users = [
     lastname: "User",
     username: "anotheruser",
     email: "anotheruser@gmail.com",
-    specialization: "Back-end", 
+    specialization: "Backend", 
 
     password: "$2a$10$du120xiAmKKgM6v0VWs0b.cO17E5RlNPCw2xXCRGF7Tmoj6DRT1ga", // Puedes cambiar la contraseña si es necesario
     website: "https://anotheruserportfolio.com",
@@ -136,7 +136,7 @@ export const users = [
     lastname: "Lee",
     username: "daniellee",
     email: "daniellee@gmail.com",
-    specialization: "Full-stack", 
+    specialization: "Fullstack", 
 
     password: "$2a$10$du120xiAmKKgM6v0VWs0b.cO17E5RlNPCw2xXCRGF7Tmoj6DRT1ga", // Puedes cambiar la contraseña si es necesario
     website: "https://bytebites.com",
@@ -158,7 +158,7 @@ export const users = [
     lastname: "Martinez",
     username: "isabellam",
     email: "isabella.m@example.com",
-    specialization: "Front-end", 
+    specialization: "Frontend", 
 
     password: "$2a$10$du120xiAmKKgM6v0VWs0b.cO17E5RlNPCw2xXCRGF7Tmoj6DRT1ga", // Puedes cambiar la contraseña si es necesario
     website: "https://isabellam.com",
@@ -180,7 +180,7 @@ export const users = [
     lastname: "Brown",
     username: "subaruFan",
     email: "chris@subaru.com",
-    specialization: "Front-end", 
+    specialization: "Frontend", 
 
     password: "$2a$10$du120xiAmKKgM6v0VWs0b.cO17E5RlNPCw2xXCRGF7Tmoj6DRT1ga", // Cambia la contraseña si es necesario
     website: "www.subaru.com",
@@ -202,7 +202,7 @@ export const users = [
     lastname: "Wilson",
     username: "trafikoUser",
     email: "olivia@trafiko.com",
-    specialization: "Back-end", 
+    specialization: "Backend", 
 
     password: "$2a$10$du120xiAmKKgM6v0VWs0b.cO17E5RlNPCw2xXCRGF7Tmoj6DRT1ga", // Cambia la contraseña si es necesario
     website: "www.trafiko.com",
@@ -224,7 +224,7 @@ export const users = [
     lastname: "Davis",
     username: "sinverguenzaUser",
     email: "james@sinverguenza.com",
-    specialization: "Full-stack", 
+    specialization: "Fullstack", 
 
     password: "$2a$10$du120xiAmKKgM6v0VWs0b.cO17E5RlNPCw2xXCRGF7Tmoj6DRT1ga", // Cambia la contraseña si es necesario
     website: "www.sinverguenza.com",

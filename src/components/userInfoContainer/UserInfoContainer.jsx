@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+
 import { getUserById } from '../../utils/api/fetch';
+
 
 const UserInfoContainer = ({ userId }) => {
     const [isEditing, setIsEditing] = useState(false);
@@ -155,9 +157,9 @@ const UserInfoContainer = ({ userId }) => {
                         </div>
                     </div>
                     <div className="form-actions">
-                        <button type="submit" className="save-button">Save</button>
+                        <button type="submit" className="save-button"> <CheckIcon /></button>
                         <button type="button" className="cancel-button" onClick={() => setIsEditing(false)}>
-                            Cancel
+                            <CloseIcon />
                         </button>
                     </div>
                 </form>
@@ -226,11 +228,14 @@ const UserInfoContainer = ({ userId }) => {
                             </div>
                         </div>
                     </div>
+
                     <button className="edit-button" onClick={() => setIsEditing(true)}>
                         Edit Profile
                     </button>
                 </>
             )}
+
+        
         </section>
     );
 };
