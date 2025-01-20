@@ -44,8 +44,9 @@ const LoginForm = ({ onToggle }) => {
                 const response = await login(formData.email, formData.password);
                 
                 if (response.success) {
-                    const { token } = response.data;
+                    const { token, userId } = response.data;
                     localStorage.setItem('token', token);
+                    localStorage.setItem('userId', userId);
                     setSuccessMessage('Inicio de sesión exitoso');
                     setFormData({
                         email: '',
