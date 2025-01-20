@@ -1,19 +1,19 @@
 import { useLoaderData, useNavigate, Link } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import { io } from "socket.io-client";
-import ChatErrorBoundary from '../../components/chat/ErrorBoundary';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ChatErrorBoundary from "../../components/chat/ErrorBoundary";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import "./Chat.css";
+import { jwtDecode } from "jwt-decode";
 
 function ChatRoom() {
   const navigate = useNavigate();
   let loaderData;
-  
+
   try {
     loaderData = useLoaderData();
-    console.log('Loader data:', loaderData);
   } catch (error) {
-    console.error('Error loading chat data:', error);
+    console.error("Error loading chat data:", error);
     return <ChatErrorBoundary error={error} />;
   }
 
@@ -28,48 +28,63 @@ function ChatRoom() {
   const typingTimeoutRef = useRef(null);
   const socketRef = useRef(null);
 
-  const token = localStorage.getItem('token');
-  const userId = localStorage.getItem('userId');
-  const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3002';
+  const token = localStorage.getItem("token");
+  const getUserId = () => {
+    console.log("token: ", token);
+    const decoded = jwtDecode(token);
+    console.log("decoded token: ", decoded);
+    return decoded?.id || null;
+  };
+  const userId = getUserId();
+
+  const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3002";
 
   const getOtherParticipantName = () => {
-    if (!initialChat || !userId) return 'Usuario';
-    
+    if (!initialChat || !userId) return "Usuario";
     try {
-      if (initialChat.owner && initialChat.owner._id === userId && initialChat.client) {
+      if (
+        initialChat.owner &&
+        initialChat.owner._id === userId &&
+        initialChat.client
+      ) {
         const clientName = [
-          initialChat.client.name || '',
-          initialChat.client.lastname || ''
-        ].filter(Boolean).join(' ');
-        return clientName || 'Cliente';
+          initialChat.client.name || "",
+          initialChat.client.lastname || "",
+        ]
+          .filter(Boolean)
+          .join(" ");
+        return clientName || "Cliente";
       } else if (initialChat.owner) {
         const ownerName = [
-          initialChat.owner.name || '',
-          initialChat.owner.lastname || ''
-        ].filter(Boolean).join(' ');
-        return ownerName || 'Propietario';
+          initialChat.owner.name || "",
+          initialChat.owner.lastname || "",
+        ]
+          .filter(Boolean)
+          .join(" ");
+        return ownerName || "Propietario";
       }
     } catch (error) {
-      console.error('Error getting participant name:', error);
+      console.error("Error getting participant name:", error);
     }
-    
-    return 'Usuario';
+
+    return "Usuario";
   };
 
   const formatDate = () => {
     try {
       const now = new Date();
-      const options = { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
+      const options = {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
       };
-      return now.toLocaleDateString('es-ES', options)
+      return now
+        .toLocaleDateString("es-ES", options)
         .replace(/^\w/, (c) => c.toUpperCase());
     } catch (error) {
-      console.error('Error formatting date:', error);
-      return '';
+      console.error("Error formatting date:", error);
+      return "";
     }
   };
 
@@ -77,7 +92,7 @@ function ChatRoom() {
     try {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     } catch (error) {
-      console.error('Error scrolling to bottom:', error);
+      console.error("Error scrolling to bottom:", error);
     }
   };
 
@@ -87,12 +102,12 @@ function ChatRoom() {
 
   useEffect(() => {
     if (!token) {
-      navigate('/auth');
+      navigate("/auth");
       return;
     }
 
     if (!initialChat?._id) {
-      console.error('No chat ID available');
+      console.error("No chat ID available");
       return;
     }
 
@@ -100,33 +115,36 @@ function ChatRoom() {
       socketRef.current = io(baseUrl, {
         auth: { token },
         withCredentials: true,
-        transports: ['polling', 'websocket'],
+        transports: ["polling", "websocket"],
         forceNew: false,
         reconnectionAttempts: 5,
         reconnectionDelay: 1000,
-        timeout: 10000
+        timeout: 10000,
       });
 
-      socketRef.current.on('connect', () => {
-        console.log('Socket conectado en ChatRoom');
+      socketRef.current.on("connect", () => {
+        console.log("Socket conectado en ChatRoom");
         setConnected(true);
         socketRef.current.emit("register-socket", userId);
         socketRef.current.emit("join-chat", initialChat._id);
       });
 
-      socketRef.current.on('connect_error', (error) => {
-        console.error('Error de conexión socket:', error);
-        setError('Error de conexión. Reconectando...');
+      socketRef.current.on("connect_error", (error) => {
+        console.error("Error de conexión socket:", error);
+        setError("Error de conexión. Reconectando...");
       });
 
       socketRef.current.on("private-message", (data) => {
         if (data.sender !== userId) {
-          setMessages(prev => [...prev, {
-            message: data.message,
-            sender: data.sender,
-            timestamp: data.timestamp || new Date().toISOString(),
-            read: false
-          }]);
+          setMessages((prev) => [
+            ...prev,
+            {
+              message: data.message,
+              sender: data.sender,
+              timestamp: data.timestamp || new Date().toISOString(),
+              read: false,
+            },
+          ]);
         }
       });
 
@@ -137,8 +155,8 @@ function ChatRoom() {
         }
       });
 
-      socketRef.current.on('disconnect', () => {
-        console.log('Socket desconectado');
+      socketRef.current.on("disconnect", () => {
+        console.log("Socket desconectado");
         setConnected(false);
       });
 
@@ -149,8 +167,8 @@ function ChatRoom() {
         }
       };
     } catch (error) {
-      console.error('Error setting up socket connection:', error);
-      setError('Error al establecer la conexión');
+      console.error("Error setting up socket connection:", error);
+      setError("Error al establecer la conexión");
     }
   }, [initialChat?._id, userId, navigate, token, baseUrl]);
 
@@ -169,20 +187,20 @@ function ChatRoom() {
   const handleSendMessage = async (e) => {
     e.preventDefault();
     const messageText = e.target.message.value.trim();
-    
+
     if (!messageText || loading) return;
-    
+
     setLoading(true);
     try {
       const response = await fetch(`${baseUrl}/chats/${initialChat._id}`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          message: messageText
-        })
+          message: messageText,
+        }),
       });
 
       const data = await response.json();
@@ -199,7 +217,7 @@ function ChatRoom() {
             message: messageText,
             sender: userId,
             chatId: initialChat._id,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           });
         }
 
@@ -207,8 +225,8 @@ function ChatRoom() {
         inputRef.current?.focus();
       }
     } catch (error) {
-      console.error('Error sending message:', error);
-      setError(error.message || 'Error al enviar mensaje');
+      console.error("Error sending message:", error);
+      setError(error.message || "Error al enviar mensaje");
       setTimeout(() => setError(null), 3000);
     } finally {
       setLoading(false);
@@ -232,7 +250,7 @@ function ChatRoom() {
     );
   }
 
-  const projectName = initialChat?.project?.name || 'Chat';
+  const projectName = initialChat?.project?.name || "Chat";
   const otherParticipantName = getOtherParticipantName();
 
   return (
@@ -256,14 +274,16 @@ function ChatRoom() {
           <div
             key={index}
             className={`message ${
-              msg.sender && msg.sender.toString() === userId ? 'message-sent' : 'message-received'
+              msg.sender && msg.sender.toString() === userId
+                ? "message-sent"
+                : "message-received"
             }`}
           >
             <div className="message-content">{msg.message}</div>
             <div className="message-timestamp">
-              {new Date(msg.timestamp).toLocaleTimeString([], { 
-                hour: '2-digit', 
-                minute: '2-digit' 
+              {new Date(msg.timestamp).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
               })}
             </div>
           </div>
@@ -288,12 +308,12 @@ function ChatRoom() {
             disabled={loading || !connected}
             onChange={handleTyping}
           />
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="send-button-dsk"
             disabled={loading || !connected}
           >
-            {loading ? 'Enviando...' : 'Enviar'}
+            {loading ? "Enviando..." : "Enviar"}
           </button>
         </form>
       </div>

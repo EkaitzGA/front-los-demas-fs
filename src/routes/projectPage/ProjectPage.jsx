@@ -7,6 +7,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ChatIcon from '@mui/icons-material/Chat';
 import { createChat } from '../../utils/api/fetch';
 import './ProjectPage.css';
+import {jwtDecode }from 'jwt-decode';
 
 function ProjectPage() {
     const navigate = useNavigate();
@@ -38,11 +39,24 @@ function ProjectPage() {
             fetchProject();
         }
     }, [_id]);
-    const userId = localStorage.getItem('userId');
+    const getUserId = () => {
+        const token = localStorage.getItem(`token`);
+        if(!token) return null;
+
+        try {
+            const decoded = jwtDecode(token)
+            return decoded?.id || null;
+            
+        } catch (error) {
+            return null
+        }
+    }
+    const userId = getUserId(); 
 
     const handleCreateChat = async () => {
         try {
             if (!userId) {
+                console.log("Es por esto")
                 navigate('/auth');
                 return;
             }
