@@ -1,0 +1,18 @@
+.new-project-button {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f5f5f5;
+    border: 2px dashed #ccc;
+    transition: all 0.3s ease;
+    /* min-height: 300px; */
+    aspect-ratio: 16/9;
+    width: 100%;
+
+}
+
+.new-project-button:hover {
+    background-color: #eeeeee;
+    border-color: #999;
+}

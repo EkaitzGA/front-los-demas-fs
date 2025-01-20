@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import './ClientProfile.css';
 import UserInfoContainer from '../../components/userInfoContainer/UserInfoContainer';
 import ProjectsGridContainer from '../../components/projectsGridContainer/ProjectsGridContainer';
+import MyNetwork from './MyNetwork';
 import { getUserById } from '../../utils/api/fetch';
 import WindowIcon from '@mui/icons-material/Window';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -29,6 +30,7 @@ const ClientProfile = () => {
     const { id } = useParams();
     const [userData, setUserData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [activeSection, setActiveSection] = useState('my-projects');
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -66,6 +68,19 @@ const ClientProfile = () => {
         }
     };
 
+    const renderSection = () => {
+        switch (activeSection) {
+            case 'my-projects':
+                return <ProjectsGridContainer userId={id} />;
+            case 'my-favorites':
+                return <ProjectsGridContainer userId={id} projectsData={userData?.projectlike} isFavorites={true} />;
+            case 'my-network':
+                return <MyNetwork userData={userData} />;
+            default:
+                return <ProjectsGridContainer userId={id} />;
+        }
+    };
+
     if (isLoading) {
         return <div className="client-profile-container">Loading...</div>;
     }
@@ -77,18 +92,27 @@ const ClientProfile = () => {
             <UserHeader userData={userData} />
             <UserInfoContainer userData={userData} />
 
-            <div className="profile-options">
-                <div className="my-projects-option">
-                    <button><WindowIcon /></button>
-                </div>
-                <div className="my-favorites-option">
-                    <button><FavoriteBorderIcon /></button>
-                </div>
-                <div className="my-network-option">
-                    <button><GroupsIcon /></button>
-                </div>
+            <div className="profile-navigation">
+                <button
+                    className={`nav-button ${activeSection === 'my-projects' ? 'active' : ''}`}
+                    onClick={() => setActiveSection('my-projects')}
+                >
+                    <WindowIcon />
+                </button>
+                <button
+                    className={`nav-button ${activeSection === 'my-favorites' ? 'active' : ''}`}
+                    onClick={() => setActiveSection('my-favorites')}
+                >
+                    <FavoriteBorderIcon />
+                </button>
+                <button
+                    className={`nav-button ${activeSection === 'my-network' ? 'active' : ''}`}
+                    onClick={() => setActiveSection('my-network')}
+                >
+                    <GroupsIcon />
+                </button>
             </div>
-            <ProjectsGridContainer userId={id} />
+            {renderSection()}
         </div>
     );
 };
