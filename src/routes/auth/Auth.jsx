@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { login, register } from '../../utils/api/fetch';  // Importamos las funciones de la API
+import { login, register } from '../../utils/api/fetch';  
 import './Login.css';
 import './Register.css';
 

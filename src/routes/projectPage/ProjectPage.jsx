@@ -1,6 +1,6 @@
+import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-import { projects } from '../../data/projects';
+import { getProjectsById } from '../../utils/api/fetch';
 import { getRelativeTime } from '../../utils/dateUtils';
 import { useFilters } from '../../context/FilterProvider';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -11,9 +11,33 @@ import './ProjectPage.css';
 function ProjectPage() {
     const navigate = useNavigate();
     const { _id } = useParams();
-    const [loading, setLoading] = useState(false);
-    const project = projects.find(p => p._id === _id);
+   
     const { setSelectedFilters } = useFilters();
+    const [project, setProject] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchProject = async () => {
+            setIsLoading(true);
+            try {
+                const response = await getProjectsById(_id);
+                if (!response.success) {
+                    throw new Error('Project not found');
+                }
+                setProject(response.data);
+            } catch (err) {
+                setError(err.message);
+                console.error('Error fetching project:', err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        if (_id) {
+            fetchProject();
+        }
+    }, [_id]);
     const userId = localStorage.getItem('userId');
 
     const handleCreateChat = async () => {
@@ -63,7 +87,11 @@ function ProjectPage() {
         }));
     };
 
-    if (!project) {
+    if (isLoading) {
+        return <div>Loading project...</div>;
+    }
+
+    if (error || !project) {
         return <div>Proyecto no encontrado</div>;
     }
 
@@ -81,7 +109,7 @@ function ProjectPage() {
                 <button onClick={() => navigate(-1)}>BACK</button>
             </div>
             <div className='first-line-dsk'>
-                <h1>{projectName} by {ownerName} {ownerLastname}</h1>
+                <h1>{project.name} by {project.owner?.name} {project.owner?.lastname}</h1>
             </div>
 
             <div className='left-column-first-line'>
@@ -150,7 +178,7 @@ function ProjectPage() {
                 <div>
                     <h5>CREATOR</h5>
                     <Link to={`/myprofile/${project.owner?._id}`}>
-                        <p>{ownerName} {ownerLastname}</p>
+                        <p>{project.owner?.name} {project.owner?.lastname}</p>
                     </Link>
                     {userId && project.owner && userId !== project.owner._id && (
                         <button 
