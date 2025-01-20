@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-
+import EditIcon from '@mui/icons-material/Edit';
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
 import { getUserById } from '../../utils/api/fetch';
 
 
@@ -230,7 +232,7 @@ const UserInfoContainer = ({ userId }) => {
                     </div>
 
                     <button className="edit-button" onClick={() => setIsEditing(true)}>
-                        Edit Profile
+                        <EditIcon />
                     </button>
                 </>
             )}
