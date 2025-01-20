@@ -1,48 +1,44 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { getUserChats } from '../../utils/api/fetch';
-import './ChatsList.css';
-import {jwtDecode} from "jwt-decode"
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { getUserChats } from "../../utils/api/fetch";
+import "./ChatsList.css";
+import { jwtDecode } from "jwt-decode";
 
 function ChatsList() {
   const navigate = useNavigate();
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const token = localStorage.getItem('token')
-  const getUserId = () => {
-      console.log("token: ", token);
-      const decoded = jwtDecode(token);
-      console.log("decoded token: ", decoded);
-      return decoded?.id || null;
-    };
-    const userId = getUserId();
-  
+
+  const userId = localStorage.getItem("userId");
+
   useEffect(() => {
     const fetchChats = async () => {
       try {
         setLoading(true);
-        console.log('Fetching chats for user:', userId);
-        
+        console.log("Fetching chats for user:", userId);
+
         if (!userId) {
-          navigate('/auth');
+          navigate("/auth");
           return;
         }
 
         const response = await getUserChats(userId);
-        console.log('Response from getUserChats:', response);
+        console.log("Response from getUserChats:", response);
 
         if (response.success && response.data) {
           // Asegurarnos de que data es un array
           const chatsArray = Array.isArray(response.data) ? response.data : [];
-          console.log('Setting chats:', chatsArray);
+          console.log("Setting chats:", chatsArray);
           setChats(chatsArray);
         } else {
-          throw new Error(response.message || 'No se pudieron cargar los chats');
+          throw new Error(
+            response.message || "No se pudieron cargar los chats"
+          );
         }
       } catch (error) {
-        console.error('Error fetching chats:', error);
-        setError(error.message || 'Error al cargar los chats');
+        console.error("Error fetching chats:", error);
+        setError(error.message || "Error al cargar los chats");
       } finally {
         setLoading(false);
       }
@@ -72,29 +68,31 @@ function ChatsList() {
   return (
     <div className="chats-list-container">
       <h2>Mis Conversaciones</h2>
-      
+
       <div className="chats-grid">
         {chats.length === 0 ? (
           <p className="no-chats">No tienes conversaciones activas</p>
         ) : (
-          chats.map(chat => (
-            <Link 
-              to={`/chats/${chat._id}`} 
-              key={chat._id} 
+          chats.map((chat) => (
+            <Link
+              to={`/chats/${chat._id}`}
+              key={chat._id}
               className="chat-card"
             >
               <div className="chat-card-header">
-                <h3>{chat.project?.name || 'Proyecto sin nombre'}</h3>
+                <h3>{chat.project?.name || "Proyecto sin nombre"}</h3>
                 <span className="participant-name">
                   {chat.owner?._id === userId
-                    ? `${chat.client?.name || ''} ${chat.client?.lastname || ''}`
-                    : `${chat.owner?.name || ''} ${chat.owner?.lastname || ''}`}
+                    ? `${chat.client?.name || ""} ${
+                        chat.client?.lastname || ""
+                      }`
+                    : `${chat.owner?.name || ""} ${chat.owner?.lastname || ""}`}
                 </span>
               </div>
               <p className="last-message">
-                {chat.messages?.length > 0 
-                  ? chat.messages[chat.messages.length - 1].message 
-                  : 'No hay mensajes'}
+                {chat.messages?.length > 0
+                  ? chat.messages[chat.messages.length - 1].message
+                  : "No hay mensajes"}
               </p>
               <div className="chat-card-footer">
                 <span className="message-count">
