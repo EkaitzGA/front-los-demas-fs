@@ -2,14 +2,22 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getUserChats } from '../../utils/api/fetch';
 import './ChatsList.css';
+import {jwtDecode} from "jwt-decode"
 
 function ChatsList() {
   const navigate = useNavigate();
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const userId = localStorage.getItem('userId');
-
+  const token = localStorage.getItem('token')
+  const getUserId = () => {
+      console.log("token: ", token);
+      const decoded = jwtDecode(token);
+      console.log("decoded token: ", decoded);
+      return decoded?.id || null;
+    };
+    const userId = getUserId();
+  
   useEffect(() => {
     const fetchChats = async () => {
       try {
