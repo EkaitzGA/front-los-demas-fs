@@ -31,9 +31,7 @@ function ChatRoom() {
 
   const token = localStorage.getItem("token");
   const getUserId = () => {
-    console.log("token: ", token);
     const decoded = jwtDecode(token);
-    console.log("decoded token: ", decoded);
     return decoded?.id || null;
   };
   const userId = getUserId();
@@ -54,7 +52,7 @@ function ChatRoom() {
           initialChat.owner.name || "",
           initialChat.owner.lastname || "",
         ].filter(Boolean).join(" ");
-        return ownerName || "Propietario";
+        return ownerName;
       }
     } catch (error) {
       console.error("Error getting participant name:", error);
@@ -86,6 +84,27 @@ function ChatRoom() {
       console.error("Error scrolling to bottom:", error);
     }
   };
+
+  useEffect(() => {
+    const markAsRead = async () => {
+      if (!initialChat?._id || !userId) return;
+
+      try {
+        await fetch(`${baseUrl}/chats/${initialChat._id}/read`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ userId })
+        });
+      } catch (error) {
+        console.error('Error marking messages as read:', error);
+      }
+    };
+
+    markAsRead();
+  }, [initialChat?._id, userId, token, baseUrl]);
 
   useEffect(() => {
     scrollToBottom();
@@ -125,31 +144,26 @@ function ChatRoom() {
         setError("Error de conexión. Reconectando...");
       });
 
-      
-
       socketRef.current.on("private-message", (data) => {
-        console.log('Received message:', data);
-              
-        setMessages(prev => {
-          // Verificar si el mensaje ya existe en los mensajes actuales
-          const messageExists = prev.some(msg => 
-            msg.message === data.message && 
-            msg.sender === data.sender && 
-            new Date(msg.timestamp).getTime() === new Date(data.timestamp).getTime()
-          );
-                  
-          if (!messageExists) {
-            // Si el mensaje no existe, lo añadimos
-            const newMessage = {
-              message: data.message,
-              sender: data.sender,
-              timestamp: data.timestamp || new Date().toISOString(),
-              read: false
-            };
-            return [...prev, newMessage];
-          }
-          return prev;
-        });
+        if (data.sender !== userId) {
+          setMessages(prev => {
+            const messageExists = prev.some(msg => 
+              msg.message === data.message && 
+              String(msg.sender) === String(data.sender) && 
+              Math.abs(new Date(msg.timestamp).getTime() - new Date(data.timestamp).getTime()) < 1000
+            );
+            
+            if (!messageExists) {
+              return [...prev, {
+                message: data.message,
+                sender: data.sender,
+                timestamp: data.timestamp || new Date().toISOString(),
+                read: false
+              }];
+            }
+            return prev;
+          });
+        }
       });
 
       socketRef.current.on("user-typing", ({ userId: typingUserId }) => {
@@ -175,7 +189,6 @@ function ChatRoom() {
       setError("Error al establecer la conexión");
     }
   }, [initialChat?._id, userId, navigate, token, baseUrl]);
-  
 
   const handleTyping = () => {
     if (typingTimeoutRef.current) {
@@ -197,53 +210,69 @@ function ChatRoom() {
     
     setLoading(true);
     try {
-      const messageData = {
-        message: messageText,
-        sender: userId,
-        timestamp: new Date().toISOString(),
-        read: false
-      };
-  
-      // Añadir el mensaje localmente primero
-      setMessages(prev => [...prev, messageData]);
-  
-      // Emitir el mensaje por socket
-      if (socketRef.current?.connected) {
-        socketRef.current.emit("private-message", {
-          ...messageData,
-          chatId: initialChat._id,
+        // Primero guardamos en la base de datos
+        const response = await fetch(`${baseUrl}/chats/${initialChat._id}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: messageText
+            })
         });
-      }
-  
-      // Guardar en la base de datos
-      const response = await fetch(`${baseUrl}/chats/${initialChat._id}`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          message: messageText
-        })
-      });
-  
-      const data = await response.json();
-      if (!response.ok || !data.success) {
-        throw new Error(data.message || `Error: ${response.status}`);
-      }
-  
-      e.target.reset();
-      inputRef.current?.focus();
-    } catch (error) {
-      console.error('Error sending message:', error);
-      setError(error.message || 'Error al enviar mensaje');
-      setTimeout(() => setError(null), 3000);
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  
+        const data = await response.json();
+        if (!response.ok || !data.success) {
+            throw new Error(data.message || `Error: ${response.status}`);
+        }
+
+        // Si el guardado fue exitoso, actualizamos el estado local
+        const messageData = {
+            message: messageText,
+            sender: userId,
+            timestamp: new Date().toISOString(),
+            read: false
+        };
+
+        setMessages(prev => [...prev, messageData]);
+
+        // Y enviamos por socket a los demás usuarios
+        if (socketRef.current?.connected) {
+            socketRef.current.emit("private-message", {
+                ...messageData,
+                chatId: initialChat._id,
+            });
+        }
+
+        e.target.reset();
+        inputRef.current?.focus();
+    } catch (error) {
+        console.error('Error sending message:', error);
+        setError(error.message || 'Error al enviar mensaje');
+        setTimeout(() => setError(null), 3000);
+    } finally {
+        setLoading(false);
+    }
+};
+
+  if (!initialChat) {
+    return (
+      <div className="loading-container">
+        <p>Cargando chat...</p>
+      </div>
+    );
+  }
+
+  if (!connected) {
+    return (
+      <div className="connecting-message">
+        Conectando al chat...
+        {error && <p className="connection-error">{error}</p>}
+      </div>
+    );
+  }
+
   const projectName = initialChat?.project?.name || "Chat";
   const otherParticipantName = getOtherParticipantName();
 
@@ -265,13 +294,7 @@ function ChatRoom() {
 
       <div className="chat-messages-dsk">
         {messages.map((msg, index) => {
-          const isOwnMessage = msg.sender?.toString() === userId?.toString();
-          console.log('Message comparison:', {
-            msgSender: msg.sender,
-            userId,
-            isOwnMessage
-          });
-          
+          const isOwnMessage = String(msg.sender) === String(userId);
           return (
             <div
               key={index}
