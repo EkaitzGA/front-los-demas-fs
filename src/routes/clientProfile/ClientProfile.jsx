@@ -4,6 +4,9 @@ import './ClientProfile.css';
 import UserInfoContainer from '../../components/userInfoContainer/UserInfoContainer';
 import ProjectsGridContainer from '../../components/projectsGridContainer/ProjectsGridContainer';
 import { getUserById } from '../../utils/api/fetch';
+import WindowIcon from '@mui/icons-material/Window';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import GroupsIcon from '@mui/icons-material/Groups';
 
 const UserHeader = ({ userData }) => (
     <section id="heading" className="section-heading">
@@ -17,8 +20,8 @@ const UserHeader = ({ userData }) => (
                 ? `${userData.username} / ${userData.name} ${userData.lastname}`
                 : 'Usuario no encontrado'
             }
-        </h1>  
-        <h4>{userData.specialization} </h4>  
+        </h1>
+        <h4>{userData.specialization} </h4>
     </section>
 );
 
@@ -73,6 +76,18 @@ const ClientProfile = () => {
 
             <UserHeader userData={userData} />
             <UserInfoContainer userData={userData} />
+
+            <div className="profile-options">
+                <div className="my-projects-option">
+                    <button><WindowIcon /></button>
+                </div>
+                <div className="my-favorites-option">
+                    <button><FavoriteBorderIcon /></button>
+                </div>
+                <div className="my-network-option">
+                    <button><GroupsIcon /></button>
+                </div>
+            </div>
             <ProjectsGridContainer userId={id} />
         </div>
     );
