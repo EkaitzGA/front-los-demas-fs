@@ -18,11 +18,11 @@ const UserHeader = ({ userData }) => (
         </div>
         <h1>
             {userData?.username
-                ? `${userData.username} / ${userData.name} ${userData.lastname}`
+                ? `${userData.username} | ${userData.name} ${userData.lastname}`
                 : 'Usuario no encontrado'
             }
         </h1>
-        <h4>{userData.specialization} </h4>
+        <h4 className='specialization-profile'>{userData.specialization} </h4>
     </section>
 );
 
@@ -112,7 +112,9 @@ const ClientProfile = () => {
                     <GroupsIcon />
                 </button>
             </div>
-            {renderSection()}
+            <div className="section-content"> 
+                {renderSection()}
+            </div>
         </div>
     );
 };
