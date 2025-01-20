@@ -13,3 +13,5 @@ En la página users habría que modificar la caja de búsqueda para que no sea u
 
  en la sección de ProjectPage debe habe un botón para editar cada proyecto. 
 
+ ARREGLAR LA REDIRECCIÓN DEL LOGIN
+
