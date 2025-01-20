@@ -1,10 +1,12 @@
+import {jwtDecode }from 'jwt-decode';
+
 const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
 async function fetchData(route, method = 'GET', data = null) {
     try {
         let url = new URL(route, BASE_URL);
         const token = localStorage.getItem('token');
-        
+
         const fetchOptions = {
             method,
             headers: {
@@ -84,7 +86,7 @@ async function getUserChats(userId) {
         }
 
         console.log('Fetching chats for user:', userId);
-        
+
         // Usando la ruta correcta
         const response = await fetch(`${BASE_URL}/chats/user/${userId}`, {
             headers: {
@@ -117,7 +119,7 @@ async function getUserChats(userId) {
 async function getAllChatsByUser(userId) {
     try {
         console.log('Getting chats for user:', userId);
-        
+
         if (!userId) {
             throw new Error('UserId es requerido');
         }
@@ -128,10 +130,10 @@ async function getAllChatsByUser(userId) {
                 { client: userId }
             ]
         })
-        .populate('owner', '-password')
-        .populate('client', '-password')
-        .populate('project')
-        .sort({ updatedAt: -1 });
+            .populate('owner', '-password')
+            .populate('client', '-password')
+            .populate('project')
+            .sort({ updatedAt: -1 });
 
         console.log(`Found ${chats.length} chats for user ${userId}`);
         return chats;
@@ -155,13 +157,21 @@ async function checkExistingChat(projectId) {
     }
 }
 
+
 async function createChat(projectId, ownerId) {
     try {
         if (!projectId || !ownerId) {
             throw new Error('ProjectId y ownerId son requeridos');
         }
 
-        const userId = localStorage.getItem('userId');
+        const getUserId = () => {
+            const token = localStorage.getItem(`token`);
+                console.log('token: ', token)
+                const decoded = jwtDecode(token)
+                console.log("decoded token: ", decoded)
+                return decoded?.id || null;
+        }
+        const userId = getUserId();
         if (!userId) {
             throw new Error('Usuario no autenticado');
         }
@@ -212,6 +222,8 @@ async function addMessage(chatId, message) {
 async function markChatAsRead(chatId) {
     return await fetchData(`chats/${chatId}/read`, 'PUT');
 }
+
+
 
 export {
     login,
