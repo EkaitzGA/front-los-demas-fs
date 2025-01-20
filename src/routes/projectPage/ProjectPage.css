@@ -7,18 +7,15 @@
     display: grid;
     grid-template-columns: 2fr 1fr; 
     grid-template-areas: 
-    "back back"
+        "back back"
         "header header"
         "main-image sidebar"
         "categories sidebar";
     gap: 25px;
-
 }
-
 
 .button-back-navigation {
     grid-area: back;  
-
 }
 
 .button-back-navigation button {
@@ -37,7 +34,6 @@
 
 .first-line-dsk {
     grid-area: header;
-    /* border-bottom: 1px solid white; */
     padding-bottom: 10px;
     margin-bottom: 10px;
 }
@@ -65,7 +61,6 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    /* border-radius: 8px; */
 }
 
 .left-column-second-line {
@@ -127,7 +122,6 @@
     gap: 8px;
 }
 
-
 .second-column {
     grid-area: sidebar;
     background-color: transparent;
@@ -138,7 +132,6 @@
     align-self: start; 
     border-top: 1px solid grey;
     color: white;
-
 }
 
 .second-column > div {
@@ -152,33 +145,26 @@
     height: 100px;
     border-bottom: 0.5px solid rgb(175, 175, 175);
     color: white;
-
 }
 
 .second-column > div:hover {
-/* background-color: #f8f8f8; */
-background-color: #474747;
-
+    background-color: #474747;
 }
 
 .second-column h5 {
     margin: 0;
-    /* color: #666; */
     font-size: 14px;
 }
 
 .second-column p {
     margin: 0;
     font-size: 16px;
-    /* color: #333; */
 }
 
 .second-column a {
-    /* color: grey; */
     text-decoration: none;
     font-size: 16px;
     color: white;
-
 }
 
 .second-column a:hover {
@@ -193,7 +179,6 @@ background-color: #474747;
 
 .heart-icon {
     font-size: 20px !important; 
-    /* color: #333; */
 }
 
 .likes-wrapper:hover .heart-icon {
@@ -203,16 +188,54 @@ background-color: #474747;
 
 .likes-wrapper span {
     font-size: 16px;
-    /* color: #333; */
+}
+
+.chat-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 16px;
+    margin-top: 12px;
+    background-color: #2b5278;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.chat-button:hover:not(:disabled) {
+    background-color: #366290;
+}
+
+.chat-button:disabled {
+    background-color: #4a4a4a;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.chat-button svg {
+    font-size: 18px;
 }
 
 @media (max-width: 768px) {
     .single-project-container-dsk {
         grid-template-columns: 1fr;
+        padding-left: 20px;
+        padding-right: 20px;
         grid-template-areas: 
             "header"
             "main-image"
             "categories"
             "sidebar";
+    }
+
+    .chat-button {
+        width: 100%;
+        justify-content: center;
     }
 }

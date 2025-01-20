@@ -153,34 +153,22 @@ const RegisterForm = ({ onToggle }) => {
         if (validateForm()) {
             setIsLoading(true);
             try {
-                const response = await register(
-                    formData.email,
-                    formData.username,
-                    formData.password,
-                    formData.confirmedPassword
-                );
+                const response = await login(formData.email, formData.password);
                 
-                if (response.success) {
-                    setSuccessMessage('Registro exitoso');
+                if (response.token) {
+                    localStorage.setItem('token', response.token);
+                    setSuccessMessage('Inicio de sesión exitoso');
                     setFormData({
-                        username: '',
                         email: '',
-                        password: '',
-                        confirmedPassword: ''
+                        password: ''
                     });
-                    // Redirigir al login después de 2 segundos
-                    setTimeout(() => {
-                        onToggle();
-                    }, 2000);
                 } else {
                     setErrors({ 
-                        submit: response.message || 'Error al registrar usuario' 
+                        submit: response.message || 'Error al iniciar sesión' 
                     });
                 }
             } catch (error) {
-                setErrors({ 
-                    submit: 'Error en el servidor' 
-                });
+                setErrors({ submit: 'Error en el servidor' });
             } finally {
                 setIsLoading(false);
             }
