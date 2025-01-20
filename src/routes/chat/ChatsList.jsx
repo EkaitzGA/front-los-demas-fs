@@ -2,21 +2,55 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getUserChats } from '../../utils/api/fetch';
 import './ChatsList.css';
-import {jwtDecode} from "jwt-decode"
+import { jwtDecode } from "jwt-decode";
 
 function ChatsList() {
   const navigate = useNavigate();
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const token = localStorage.getItem('token')
+  const token = localStorage.getItem('token');
   const getUserId = () => {
-      console.log("token: ", token);
-      const decoded = jwtDecode(token);
-      console.log("decoded token: ", decoded);
-      return decoded?.id || null;
+    console.log("token: ", token);
+    const decoded = jwtDecode(token);
+    console.log("decoded token: ", decoded);
+    return decoded?.id || null;
+  };
+  const userId = getUserId();
+
+  const getUnreadMessages = (chat) => {
+    if (!chat?.messages) return 0;
+    
+    // Filtrar los mensajes para contar solo los no leídos y del otro usuario
+    const unreadCount = chat.messages.filter(msg => {
+        const isFromOtherUser = msg.sender.toString() !== userId;
+        const isUnread = !msg.read;
+        return isFromOtherUser && isUnread;
+    }).length;
+
+    console.log(`Chat ${chat._id} unread messages:`, unreadCount);
+    return unreadCount;
+};
+  const getLastMessage = (chat) => {
+    if (!chat?.messages?.length) return { text: 'No hay mensajes', unread: false };
+    
+    // Filtrar mensajes duplicados
+    const uniqueMessages = chat.messages.reduce((acc, msg) => {
+      const messageKey = `${msg.message}-${msg.sender}-${msg.timestamp}`;
+      if (!acc.has(messageKey)) {
+        acc.set(messageKey, msg);
+      }
+      return acc;
+    }, new Map());
+  
+    const messages = Array.from(uniqueMessages.values());
+    const lastMessage = messages[messages.length - 1];
+    
+    return {
+      text: lastMessage.message,
+      unread: lastMessage.sender.toString() !== userId && !lastMessage.read
     };
-    const userId = getUserId();
+  };
   
   useEffect(() => {
     const fetchChats = async () => {
@@ -77,35 +111,42 @@ function ChatsList() {
         {chats.length === 0 ? (
           <p className="no-chats">No tienes conversaciones activas</p>
         ) : (
-          chats.map(chat => (
-            <Link 
-              to={`/chats/${chat._id}`} 
-              key={chat._id} 
-              className="chat-card"
-            >
-              <div className="chat-card-header">
-                <h3>{chat.project?.name || 'Proyecto sin nombre'}</h3>
-                <span className="participant-name">
-                  {chat.owner?._id === userId
-                    ? `${chat.client?.name || ''} ${chat.client?.lastname || ''}`
-                    : `${chat.owner?.name || ''} ${chat.owner?.lastname || ''}`}
-                </span>
-              </div>
-              <p className="last-message">
-                {chat.messages?.length > 0 
-                  ? chat.messages[chat.messages.length - 1].message 
-                  : 'No hay mensajes'}
-              </p>
-              <div className="chat-card-footer">
-                <span className="message-count">
-                  {chat.messages?.length || 0} mensajes
-                </span>
-                <span className="chat-date">
-                  {new Date(chat.updatedAt).toLocaleDateString()}
-                </span>
-              </div>
-            </Link>
-          ))
+          chats.map(chat => {
+            const unreadCount = getUnreadMessages(chat);
+            const lastMessage = getLastMessage(chat);
+            return (
+              <Link 
+                to={`/chats/${chat._id}`} 
+                key={chat._id} 
+                className={`chat-card ${unreadCount > 0 ? 'has-unread' : ''}`}
+              >
+                <div className="chat-card-header">
+                  <h3>{chat.project?.name || 'Proyecto sin nombre'}</h3>
+                  <span className="participant-name">
+                    {chat.owner?._id === userId
+                      ? `${chat.client?.name || ''} ${chat.client?.lastname || ''}`
+                      : `${chat.owner?.name || ''} ${chat.owner?.lastname || ''}`}
+                  </span>
+                  {unreadCount > 0 && (
+                    <span className="unread-badge">
+                      {unreadCount} mensaje{unreadCount !== 1 ? 's' : ''} sin leer
+                    </span>
+                  )}
+                </div>
+                <p className={`last-message ${lastMessage.unread ? 'unread' : ''}`}>
+                  {lastMessage.text}
+                </p>
+                <div className="chat-card-footer">
+                  <span className="message-count">
+                    {chat.messages?.length || 0} mensajes
+                  </span>
+                  <span className="chat-date">
+                    {new Date(chat.updatedAt).toLocaleDateString()}
+                  </span>
+                </div>
+              </Link>
+            );
+          })
         )}
       </div>
     </div>

@@ -12,6 +12,7 @@ function ChatRoom() {
 
   try {
     loaderData = useLoaderData();
+    console.log('Loader data:', loaderData);
   } catch (error) {
     console.error("Error loading chat data:", error);
     return <ChatErrorBoundary error={error} />;
@@ -36,37 +37,28 @@ function ChatRoom() {
     return decoded?.id || null;
   };
   const userId = getUserId();
-
   const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3002";
 
   const getOtherParticipantName = () => {
     if (!initialChat || !userId) return "Usuario";
+    
     try {
-      if (
-        initialChat.owner &&
-        initialChat.owner._id === userId &&
-        initialChat.client
-      ) {
+      if (initialChat.owner && initialChat.owner._id === userId && initialChat.client) {
         const clientName = [
           initialChat.client.name || "",
           initialChat.client.lastname || "",
-        ]
-          .filter(Boolean)
-          .join(" ");
+        ].filter(Boolean).join(" ");
         return clientName || "Cliente";
       } else if (initialChat.owner) {
         const ownerName = [
           initialChat.owner.name || "",
           initialChat.owner.lastname || "",
-        ]
-          .filter(Boolean)
-          .join(" ");
+        ].filter(Boolean).join(" ");
         return ownerName || "Propietario";
       }
     } catch (error) {
       console.error("Error getting participant name:", error);
     }
-
     return "Usuario";
   };
 
@@ -79,8 +71,7 @@ function ChatRoom() {
         month: "long",
         day: "numeric",
       };
-      return now
-        .toLocaleDateString("es-ES", options)
+      return now.toLocaleDateString("es-ES", options)
         .replace(/^\w/, (c) => c.toUpperCase());
     } catch (error) {
       console.error("Error formatting date:", error);
@@ -134,18 +125,31 @@ function ChatRoom() {
         setError("Error de conexión. Reconectando...");
       });
 
+      
+
       socketRef.current.on("private-message", (data) => {
-        if (data.sender !== userId) {
-          setMessages((prev) => [
-            ...prev,
-            {
+        console.log('Received message:', data);
+              
+        setMessages(prev => {
+          // Verificar si el mensaje ya existe en los mensajes actuales
+          const messageExists = prev.some(msg => 
+            msg.message === data.message && 
+            msg.sender === data.sender && 
+            new Date(msg.timestamp).getTime() === new Date(data.timestamp).getTime()
+          );
+                  
+          if (!messageExists) {
+            // Si el mensaje no existe, lo añadimos
+            const newMessage = {
               message: data.message,
               sender: data.sender,
               timestamp: data.timestamp || new Date().toISOString(),
-              read: false,
-            },
-          ]);
-        }
+              read: false
+            };
+            return [...prev, newMessage];
+          }
+          return prev;
+        });
       });
 
       socketRef.current.on("user-typing", ({ userId: typingUserId }) => {
@@ -171,6 +175,7 @@ function ChatRoom() {
       setError("Error al establecer la conexión");
     }
   }, [initialChat?._id, userId, navigate, token, baseUrl]);
+  
 
   const handleTyping = () => {
     if (typingTimeoutRef.current) {
@@ -187,69 +192,58 @@ function ChatRoom() {
   const handleSendMessage = async (e) => {
     e.preventDefault();
     const messageText = e.target.message.value.trim();
-
+    
     if (!messageText || loading) return;
-
+    
     setLoading(true);
     try {
+      const messageData = {
+        message: messageText,
+        sender: userId,
+        timestamp: new Date().toISOString(),
+        read: false
+      };
+  
+      // Añadir el mensaje localmente primero
+      setMessages(prev => [...prev, messageData]);
+  
+      // Emitir el mensaje por socket
+      if (socketRef.current?.connected) {
+        socketRef.current.emit("private-message", {
+          ...messageData,
+          chatId: initialChat._id,
+        });
+      }
+  
+      // Guardar en la base de datos
       const response = await fetch(`${baseUrl}/chats/${initialChat._id}`, {
-        method: "PUT",
+        method: 'PUT',
         headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          message: messageText,
-        }),
+          message: messageText
+        })
       });
-
+  
       const data = await response.json();
-
       if (!response.ok || !data.success) {
         throw new Error(data.message || `Error: ${response.status}`);
       }
-
-      if (data.data?.messages) {
-        setMessages(data.data.messages);
-
-        if (socketRef.current?.connected) {
-          socketRef.current.emit("private-message", {
-            message: messageText,
-            sender: userId,
-            chatId: initialChat._id,
-            timestamp: new Date().toISOString(),
-          });
-        }
-
-        e.target.reset();
-        inputRef.current?.focus();
-      }
+  
+      e.target.reset();
+      inputRef.current?.focus();
     } catch (error) {
-      console.error("Error sending message:", error);
-      setError(error.message || "Error al enviar mensaje");
+      console.error('Error sending message:', error);
+      setError(error.message || 'Error al enviar mensaje');
       setTimeout(() => setError(null), 3000);
     } finally {
       setLoading(false);
     }
   };
 
-  if (!initialChat) {
-    return (
-      <div className="loading-container">
-        <p>Cargando chat...</p>
-      </div>
-    );
-  }
-
-  if (!connected) {
-    return (
-      <div className="connecting-message">
-        Conectando al chat...
-        {error && <p className="connection-error">{error}</p>}
-      </div>
-    );
-  }
-
+  
   const projectName = initialChat?.project?.name || "Chat";
   const otherParticipantName = getOtherParticipantName();
 
@@ -270,24 +264,29 @@ function ChatRoom() {
       </div>
 
       <div className="chat-messages-dsk">
-        {messages.map((msg, index) => (
-          <div
-            key={index}
-            className={`message ${
-              msg.sender && msg.sender.toString() === userId
-                ? "message-sent"
-                : "message-received"
-            }`}
-          >
-            <div className="message-content">{msg.message}</div>
-            <div className="message-timestamp">
-              {new Date(msg.timestamp).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
+        {messages.map((msg, index) => {
+          const isOwnMessage = msg.sender?.toString() === userId?.toString();
+          console.log('Message comparison:', {
+            msgSender: msg.sender,
+            userId,
+            isOwnMessage
+          });
+          
+          return (
+            <div
+              key={index}
+              className={`message ${isOwnMessage ? 'message-sent' : 'message-received'}`}
+            >
+              <div className="message-content">{msg.message}</div>
+              <div className="message-timestamp">
+                {new Date(msg.timestamp).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
         {typingUser && (
           <div className="typing-indicator">
             {otherParticipantName} está escribiendo...
