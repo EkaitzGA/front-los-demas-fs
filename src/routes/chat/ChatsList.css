@@ -1,0 +1,108 @@
+.chats-list-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .chats-list-container h2 {
+    color: white;
+    margin-bottom: 30px;
+    font-size: 24px;
+  }
+  
+  .chats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  
+  .chat-card {
+    background-color: #2a2a2a;
+    border-radius: 8px;
+    padding: 20px;
+    text-decoration: none;
+    color: white;
+    transition: transform 0.2s, background-color 0.2s;
+  }
+  
+  .chat-card:hover {
+    transform: translateY(-2px);
+    background-color: #3a3a3a;
+  }
+  
+  .chat-card-header {
+    margin-bottom: 15px;
+  }
+  
+  .chat-card-header h3 {
+    margin: 0;
+    color: white;
+    font-size: 18px;
+  }
+  
+  .participant-name {
+    display: block;
+    color: #888;
+    font-size: 14px;
+    margin-top: 5px;
+  }
+  
+  .last-message {
+    color: #ccc;
+    font-size: 14px;
+    margin: 10px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .chat-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    font-size: 12px;
+    color: #888;
+  }
+  
+  .message-count {
+    background-color: #4a4a4a;
+    padding: 4px 8px;
+    border-radius: 12px;
+  }
+  
+  .chat-date {
+    font-style: italic;
+  }
+  
+  .chats-loading {
+    text-align: center;
+    padding: 40px;
+    color: white;
+    font-size: 18px;
+  }
+  
+  .chats-error {
+    text-align: center;
+    padding: 40px;
+    color: #ff6b6b;
+    font-size: 18px;
+  }
+  
+  .no-chats {
+    text-align: center;
+    grid-column: 1 / -1;
+    padding: 40px;
+    color: #888;
+    font-size: 16px;
+  }
+  
+  @media (max-width: 768px) {
+    .chats-list-container {
+      padding: 10px;
+    }
+  
+    .chats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
