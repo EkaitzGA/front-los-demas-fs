@@ -52,13 +52,14 @@ const LoginForm = ({ onToggle }) => {
                     window.dispatchEvent(new Event('login'));
                     
                     localStorage.setItem('userId', userId);
+                    const id = localStorage.getItem('userId');
 
                     setSuccessMessage('Inicio de sesión exitoso');
                     setFormData({
                         email: '',
                         password: ''
                     });
-                    navigate('/'); // Redirigir a la página principal por ahora
+                    navigate(`/myprofile/${id}`); // Redirigir a la página principal por ahora
                 } else {
                     setErrors({ 
                         submit: response.message || 'Error al iniciar sesión' 
