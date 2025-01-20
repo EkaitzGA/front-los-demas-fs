@@ -29,13 +29,7 @@ function ChatRoom() {
   const socketRef = useRef(null);
 
   const token = localStorage.getItem("token");
-  const getUserId = () => {
-    console.log("token: ", token);
-    const decoded = jwtDecode(token);
-    console.log("decoded token: ", decoded);
-    return decoded?.id || null;
-  };
-  const userId = getUserId();
+  const userId = localStorage.getItem("userId");
 
   const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3002";
 
@@ -101,10 +95,6 @@ function ChatRoom() {
   }, [messages]);
 
   useEffect(() => {
-    if (!token) {
-      navigate("/auth");
-      return;
-    }
 
     if (!initialChat?._id) {
       console.error("No chat ID available");
