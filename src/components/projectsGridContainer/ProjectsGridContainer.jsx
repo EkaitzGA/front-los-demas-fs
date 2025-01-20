@@ -2,14 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { getProjects } from '../../utils/api/fetch';
 import ProjectContainer from '../projectContainer/ProjectContainer';
 import NewProjectButton from '../projectContainer/NewProjectButton';
+import Modal from '../modal/Modal';
 
 const ProjectsGridContainer = ({ userId, projectsData, isFavorites = false }) => {
     const [projects, setProjects] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     const handleNewProject = () => {
-        // Por ahora solo un console.log para probar
-        console.log('Abrir modal de nuevo proyecto');
+        setIsModalOpen(true);
+    };
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+    };
+    const handleProjectCreated = (newProject) => {
+        setProjects(prevProjects => [...prevProjects, newProject]);
+        setIsModalOpen(false);
     };
 
     useEffect(() => {
@@ -74,6 +83,13 @@ const ProjectsGridContainer = ({ userId, projectsData, isFavorites = false }) =>
                         likes={project.likes}
                     />
                 ))}
+
+                <Modal
+                    isOpen={isModalOpen}
+                    onClose={handleCloseModal}
+                    onProjectCreated={handleProjectCreated}
+                    userId={userId}
+                />
             </div>
         </section>
     );

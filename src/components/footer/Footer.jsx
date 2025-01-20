@@ -28,6 +28,10 @@ function Footer() {
                 <p>Users</p>
                 <p>Contact</p>
             </div>
+
+            <div className='all-rights'>
+                <p>© KAZOKU 2025- All rights reserved</p>
+            </div>
         </div>
     )
 }
