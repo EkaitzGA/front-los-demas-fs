@@ -57,7 +57,7 @@ function ProjectPage() {
                 return;
             }
     
-            setLoading(true);
+            setIsLoading(true);
             console.log('Creating chat with:', {
                 projectId: project._id,
                 ownerId: project.owner._id,
@@ -76,7 +76,7 @@ function ProjectPage() {
             console.error('Error creating chat:', error);
             alert(error.message || 'Error al crear el chat');
         } finally {
-            setLoading(false);
+            setIsLoading(false);
         }
     };
 
@@ -184,10 +184,10 @@ function ProjectPage() {
                         <button 
                             onClick={handleCreateChat}
                             className="chat-button"
-                            disabled={loading}
+                            disabled={isLoading}
                         >
                             <ChatIcon /> 
-                            {loading ? 'Cargando...' : 'Chat con el creador'}
+                            {isLoading ? 'Cargando...' : 'Chat con el creador'}
                         </button>
                     )}
                 </div>

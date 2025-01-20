@@ -60,6 +60,18 @@ async function getProjects() {
     return await fetchData('projects');
 }
 
+async function getProjectsById(id) {
+    return await fetchData(`projects/${id}`);
+}
+
+async function getUserById(id) {
+    return await fetchData(`users/${id}`, 'GET');
+}
+
+async function getUsers() {
+    return await fetchData('users');
+}
+
 async function getUserChats(userId) {
     try {
         if (!userId) {
