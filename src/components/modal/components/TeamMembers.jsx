@@ -140,17 +140,17 @@ const TeamMembers = ({ projectData, setProjectData, onNext, onBack }) => {
                 </div>
             </div>
 
-            <div className="flex justify-between mt-6">
+            <div className="navigation-buttons">
                 <button
                     type="button"
                     onClick={onBack}
-                    className="text-gray-900 bg-white border border-gray-300 hover:bg-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                    className="nav-button"
                 >
                     Back
                 </button>
                 <button
                     type="submit"
-                    className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                    className="nav-button"
                 >
                     Next
                 </button>
