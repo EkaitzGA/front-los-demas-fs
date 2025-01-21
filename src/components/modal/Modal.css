@@ -113,10 +113,10 @@
     border: none;
 }
 
-.form-actions button[type="button"] {
+/* .form-actions button[type="button"] {
     background-color: #fff;
     border: 1px solid #ddd;
-}
+} */
 
 
 .image-preview-container {
@@ -167,4 +167,24 @@
 
 .accept-crop-button:hover {
     background-color: #45a049;
+}
+
+.navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+.nav-button {
+    padding: 8px 20px;
+    border-radius: 4px;
+}
+
+.navigation-buttons .check-icon {
+    background-color: black;
+    border-radius: 50%;
+}
+
+.navigation-buttons .check-icon svg{
+    filter: invert();
 }
