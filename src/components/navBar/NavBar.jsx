@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { NavLink, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useFilters } from '../../context/FilterProvider';
 import { getUnreadMessagesCount } from '../../services/chatService';
-import { getUnreadMessagesCount } from '../../services/chatService';
+
 import './NavBar.css';
 
 function NavBar() {
@@ -90,13 +90,7 @@ function NavBar() {
         
         return () => clearInterval(interval);
     }, []);
-    const checkUnreadMessages = async () => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            const count = await getUnreadMessagesCount(token);
-            setUnreadCount(count);
-        }
-    };
+   
 
     useEffect(() => {
         // Verificar mensajes no leídos al montar y cada 30 segundos
