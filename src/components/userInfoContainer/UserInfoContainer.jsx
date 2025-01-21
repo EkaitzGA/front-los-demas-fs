@@ -2,11 +2,14 @@ import React, { useState, useEffect } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
+import { updateUserProfile } from '../../utils/api/fetch';
 
 const UserInfoContainer = ({ userData }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [tempData, setTempData] = useState(null);
+    console.log('userData recibido:', userData);
     const [profileData, setProfileData] = useState({
         location: { city: '', country: '' },
         agency: '',
@@ -20,10 +23,11 @@ const UserInfoContainer = ({ userData }) => {
     });
 
     // Obtener el ID del usuario logueado
-    const loggedUserId = localStorage.getItem('userId');
+    const userId = localStorage.getItem('userId');
+    console.log('userId:', userId);
 
     // Comprobar si el usuario actual es el propietario del perfil
-    const isOwner = loggedUserId && userData?._id && loggedUserId === userData._id.toString();
+    const isOwner = userId && userData?._id && userId === userData._id.toString();
 
 
     useEffect(() => {
@@ -46,52 +50,58 @@ const UserInfoContainer = ({ userData }) => {
     }, [userData]);
 
     const handleChange = (e, section, subsection = null) => {
+        let value = e.target.value;
+    
+    // Formatear URL para el campo website
+    if (section === 'contact' && subsection === 'website' && value) {
+        // Solo formatear si hay un valor y no está vacío
+        if (value.trim()) {
+            // Eliminar protocolos existentes y www si existen
+            value = value.replace(/^(https?:\/\/)?(www\.)?/, '');
+            // Añadir protocolo y www
+            value = `https://www.${value}`;
+        }
+        // Asegurarnos de que value es un string y no un array
+        value = value.toString();
+    }
         if (subsection) {
             setProfileData(prev => ({
                 ...prev,
                 [section]: {
                     ...prev[section],
-                    [subsection]: e.target.value
+                    [subsection]: value
                 }
             }));
         } else {
             setProfileData(prev => ({
                 ...prev,
-                [section]: e.target.value
+                [section]: value
             }));
         }
+        console.log('Updated profileData:', profileData);
     };
 
-    const updateUserProfile = async (userId, data) => {
+    const updateUser = async (userId, data) => {
         // Transformar los datos al formato que espera el backend
         const updateData = {
             city: data.location.city,
             country: data.location.country,
             description: data.agency,
             email: data.contact.email,
-            website: data.contact.website,
+            website: data.contact.website ? data.contact.website.toString() : '',
             github: data.contact.github,
             linkedin: data.contact.linkedin,
             instagram: data.contact.instagram
         };
-
+        console.log('Datos a enviar al backend:', updateData);
         try {
-            const response = await fetch(`/api/users/${userId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(updateData),
-                credentials: 'include'
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Failed to update profile');
+            const response = await updateUserProfile(userId, updateData);
+            if (!response.success) {
+                throw new Error(response.message || 'Failed to update profile');
             }
-
-            return await response.json();
+            return response.data;
         } catch (error) {
+            console.error('Error in updateUser:', error);
             throw error;
         }
     };
@@ -101,11 +111,20 @@ const UserInfoContainer = ({ userData }) => {
         setIsLoading(true);
         setError(null);
 
+        if (!userId) {
+            setError('Error: User ID not found');
+            setIsLoading(false);
+            return;
+        }
+
         try {
-            const result = await updateUserProfile(userData.id, profileData);
-            setIsEditing(false);
+            console.log('Datos antes de actualizar:', profileData);
+            const result = await updateUser(userId, profileData);
+            console.log('Resultado de la actualización:', result);
+
             // Actualizar los datos locales con la respuesta del servidor
             if (result) {
+                setIsEditing(false);
                 setProfileData({
                     location: {
                         city: result.city || '',
@@ -114,7 +133,7 @@ const UserInfoContainer = ({ userData }) => {
                     agency: result.description || '',
                     contact: {
                         email: result.email || '',
-                        website: result.website || '',
+                        website: Array.isArray(result.website) ? result.website[0] || '' : result.website || '',
                         github: result.github || '',
                         linkedin: result.linkedin || '',
                         instagram: result.instagram || ''
@@ -123,7 +142,7 @@ const UserInfoContainer = ({ userData }) => {
             }
         } catch (err) {
             setError('Error updating profile. Please try again.');
-            console.error('Error:', err);
+            console.error('Error in handleSubmit:', err);
         } finally {
             setIsLoading(false);
         }
@@ -212,7 +231,12 @@ const UserInfoContainer = ({ userData }) => {
                         <button
                             type="button"
                             className="cancel-button"
-                            onClick={() => setIsEditing(false)}
+                            onClick={() => {
+                                setIsEditing(false);
+                                setProfileData(tempData); // Restauramos los datos que teníamos antes de empezar a editar
+                                setTempData(null); // Limpiamos los datos temporales
+                            }}
+
                             disabled={isLoading}
                         >
                             <CloseIcon />
@@ -247,9 +271,9 @@ const UserInfoContainer = ({ userData }) => {
                                 </div>
                                 <div className="contact-row">
                                     <span className="label">Website</span>
-                                    {profileData.contact.website ?
+                                    {profileData.contact.website && typeof profileData.contact.website === 'string' ?
                                         <a href={`https://${profileData.contact.website}`} target="_blank" rel="noopener noreferrer">
-                                            {profileData.contact.website}
+                                            {profileData.contact.website.replace(/^https?:\/\/(www\.)?/, '')}
                                         </a> :
                                         <span className="empty-field">No website provided</span>
                                     }
@@ -288,7 +312,10 @@ const UserInfoContainer = ({ userData }) => {
                     {isOwner && (
                         <button
                             className="edit-button"
-                            onClick={() => setIsEditing(true)}
+                            onClick={() => {
+                                setTempData({ ...profileData }); // Guardamos una copia de los datos actuales
+                                setIsEditing(true);
+                            }}
                         >
                             <EditIcon />
                         </button>
