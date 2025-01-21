@@ -16,6 +16,15 @@ function NavBar() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [unreadCount, setUnreadCount] = useState(0);
 
+    //new
+    const isProfileRoute = () => {
+        return location.pathname.includes('/myprofile/');
+    };
+    useEffect(() => {
+        // Establecer isCompact a true si estamos en la ruta del perfil
+        setIsCompact(isProfileRoute());
+    }, [location.pathname]);
+
     const resetFilters = () => {
         setSelectedFilters({
             styles: [],
@@ -46,7 +55,7 @@ function NavBar() {
         if (isAuthenticated) {
             e.preventDefault();
             const id = localStorage.getItem('userId');
-            navigate(`/myprofile/${id}`);  
+            navigate(`/myprofile/${id}`);
         }
     };
 
@@ -87,52 +96,87 @@ function NavBar() {
         // Verificar mensajes no leídos al montar y cada 30 segundos
         checkUnreadMessages();
         const interval = setInterval(checkUnreadMessages, 30000);
-        
+
         return () => clearInterval(interval);
     }, []);
-   
+
 
     useEffect(() => {
         // Verificar mensajes no leídos al montar y cada 30 segundos
         checkUnreadMessages();
         const interval = setInterval(checkUnreadMessages, 30000);
-        
+
         return () => clearInterval(interval);
     }, []);
+
+    // useEffect(() => {
+    //     const controlNavbar = () => {
+    //         const currentScrollY = window.scrollY;
+
+    //         if (currentScrollY > lastScrollY) { 
+    //             setIsVisible(false);
+    //         } else { 
+    //             setIsVisible(true);
+    //         }
+
+    //         if (currentScrollY > 100) {  
+    //             setIsCompact(true);
+    //         } else {
+    //             setIsCompact(false);
+    //         }
+
+    //         setLastScrollY(currentScrollY);
+    //     };
+
+    //     window.addEventListener('scroll', controlNavbar);
+
+    //     return () => {
+    //         window.removeEventListener('scroll', controlNavbar);
+    //     };
+    // }, [lastScrollY]);
 
     useEffect(() => {
         const controlNavbar = () => {
             const currentScrollY = window.scrollY;
-            
-            if (currentScrollY > lastScrollY) { 
-                setIsVisible(false);
-            } else { 
-                setIsVisible(true);
+
+            // Solo aplicar la lógica de scroll si no estamos en la ruta del perfil
+            if (!isProfileRoute()) {
+                if (currentScrollY > lastScrollY) {
+                    setIsVisible(false);
+                } else {
+                    setIsVisible(true);
+                }
+
+                if (currentScrollY > 100) {
+                    setIsCompact(true);
+                } else {
+                    setIsCompact(false);
+                }
             }
-    
-            if (currentScrollY > 100) {  
-                setIsCompact(true);
-            } else {
-                setIsCompact(false);
-            }
-            
+
             setLastScrollY(currentScrollY);
         };
-    
-        window.addEventListener('scroll', controlNavbar);
-    
+
+        // Solo agregar el evento de scroll si no estamos en la ruta del perfil
+        if (!isProfileRoute()) {
+            window.addEventListener('scroll', controlNavbar);
+        }
+
         return () => {
             window.removeEventListener('scroll', controlNavbar);
         };
-    }, [lastScrollY]);
+    }, [lastScrollY, location.pathname]);
 
     return (
         <div className={`nav-bar-dsk 
             ${isVisible ? 'nav-visible' : 'nav-hidden'}
             ${isCompact ? 'nav-compact' : ''}
+            ${isCompact || isProfileRoute() ? 'nav-compact' : ''}
             ${isTransitioning ? 'transitioning' : ''}
         `}>
-            <div className={`nav-content-wrapper ${isCompact ? 'nav-content-compact' : ''}`}>
+            {/* <div className={`nav-content-wrapper ${isCompact ? 'nav-content-compact' : ''}`}> */}
+            <div className={`nav-content-wrapper ${isCompact || isProfileRoute() ? 'nav-content-compact' : ''}`}>
+
                 <div className='logo-section'>
                     <Link onClick={resetFilters} to="/">
                         <img src="/images/gato.jpg" alt="Logo" />
@@ -178,7 +222,7 @@ function NavBar() {
                             onMouseLeave={() => setShowSubmenu(false)}
                         >
                             {isAuthenticated ? (
-                                <span 
+                                <span
                                     onClick={handleAccountClick}
                                     className={`account-trigger ${showSubmenu ? 'active-trigger' : ''} clickable`}
                                 >
@@ -189,7 +233,7 @@ function NavBar() {
                                     Account
                                 </span>
                             )}
-                            
+
                             {showSubmenu && (
                                 <div className="submenu">
                                     {isAuthenticated ? (
