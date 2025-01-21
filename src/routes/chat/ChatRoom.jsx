@@ -88,19 +88,13 @@ function ChatRoom() {
 
   const scrollToBottom = () => {
     try {
-      if (inputRef.current) {
+      const chatContainer = document.querySelector('.chat-messages-dsk');
+      if (inputRef.current && chatContainer) {
+        // Hacer scroll hasta que el input sea visible
         inputRef.current.scrollIntoView({ 
-          behavior: "smooth", 
-          block: "center" 
+          behavior: "smooth",
+          block: "end" // esto asegura que el input sea visible en la parte inferior
         });
-      } else if (messagesEndRef.current) {
-        const chatContainer = document.querySelector('.chat-messages-dsk');
-        if (chatContainer) {
-          const scrollHeight = chatContainer.scrollHeight;
-          const clientHeight = chatContainer.clientHeight;
-          
-          chatContainer.scrollTop = scrollHeight - clientHeight - 100; 
-        }
       }
     } catch (error) {
       console.error("Error scrolling to bottom:", error);
