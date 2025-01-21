@@ -77,12 +77,12 @@ function ProjectPage() {
     const handleLikeClick = async () => {
         const token = localStorage.getItem('token');
         const userId = localStorage.getItem('userId');
-
+    
         if (!token || !userId) {
             setShowAuthModal(true);
             return;
         }
-
+    
         try {
             const response = await fetch('http://localhost:3002/users/like-project', {
                 method: 'PUT',
@@ -95,13 +95,24 @@ function ProjectPage() {
                     projectId: project._id
                 })
             });
-
+    
             if (response.ok) {
                 const result = await response.json();
                 console.log('Respuesta del servidor:', result);
                 const newLikeState = !isLiked;
                 setIsLiked(newLikeState);
-                setLikeCount(prevLikes => newLikeState ? prevLikes + 1 : prevLikes - 1);
+                
+                // Actualizar el contador de likes en el proyecto
+                if (result.project && typeof result.project.likes === 'number') {
+                    setLikeCount(result.project.likes);
+                } else {
+                    setLikeCount(prevLikes => newLikeState ? prevLikes + 1 : prevLikes - 1);
+                }
+    
+                // Si hay un callback para actualizar el perfil del usuario, llamarlo
+                if (onProfileUpdate && result.user) {
+                    onProfileUpdate(result.user);
+                }
             }
         } catch (error) {
             console.error('Error al actualizar like:', error);
