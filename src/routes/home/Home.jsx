@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import ProjectContainer from '../../components/projectContainer/ProjectContainer';
 import { useFilters } from '../../context/FilterProvider';
 import SearchFilter from '../../components/searchFilter/SearchFilter';
@@ -14,6 +14,7 @@ function Home() {
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const projectsGridRef = useRef(null);
 
     const projectsPerPage = 12;
     const hasActiveFilters = Object.values(selectedFilters).some(arr => arr.length > 0);
@@ -28,7 +29,6 @@ function Home() {
                 
                 if (response.success) {
                     console.log('Datos recibidos:', response.data);
-                    // Validamos que los proyectos tengan todos los campos necesarios
                     const validatedProjects = response.data.map(project => ({
                         _id: project._id,
                         images: project.images || [],
@@ -84,7 +84,24 @@ function Home() {
     const indexOfFirstProject = indexOfLastProject - projectsPerPage;
     const currentProjects = filteredProjects.slice(indexOfFirstProject, indexOfLastProject);
 
-    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+    const scrollToProjects = () => {
+        if (projectsGridRef.current) {
+            const navbarHeight = 80; // Ajusta este valor según la altura de tu navbar
+            const elementPosition = projectsGridRef.current.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - navbarHeight;
+            
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+            });
+        }
+    };
+
+    const paginate = (e, pageNumber) => {
+        e.preventDefault(); // Previene la navegación
+        setCurrentPage(pageNumber);
+        scrollToProjects();
+    };
 
     if (loading) {
         return <div className="loading">Cargando proyectos...</div>;
@@ -98,7 +115,7 @@ function Home() {
         <div className='projects-page'>
             {!hasActiveFilters && <Carousel />} 
             <SearchFilter />
-            <div className='projects-grid'>
+            <div className='projects-grid' ref={projectsGridRef}>
                 {currentProjects.map(project => (
                     <ProjectContainer
                         key={project._id}
@@ -112,12 +129,10 @@ function Home() {
                 ))}
             </div>
 
-           
-
             {filteredProjects.length > projectsPerPage && (
                 <div className='pagination'>
                     <button
-                        onClick={() => paginate(currentPage - 1)}
+                        onClick={(e) => paginate(e, currentPage - 1)}
                         disabled={currentPage === 1}
                         className='pagination-button'
                     >
@@ -126,14 +141,14 @@ function Home() {
                     {[...Array(totalPages)].map((_, index) => (
                         <button
                             key={index + 1}
-                            onClick={() => paginate(index + 1)}
+                            onClick={(e) => paginate(e, index + 1)}
                             className={`pagination-button ${currentPage === index + 1 ? 'active' : ''}`}
                         >
                             {index + 1}
                         </button>
                     ))}
                     <button
-                        onClick={() => paginate(currentPage + 1)}
+                        onClick={(e) => paginate(e, currentPage + 1)}
                         disabled={currentPage === totalPages}
                         className='pagination-button'
                     >
@@ -141,13 +156,10 @@ function Home() {
                     </button>
                 </div>
             )}
-                 <div className='publi'>
+            <div className='publi'>
                 <JoinKazoku />
-                </div>
-
+            </div>
         </div>
-
-        
     )
 }
 
