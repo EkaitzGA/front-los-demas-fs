@@ -12,6 +12,101 @@
         "main-image sidebar"
         "categories sidebar";
     gap: 25px;
+    position: relative;
+}
+
+.auth-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.auth-modal {
+    background-color: rgb(175, 175, 175);
+    border: 1px solid black;
+    border-radius: 8px;
+    padding: 24px;
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+.close-modal {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+}
+
+.close-modal:hover {
+    color: #fff;
+}
+
+.auth-modal-content {
+    text-align: center;
+}
+
+.auth-modal-content h2 {
+    color: #fff;
+    margin: 0 0 16px 0;
+    font-size: 1.5rem;
+}
+
+.auth-modal-content p {
+    color: black;
+    margin: 0 0 24px 0;
+    font-size: 1rem;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+}
+
+.auth-button {
+    padding: 10px 24px;
+    border-radius: 20px;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.auth-button.login {
+    background-color: black;
+    color: white;
+}
+
+.auth-button.login:hover {
+    background-color: black;
+}
+
+.auth-button.register {
+    background-color: transparent;
+    color: black;
+    border: 2px solid black;
+}
+
+.auth-button.register:hover {
+    background-color: black;
+    color: white;
 }
 
 .button-back-navigation {
@@ -25,7 +120,7 @@
     border: none;
     cursor: pointer;
     font-weight: 300;
-    transition: background-color 0.2s;
+    transition: color 0.2s;
 }
 
 .button-back-navigation button:hover {
@@ -108,7 +203,7 @@
     font-weight: 500;
     white-space: nowrap;
     text-decoration: none;  
-    transition: background-color 0.2s;  
+    transition: all 0.2s ease;  
 }
 
 .tag:hover {
@@ -145,6 +240,7 @@
     height: 100px;
     border-bottom: 0.5px solid rgb(175, 175, 175);
     color: white;
+    position: relative;
 }
 
 .second-column > div:hover {
@@ -175,15 +271,16 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    cursor: pointer;
 }
 
 .heart-icon {
     font-size: 20px !important; 
+    transition: color 0.2s ease;
 }
 
-.likes-wrapper:hover .heart-icon {
+.likes-wrapper:hover .heart-icon:not(.MuiSvgIcon-root[style*="color: rgb(255, 0, 0)"]) {
     color: red;
-    cursor: pointer;
 }
 
 .likes-wrapper span {
@@ -194,22 +291,22 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    width: 100%;
-    padding: 10px 16px;
-    margin-top: 12px;
-    background-color: #2b5278;
-    color: white;
+    width: 40px;
+    height: 40px;
+    background-color: white;
+    color: black;
     border: none;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: 500;
+    border-radius: 50%;
     cursor: pointer;
     transition: all 0.2s ease;
+    position: absolute;
+    right: 30px;
+    bottom: 20px;
 }
 
 .chat-button:hover:not(:disabled) {
-    background-color: #366290;
+    background-color: black;
+    color: white;
 }
 
 .chat-button:disabled {
@@ -219,7 +316,18 @@
 }
 
 .chat-button svg {
-    font-size: 18px;
+    font-size: 20px;
+}
+
+@keyframes modalSlideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 @media (max-width: 768px) {
@@ -228,6 +336,7 @@
         padding-left: 20px;
         padding-right: 20px;
         grid-template-areas: 
+            "back"
             "header"
             "main-image"
             "categories"
@@ -235,7 +344,34 @@
     }
 
     .chat-button {
+        position: relative;
+        right: auto;
+        bottom: auto;
+        margin-top: 12px;
+    }
+
+    .auth-modal {
+        width: calc(100% - 40px);
+        margin: 0 20px;
+    }
+
+    .left-column-second-line > div {
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+    }
+
+    .tags-container {
         width: 100%;
-        justify-content: center;
+    }
+
+    .auth-buttons {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .auth-button {
+        width: 100%;
+        text-align: center;
     }
 }
