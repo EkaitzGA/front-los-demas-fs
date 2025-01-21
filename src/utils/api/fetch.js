@@ -94,6 +94,10 @@ async function getAllSubjects() {
     return await fetchData('subjects');
 }
 
+async function getUSerByUsername(username) {
+    return await fetchData(`users/username/${username}`);
+}
+
 async function getUserChats(userId) {
     try {
         if (!userId) {
@@ -263,5 +267,6 @@ export {
     updateProject,
     getAllTypes,
     getAllStyles,
-    getAllSubjects
+    getAllSubjects,
+    getUSerByUsername
 };
