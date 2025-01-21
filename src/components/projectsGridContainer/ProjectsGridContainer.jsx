@@ -3,8 +3,9 @@ import { getProjects } from '../../utils/api/fetch';
 import ProjectContainer from '../projectContainer/ProjectContainer';
 import NewProjectButton from '../projectContainer/NewProjectButton';
 import Modal from '../modal/Modal';
+import './ProjectsGridContainer.css'
 
-const ProjectsGridContainer = ({ userId, projectsData, isFavorites = false }) => {
+const ProjectsGridContainer = ({ userId, projectsData, isFavorites = false, showNewProjectButton = false }) => {
     const [projects, setProjects] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -55,6 +56,12 @@ const ProjectsGridContainer = ({ userId, projectsData, isFavorites = false }) =>
         }
     }, [userId, projectsData, isFavorites]);
 
+    const loggedUserId = localStorage.getItem('userId');
+    const token = localStorage.getItem('token');
+
+    // Verificar si el usuario está logueado y si está viendo su propio perfil
+    const isOwnProfile = loggedUserId && token && loggedUserId === userId;
+
     if (isLoading) {
         return <div>Loading projects...</div>;
     }
@@ -64,13 +71,37 @@ const ProjectsGridContainer = ({ userId, projectsData, isFavorites = false }) =>
     }
 
     if (!projects || projects.length === 0) {
-        return <div>No projects found for this user</div>;
+        return <div>
+            {showNewProjectButton && isOwnProfile && (
+                <div className="mb-4-no-project">
+                    <NewProjectButton onClick={handleNewProject} />
+                </div>
+            )}
+            {isOwnProfile ? (
+                <p>Load your first Project!</p>
+            ) : (
+                <p>This user has no projects yet</p>
+            )}
+        </div>;
     }
+
+
+
 
     return (
         <section className="section-grid">
             <div className="projects-grid-dsk">
-                <NewProjectButton onClick={handleNewProject} />
+                {/* {showNewProjectButton && (
+                    <div className="mb-4">
+                        <NewProjectButton onClick={handleNewProject} />
+                    </div>
+                )} */}
+
+                {showNewProjectButton && isOwnProfile && (
+                    <div className="mb-4">
+                        <NewProjectButton onClick={handleNewProject} />
+                    </div>
+                )}
 
                 {projects.map(project => (
                     <ProjectContainer
