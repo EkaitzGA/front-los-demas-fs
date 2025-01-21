@@ -55,6 +55,12 @@ const ProjectsGridContainer = ({ userId, projectsData, isFavorites = false, show
         }
     }, [userId, projectsData, isFavorites]);
 
+    const loggedUserId = localStorage.getItem('userId');
+    const token = localStorage.getItem('token');
+
+    // Verificar si el usuario está logueado y si está viendo su propio perfil
+    const isOwnProfile = loggedUserId && token && loggedUserId === userId;
+
     if (isLoading) {
         return <div>Loading projects...</div>;
     }
@@ -70,9 +76,15 @@ const ProjectsGridContainer = ({ userId, projectsData, isFavorites = false, show
     return (
         <section className="section-grid">
             <div className="projects-grid-dsk">
-                {showNewProjectButton && (
+                {/* {showNewProjectButton && (
                     <div className="mb-4">
-                        <NewProjectButton onClick={handleNewProject}/>
+                        <NewProjectButton onClick={handleNewProject} />
+                    </div>
+                )} */}
+
+                {showNewProjectButton && isOwnProfile && (
+                    <div className="mb-4">
+                        <NewProjectButton onClick={handleNewProject} />
                     </div>
                 )}
 
