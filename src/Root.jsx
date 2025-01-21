@@ -4,6 +4,7 @@ import { Outlet } from 'react-router-dom';
 import NavBar from './components/navBar/NavBar'
 import { FilterProvider } from './context/FilterProvider';
 import SplashScreen from './components/splashScreen/SplashScreen';
+import Footer from './components/footer/Footer';
 import './Root.css'
 
 
@@ -31,6 +32,7 @@ function Root() {
             <main className='main-desktop-general'>
                 <Outlet />
             </main>
+            <Footer />
         </div>
         </FilterProvider>
     )

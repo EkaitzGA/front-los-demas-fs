@@ -17,6 +17,8 @@
     gap: 24px;
     padding: 0 20px;
     margin-top: 70px;
+    margin-bottom: 150px;
+
 }
 
 .project-container-dsk {
@@ -80,6 +82,14 @@
     background-color: #f5f5f5;
     cursor: not-allowed;
     opacity: 0.5;
+}
+
+
+.publi {
+    margin-left: -100px; 
+    margin-right: -100px; 
+    margin-top: 20px;    
+    margin-bottom: 20px;  
 }
 
 @media (max-width: 1024px) {

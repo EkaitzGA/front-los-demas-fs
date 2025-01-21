@@ -3,7 +3,11 @@ import { useParams } from 'react-router-dom';
 import './ClientProfile.css';
 import UserInfoContainer from '../../components/userInfoContainer/UserInfoContainer';
 import ProjectsGridContainer from '../../components/projectsGridContainer/ProjectsGridContainer';
+import MyNetwork from './MyNetwork';
 import { getUserById } from '../../utils/api/fetch';
+import WindowIcon from '@mui/icons-material/Window';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import GroupsIcon from '@mui/icons-material/Groups';
 
 const UserHeader = ({ userData }) => (
     <section id="heading" className="section-heading">
@@ -14,11 +18,11 @@ const UserHeader = ({ userData }) => (
         </div>
         <h1>
             {userData?.username
-                ? `${userData.username} / ${userData.name} ${userData.lastname}`
+                ? `${userData.username} | ${userData.name} ${userData.lastname}`
                 : 'Usuario no encontrado'
             }
-        </h1>  
-        <h4>{userData.specialization} </h4>  
+        </h1>
+        <h4 className='specialization-profile'>{userData.specialization} </h4>
     </section>
 );
 
@@ -26,6 +30,7 @@ const ClientProfile = () => {
     const { id } = useParams();
     const [userData, setUserData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [activeSection, setActiveSection] = useState('my-projects');
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -63,6 +68,19 @@ const ClientProfile = () => {
         }
     };
 
+    const renderSection = () => {
+        switch (activeSection) {
+            case 'my-projects':
+                return <ProjectsGridContainer userId={id} />;
+            case 'my-favorites':
+                return <ProjectsGridContainer userId={id} projectsData={userData?.projectlike} isFavorites={true} />;
+            case 'my-network':
+                return <MyNetwork userData={userData} />;
+            default:
+                return <ProjectsGridContainer userId={id} />;
+        }
+    };
+
     if (isLoading) {
         return <div className="client-profile-container">Loading...</div>;
     }
@@ -73,7 +91,30 @@ const ClientProfile = () => {
 
             <UserHeader userData={userData} />
             <UserInfoContainer userData={userData} />
-            <ProjectsGridContainer userId={id} />
+
+            <div className="profile-navigation">
+                <button
+                    className={`nav-button ${activeSection === 'my-projects' ? 'active' : ''}`}
+                    onClick={() => setActiveSection('my-projects')}
+                >
+                    <WindowIcon />
+                </button>
+                <button
+                    className={`nav-button ${activeSection === 'my-favorites' ? 'active' : ''}`}
+                    onClick={() => setActiveSection('my-favorites')}
+                >
+                    <FavoriteBorderIcon />
+                </button>
+                <button
+                    className={`nav-button ${activeSection === 'my-network' ? 'active' : ''}`}
+                    onClick={() => setActiveSection('my-network')}
+                >
+                    <GroupsIcon />
+                </button>
+            </div>
+            <div className="section-content"> 
+                {renderSection()}
+            </div>
         </div>
     );
 };
