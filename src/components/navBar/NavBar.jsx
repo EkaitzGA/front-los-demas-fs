@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { NavLink, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useFilters } from '../../context/FilterProvider';
 import { getUnreadMessagesCount } from '../../services/chatService';
-
 import './NavBar.css';
 
 function NavBar() {
@@ -46,7 +45,8 @@ function NavBar() {
     const handleAccountClick = (e) => {
         if (isAuthenticated) {
             e.preventDefault();
-            navigate('/myprofile');  // Ajustar con el ID del usuario cuando esté disponible
+            const id = localStorage.getItem('userId');
+            navigate(`/myprofile/${id}`);  
         }
     };
 
