@@ -1,15 +1,23 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import { updateUserProfile } from '../../utils/api/fetch';
+import './UserInfoContainer.css';
 
 const UserInfoContainer = ({ userData, onProfileUpdate }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [tempData, setTempData] = useState(null);
+    const [isFollowing, setIsFollowing] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [showAuthModal, setShowAuthModal] = useState(false);
     console.log('userData recibido:', userData);
+    
     const [profileData, setProfileData] = useState({
         location: { city: '', country: '' },
         agency: '',
@@ -22,15 +30,18 @@ const UserInfoContainer = ({ userData, onProfileUpdate }) => {
         }
     });
 
-    // Obtener el ID del usuario logueado
     const userId = localStorage.getItem('userId');
     console.log('userId:', userId);
-
-    // Comprobar si el usuario actual es el propietario del perfil
     const isOwner = userId && userData?._id && userId === userData._id.toString();
 
-
     useEffect(() => {
+        const token = localStorage.getItem('token');
+        setIsAuthenticated(!!token);
+
+        if (token && userId && userData?._id) {
+            checkIfFollowing();
+        }
+
         if (userData) {
             setProfileData({
                 location: {
@@ -53,19 +64,60 @@ const UserInfoContainer = ({ userData, onProfileUpdate }) => {
         }
     }, [userData]);
 
+    const checkIfFollowing = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`http://localhost:3002/users/${userId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            if (response.ok) {
+                const currentUserData = await response.json();
+                setIsFollowing(currentUserData.following.some(user => user._id === userData._id));
+            }
+        } catch (error) {
+            console.error('Error checking following status:', error);
+        }
+    };
+
+    const handleFollowClick = async () => {
+        if (!isAuthenticated) {
+            setShowAuthModal(true);
+            return;
+        }
+
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch('http://localhost:3002/users/follow', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    mainUserId: userId,
+                    userId: userData._id
+                })
+            });
+
+            if (response.ok) {
+                setIsFollowing(!isFollowing);
+            }
+        } catch (error) {
+            console.error('Error updating follow status:', error);
+        }
+    };
+
     const handleChange = (e, section, subsection = null) => {
         let value = e.target.value;
 
-        // Formatear URL para el campo website
         if (section === 'contact' && subsection === 'website' && value) {
-            // Solo formatear si hay un valor y no está vacío
             if (value.trim()) {
-                // Eliminar protocolos existentes y www si existen
                 value = value.replace(/^(https?:\/\/)?(www\.)?/, '');
-                // Añadir protocolo y www
                 value = `https://www.${value}`;
             }
-            // Asegurarnos de que value es un string y no un array
             value = value.toString();
         }
         if (subsection) {
@@ -86,7 +138,6 @@ const UserInfoContainer = ({ userData, onProfileUpdate }) => {
     };
 
     const updateUser = async (userId, data) => {
-        // Transformar los datos al formato que espera el backend
         const updateData = {
             city: data.location.city,
             country: data.location.country,
@@ -153,7 +204,6 @@ const UserInfoContainer = ({ userData, onProfileUpdate }) => {
                 
                 setProfileData(updatedData);
                 
-                // Llamar al callback con los datos actualizados
                 if (onProfileUpdate) {
                     onProfileUpdate(result);
                 }
@@ -172,14 +222,55 @@ const UserInfoContainer = ({ userData, onProfileUpdate }) => {
 
     return (
         <section id="profile" className="section-profile">
+            {showAuthModal && (
+                <div className="auth-modal-overlay">
+                    <div className="auth-modal">
+                        <button className="close-modal" onClick={() => setShowAuthModal(false)}>
+                            <CloseIcon />
+                        </button>
+                        <div className="auth-modal-content">
+                            <h2>Authentication Required</h2>
+                            <p>You need to be logged in to follow users</p>
+                            <div className="auth-buttons">
+                                <Link to="/auth?mode=login" className="auth-button login">
+                                    Login
+                                </Link>
+                                <Link to="/auth?mode=register" className="auth-button register">
+                                    Register
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {error && <div className="error-message">{error}</div>}
+
+            {/* Botón de Follow/Unfollow */}
+            {!isOwner && (
+                <button 
+                    className={`follow-button ${isFollowing ? 'following' : ''}`}
+                    onClick={handleFollowClick}
+                >
+                    {isFollowing ? (
+                        <>
+                            <PersonRemoveIcon />
+                            <span>Unfollow</span>
+                        </>
+                    ) : (
+                        <>
+                            <PersonAddIcon />
+                            <span>Follow</span>
+                        </>
+                    )}
+                </button>
+            )}
 
             {isEditing && !isOwner ? (
                 <div className="error-message">You are not authorized to edit this profile</div>
             ) : isEditing ? (
                 <form onSubmit={handleSubmit} className="profile-form">
                     <div className="profile-container">
-                        {/* Campos ocultos para name y lastname */}
                         <input
                             type="text"
                             placeholder="Name"
@@ -195,15 +286,12 @@ const UserInfoContainer = ({ userData, onProfileUpdate }) => {
                             className="hidden"
                         />
 
-                        {/* Avatar input */}
                         <input
                             type="file"
                             accept="image/*"
                             onChange={(e) => {
-                                // Manejar la subida del avatar
                                 const file = e.target.files[0];
                                 if (file) {
-                                    // Aquí puedes manejar la subida del archivo
                                     handleChange({ target: { value: file } }, 'avatar');
                                 }
                             }}
@@ -297,10 +385,9 @@ const UserInfoContainer = ({ userData, onProfileUpdate }) => {
                             className="cancel-button"
                             onClick={() => {
                                 setIsEditing(false);
-                                setProfileData(tempData); // Restauramos los datos que teníamos antes de empezar a editar
-                                setTempData(null); // Limpiamos los datos temporales
+                                setProfileData(tempData);
+                                setTempData(null);
                             }}
-
                             disabled={isLoading}
                         >
                             <CloseIcon />
@@ -340,19 +427,10 @@ const UserInfoContainer = ({ userData, onProfileUpdate }) => {
                                 <div className="contact-row">
                                     <span className="label">Website</span>
                                     {profileData.contact.website && typeof profileData.contact.website === 'string' ?
-                                        <a href={`https://${profileData.contact.website}`} target="_blank" rel="noopener noreferrer">
+                                        <a href={profileData.contact.website} target="_blank" rel="noopener noreferrer">
                                             {profileData.contact.website.replace(/^https?:\/\/(www\.)?/, '')}
                                         </a> :
                                         <span className="empty-field">No website provided</span>
-                                    }
-                                </div>
-                                <div className="contact-row">
-                                    <span className="label">Github</span>
-                                    {profileData.contact.github ?
-                                        <a href={`https://github.com/${profileData.contact.github}`} target="_blank" rel="noopener noreferrer">
-                                            {profileData.contact.github}
-                                        </a> :
-                                        <span className="empty-field">No Github provided</span>
                                     }
                                 </div>
                                 <div className="contact-row">
@@ -381,7 +459,7 @@ const UserInfoContainer = ({ userData, onProfileUpdate }) => {
                         <button
                             className="edit-button"
                             onClick={() => {
-                                setTempData({ ...profileData }); // Guardamos una copia de los datos actuales
+                                setTempData({ ...profileData });
                                 setIsEditing(true);
                             }}
                         >

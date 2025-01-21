@@ -13,39 +13,39 @@
     padding-bottom: 140px;
 }
 
-.users-grid > a {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 250px; /* Ancho fijo para el Link */
-    justify-self: center; /* Centra el Link en su celda del grid */
-
-}
-
 .user-card {
     padding: 20px;
-    /* border: 1px solid #eee; */
     border-radius: 8px;
     background-color: white;
     transition: all 0.2s ease;
     text-align: center;
-    aspect-ratio: 1 / 1; /* Hace la tarjeta cuadrada */
+    aspect-ratio: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    width: 250px;
+    height: auto;
+    justify-self: center;
+    position: relative;
+}
+
+.user-card-content {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 20%;
-    height: auto;
+    width: 100%;
 }
 
 /* Estilos para el contenedor de la imagen */
 .user-image {
-    width: 120px; /* Tamaño fijo para el contenedor */
-    height: 120px; /* Mismo tamaño que el ancho para mantener la proporción */
-    margin: 0 auto 15px; /* Centrar horizontalmente y añadir espacio abajo */
-    border-radius: 50%; /* Hacer el contenedor circular */
-    overflow: hidden; /* Asegurar que la imagen no sobresalga del círculo */
-    display: flex; /* Para centrar la imagen dentro del contenedor */
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 15px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
     align-items: center;
     justify-content: center;
 }
@@ -54,7 +54,7 @@
 .user-image img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Para que la imagen cubra todo el espacio sin deformarse */
+    object-fit: cover;
 }
 
 /* Specialization backgrounds */
@@ -93,22 +93,6 @@
     color: #666;
 }
 
-.username-search {
-    width: 100%;
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-    margin-top: 10px;
-}
-
-.username-search:focus {
-    outline: none;
-    border-color: #999;
-}
-
-
-
 .specialization-tag {
     padding: 5px 10px;
     border-radius: 20px;
@@ -139,4 +123,148 @@
 .specialization-tag.none {
     background-color: #FF4101;
     color: white;
+}
+
+/* Botón de Follow */
+.follow-button-card {
+    width: calc(100% - 150px);
+    margin: 10px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: white;
+    color: black;
+    border: 2px solid black;
+}
+
+.follow-button-card svg {
+    font-size: 20px;
+}
+
+.follow-button-card:hover {
+    background-color: black;
+    color: white;
+}
+
+.follow-button-card.following {
+    background-color: black;
+    color: white;
+}
+
+.follow-button-card.following:hover {
+    background-color: #dc2626;
+    border-color: #dc2626;
+}
+
+/* Modal de autenticación */
+.auth-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.auth-modal {
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 24px;
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+.auth-modal-content {
+    text-align: center;
+}
+
+.auth-modal-content h2 {
+    color: #fff;
+    margin: 0 0 16px 0;
+    font-size: 1.5rem;
+}
+
+.auth-modal-content p {
+    color: #ccc;
+    margin: 0 0 24px 0;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+}
+
+.auth-button {
+    padding: 10px 24px;
+    border-radius: 20px;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.auth-button.login {
+    background-color: #2b5278;
+    color: white;
+}
+
+.auth-button.login:hover {
+    background-color: #366290;
+}
+
+.auth-button.register {
+    background-color: transparent;
+    color: #2b5278;
+    border: 2px solid #2b5278;
+}
+
+.auth-button.register:hover {
+    background-color: #2b5278;
+    color: white;
+}
+
+.close-modal {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+}
+
+.close-modal:hover {
+    color: #fff;
+}
+
+@keyframes modalSlideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }

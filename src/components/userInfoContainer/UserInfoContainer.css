@@ -1,0 +1,609 @@
+/* Estilos existentes */
+.section-profile {
+    position: relative;
+    padding: 20px;
+    color: white;
+}
+
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* Estilos del botón de Follow/Unfollow */
+.follow-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: white;
+    color: #2b5278;
+}
+
+.follow-button svg {
+    font-size: 20px;
+}
+
+.follow-button:hover {
+    background-color: #2b5278;
+    color: white;
+}
+
+.follow-button.following {
+    background-color: #2b5278;
+    color: white;
+}
+
+.follow-button.following:hover {
+    background-color: #dc2626;
+}
+
+/* Modal de autenticación */
+.auth-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.auth-modal {
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 24px;
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+.close-modal {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+}
+
+.close-modal:hover {
+    color: #fff;
+}
+
+.auth-modal-content {
+    text-align: center;
+}
+
+.auth-modal-content h2 {
+    color: #fff;
+    margin: 0 0 16px 0;
+    font-size: 1.5rem;
+}
+
+.auth-modal-content p {
+    color: #ccc;
+    margin: 0 0 24px 0;
+    font-size: 1rem;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+}
+
+.auth-button {
+    padding: 10px 24px;
+    border-radius: 20px;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.auth-button.login {
+    background-color: #2b5278;
+    color: white;
+}
+
+.auth-button.login:hover {
+    background-color: #366290;
+}
+
+.auth-button.register {
+    background-color: transparent;
+    color: #2b5278;
+    border: 2px solid #2b5278;
+}
+
+.auth-button.register:hover {
+    background-color: #2b5278;
+    color: white;
+}
+
+/* Animaciones */
+@keyframes modalSlideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .auth-modal {
+        width: calc(100% - 40px);
+        margin: 20px;
+    }
+
+    .auth-buttons {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .auth-button {
+        width: 100%;
+        text-align: center;
+    }
+
+    .follow-button {
+        position: relative;
+        top: auto;
+        right: auto;
+        margin-bottom: 20px;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .section-profile {
+        padding: 10px;
+    }
+}
+
+/* Mantén los estilos existentes para los bloques de información */
+.location-block,
+.agency-block,
+.specialization-block,
+.contact-block {
+    margin-bottom: 20px;
+}
+
+.edit-button,
+.save-button,
+.cancel-button {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.edit-button:hover,
+.save-button:hover {
+    color: #2b5278;
+}
+
+.cancel-button:hover {
+    color: #dc2626;
+}
+
+.form-actions {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    display: flex;
+    gap: 12px;
+}
+
+.error-message {
+    color: #dc2626;
+    margin-bottom: 16px;
+    padding: 8px;
+    border-radius: 4px;
+    background-color: rgba(220, 38, 38, 0.1);
+}
+
+/* Estilos para campos de formulario */
+input,
+textarea,
+select {
+    background-color: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 4px;
+    color: white;
+    padding: 8px 12px;
+    width: 100%;
+    margin-top: 8px;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: #2b5278;
+    outline: none;
+}
+
+.hidden {
+    display: none;
+}
+
+.empty-field {
+    color: #666;
+    font-style: italic;
+}
+
+.contact-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 8px;
+    align-items: center;
+}
+
+.contact-row .label {
+    min-width: 80px;
+    font-weight: 500;
+}
+.section-profile {
+    position: relative;
+    padding: 20px;
+    color: white;
+}
+
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.stats-block {
+    margin-top: 20px;
+    padding: 20px;
+    border-bottom: 0.5px solid rgb(175, 175, 175);
+}
+
+.stats-block h3 {
+    margin: 0;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.stats-info {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+}
+
+.stat-row .label {
+    color: #888;
+}
+
+.stat-row .value {
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.follow-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: white;
+    color: black;
+}
+
+.follow-button svg {
+    font-size: 20px;
+}
+
+.follow-button:hover {
+    background-color: black;
+    color: white;
+}
+
+.follow-button.following {
+    background-color: black;
+    color: white;
+}
+
+.follow-button.following:hover {
+    background-color: #dc2626;
+}
+
+.auth-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.auth-modal {
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 24px;
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+.close-modal {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+}
+
+.close-modal:hover {
+    color: #fff;
+}
+
+.auth-modal-content {
+    text-align: center;
+}
+
+.auth-modal-content h2 {
+    color: #fff;
+    margin: 0 0 16px 0;
+    font-size: 1.5rem;
+}
+
+.auth-modal-content p {
+    color: #ccc;
+    margin: 0 0 24px 0;
+    font-size: 1rem;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+}
+
+.auth-button {
+    padding: 10px 24px;
+    border-radius: 20px;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.auth-button.login {
+    background-color: #2b5278;
+    color: white;
+}
+
+.auth-button.login:hover {
+    background-color: #366290;
+}
+
+.auth-button.register {
+    background-color: transparent;
+    color: #2b5278;
+    border: 2px solid #2b5278;
+}
+
+.auth-button.register:hover {
+    background-color: #2b5278;
+    color: white;
+}
+
+.location-block,
+.agency-block,
+.specialization-block,
+.contact-block {
+    padding: 20px;
+    border-bottom: 0.5px solid rgb(175, 175, 175);
+}
+
+.location-block h3,
+.agency-block h3,
+.specialization-block h3,
+.contact-block h3 {
+    margin: 0;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.contact-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.contact-row .label {
+    color: #888;
+    min-width: 80px;
+}
+
+.contact-row a {
+    color: white;
+    text-decoration: none;
+}
+
+.contact-row a:hover {
+    text-decoration: underline;
+}
+
+.empty-field {
+    color: #666;
+    font-style: italic;
+}
+
+.edit-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.edit-button:hover {
+    color: #2b5278;
+}
+
+.error-message {
+    color: #dc2626;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: rgba(220, 38, 38, 0.1);
+}
+
+/* Estilos para el formulario de edición */
+.profile-form input,
+.profile-form textarea,
+.profile-form select {
+    background-color: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 4px;
+    color: white;
+    padding: 8px 12px;
+    width: 100%;
+    margin-top: 8px;
+}
+
+.profile-form input:focus,
+.profile-form textarea:focus,
+.profile-form select:focus {
+    border-color: #2b5278;
+    outline: none;
+}
+
+.form-actions {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 12px;
+}
+
+.form-actions button {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.save-button:hover {
+    color: #4CAF50;
+}
+
+.cancel-button:hover {
+    color: #dc2626;
+}
+
+.hidden {
+    display: none;
+}
+
+@keyframes modalSlideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .section-profile {
+        padding: 10px;
+    }
+
+    .auth-modal {
+        width: calc(100% - 40px);
+        margin: 20px;
+    }
+
+    .auth-buttons {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .auth-button {
+        width: 100%;
+        text-align: center;
+    }
+
+    .follow-button {
+        position: relative;
+        top: auto;
+        right: auto;
+        margin-bottom: 20px;
+        width: 100%;
+        justify-content: center;
+    }
+}
