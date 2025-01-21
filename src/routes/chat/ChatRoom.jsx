@@ -19,7 +19,24 @@ function ChatRoom() {
   }
 
   const initialChat = loaderData?.data || loaderData;
-  const [messages, setMessages] = useState(initialChat?.messages || []);
+  
+  // Referencia para el ID de usuario para evitar recálculos
+  const token = localStorage.getItem("token");
+  const getUserId = () => {
+    const decoded = jwtDecode(token);
+    return decoded?.id || null;
+  };
+  const userId = getUserId();
+
+  // Inicializar los mensajes asegurándonos de que el sender sea string
+  const [messages, setMessages] = useState(() => {
+    const initialMessages = initialChat?.messages || [];
+    return initialMessages.map(msg => ({
+      ...msg,
+      sender: typeof msg.sender === 'object' ? msg.sender._id : msg.sender
+    }));
+  });
+  
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [typingUser, setTypingUser] = useState(null);
@@ -29,30 +46,22 @@ function ChatRoom() {
   const typingTimeoutRef = useRef(null);
   const socketRef = useRef(null);
 
-  const token = localStorage.getItem("token");
-  const getUserId = () => {
-    const decoded = jwtDecode(token);
-    return decoded?.id || null;
-  };
-  const userId = getUserId();
   const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3002";
 
   const getOtherParticipantName = () => {
     if (!initialChat || !userId) return "Usuario";
     
     try {
-      if (initialChat.owner && initialChat.owner._id === userId && initialChat.client) {
-        const clientName = [
+      if (initialChat.owner?._id === userId && initialChat.client) {
+        return [
           initialChat.client.name || "",
           initialChat.client.lastname || "",
-        ].filter(Boolean).join(" ");
-        return clientName || "Cliente";
+        ].filter(Boolean).join(" ") || "Cliente";
       } else if (initialChat.owner) {
-        const ownerName = [
+        return [
           initialChat.owner.name || "",
           initialChat.owner.lastname || "",
-        ].filter(Boolean).join(" ");
-        return ownerName;
+        ].filter(Boolean).join(" ") || "Propietario";
       }
     } catch (error) {
       console.error("Error getting participant name:", error);
@@ -85,26 +94,57 @@ function ChatRoom() {
     }
   };
 
-  useEffect(() => {
-    const markAsRead = async () => {
-      if (!initialChat?._id || !userId) return;
-
-      try {
-        await fetch(`${baseUrl}/chats/${initialChat._id}/read`, {
-          method: 'PUT',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ userId })
+  const markMessagesAsRead = async () => {
+    if (!initialChat?._id || !userId || !token) return;
+  
+    try {
+        const response = await fetch(`${baseUrl}/chats/${initialChat._id}/read`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
         });
-      } catch (error) {
+  
+        if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.message || `Error del servidor: ${response.status}`);
+        }
+  
+        const data = await response.json();
+  
+        // Actualizar los mensajes solo si obtuvimos datos válidos del servidor
+        if (data.success && data.data?.messages) {
+            setMessages(data.data.messages.map(msg => ({
+                ...msg,
+                sender: typeof msg.sender === 'object' ? msg.sender._id : msg.sender
+            })));
+        }
+    } catch (error) {
         console.error('Error marking messages as read:', error);
-      }
-    };
+        // Opcional: mostrar un mensaje de error al usuario
+        // setError('Error al marcar mensajes como leídos');
+    }
+  };
 
-    markAsRead();
-  }, [initialChat?._id, userId, token, baseUrl]);
+  useEffect(() => {
+    if (initialChat?._id && userId) {
+      // Marcar mensajes como leídos al montar el componente
+      markMessagesAsRead();
+
+      // Configurar intervalo para verificar mensajes sin leer
+      const interval = setInterval(() => {
+        const hasUnreadMessages = messages.some(msg => 
+          msg.sender?.toString() !== userId?.toString() && !msg.read
+        );
+        if (hasUnreadMessages) {
+          markMessagesAsRead();
+        }
+      }, 3000);
+
+      return () => clearInterval(interval);
+    }
+  }, [initialChat?._id, userId]);
 
   useEffect(() => {
     scrollToBottom();
@@ -156,13 +196,16 @@ function ChatRoom() {
             if (!messageExists) {
               return [...prev, {
                 message: data.message,
-                sender: data.sender,
+                sender: data.sender.toString(),
                 timestamp: data.timestamp || new Date().toISOString(),
                 read: false
               }];
             }
             return prev;
           });
+          
+          // Marcar como leído después de recibir un nuevo mensaje
+          markMessagesAsRead();
         }
       });
 
@@ -210,51 +253,48 @@ function ChatRoom() {
     
     setLoading(true);
     try {
-        // Primero guardamos en la base de datos
-        const response = await fetch(`${baseUrl}/chats/${initialChat._id}`, {
-            method: 'PUT',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                message: messageText
-            })
+      const response = await fetch(`${baseUrl}/chats/${initialChat._id}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: messageText
+        })
+      });
+
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || `Error: ${response.status}`);
+      }
+
+      const messageData = {
+        message: messageText,
+        sender: userId.toString(),
+        timestamp: new Date().toISOString(),
+        read: false
+      };
+
+      setMessages(prev => [...prev, messageData]);
+
+      if (socketRef.current?.connected) {
+        socketRef.current.emit("private-message", {
+          ...messageData,
+          chatId: initialChat._id,
         });
+      }
 
-        const data = await response.json();
-        if (!response.ok || !data.success) {
-            throw new Error(data.message || `Error: ${response.status}`);
-        }
-
-        // Si el guardado fue exitoso, actualizamos el estado local
-        const messageData = {
-            message: messageText,
-            sender: userId,
-            timestamp: new Date().toISOString(),
-            read: false
-        };
-
-        setMessages(prev => [...prev, messageData]);
-
-        // Y enviamos por socket a los demás usuarios
-        if (socketRef.current?.connected) {
-            socketRef.current.emit("private-message", {
-                ...messageData,
-                chatId: initialChat._id,
-            });
-        }
-
-        e.target.reset();
-        inputRef.current?.focus();
+      e.target.reset();
+      inputRef.current?.focus();
     } catch (error) {
-        console.error('Error sending message:', error);
-        setError(error.message || 'Error al enviar mensaje');
-        setTimeout(() => setError(null), 3000);
+      console.error('Error sending message:', error);
+      setError(error.message || 'Error al enviar mensaje');
+      setTimeout(() => setError(null), 3000);
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-};
+  };
 
   if (!initialChat) {
     return (
@@ -293,19 +333,29 @@ function ChatRoom() {
       </div>
 
       <div className="chat-messages-dsk">
+        {/* Contador de mensajes no leídos */}
+        {messages.some(msg => !msg.read && msg.sender.toString() !== userId?.toString()) && (
+          <div className="unread-messages-indicator">
+            {messages.filter(msg => !msg.read && msg.sender.toString() !== userId?.toString()).length} mensajes sin leer
+          </div>
+        )}
+        
+        {/* Lista de mensajes */}
         {messages.map((msg, index) => {
-          const isOwnMessage = String(msg.sender) === String(userId);
+          const isOwnMessage = msg.sender?.toString() === userId?.toString();
           return (
             <div
               key={index}
-              className={`message ${isOwnMessage ? 'message-sent' : 'message-received'}`}
+              className={`message ${isOwnMessage ? 'message-sent' : 'message-received'} ${!msg.read && !isOwnMessage ? 'unread' : ''}`}
             >
-              <div className="message-content">{msg.message}</div>
-              <div className="message-timestamp">
-                {new Date(msg.timestamp).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
+              <div className="message-content">
+                {msg.message}
+                <div className="message-timestamp">
+                  {new Date(msg.timestamp).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </div>
               </div>
             </div>
           );

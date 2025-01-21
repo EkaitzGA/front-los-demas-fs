@@ -10,53 +10,87 @@ function ChatsList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const token = localStorage.getItem('token');
+  
   const getUserId = () => {
-    console.log("token: ", token);
-    const decoded = jwtDecode(token);
-    console.log("decoded token: ", decoded);
-    return decoded?.id || null;
+    try {
+      console.log("Decoding token:", token);
+      const decoded = jwtDecode(token);
+      console.log("Decoded token:", decoded);
+      return decoded?.id || null;
+    } catch (error) {
+      console.error("Error decoding token:", error);
+      return null;
+    }
   };
+  
   const userId = getUserId();
 
   const getUnreadMessages = (chat) => {
-    if (!chat?.messages) return 0;
+    if (!chat?.messages || !Array.isArray(chat.messages) || !userId) return 0;
     
-    // Filtrar los mensajes para contar solo los no leídos y del otro usuario
-    const unreadCount = chat.messages.filter(msg => {
-        const isFromOtherUser = msg.sender.toString() !== userId;
-        const isUnread = !msg.read;
-        return isFromOtherUser && isUnread;
-    }).length;
+    return chat.messages.reduce((count, msg) => {
+      // Asegurarse de que msg.sender sea un objeto o string válido
+      const senderId = typeof msg.sender === 'object' ? msg.sender._id : msg.sender;
+      if (!senderId) return count;
 
-    console.log(`Chat ${chat._id} unread messages:`, unreadCount);
-    return unreadCount;
-};
+      const isFromOtherUser = senderId.toString() !== userId.toString();
+      const isUnread = msg.read === false; // Explícitamente comparar con false
+
+      if (isFromOtherUser && isUnread) {
+        return count + 1;
+      }
+      return count;
+    }, 0);
+  };
+
   const getLastMessage = (chat) => {
     if (!chat?.messages?.length) return { text: 'No hay mensajes', unread: false };
     
-    // Filtrar mensajes duplicados
-    const uniqueMessages = chat.messages.reduce((acc, msg) => {
-      const messageKey = `${msg.message}-${msg.sender}-${msg.timestamp}`;
-      if (!acc.has(messageKey)) {
-        acc.set(messageKey, msg);
-      }
-      return acc;
-    }, new Map());
-  
-    const messages = Array.from(uniqueMessages.values());
-    const lastMessage = messages[messages.length - 1];
+    // Filtrar mensajes válidos y ordenarlos por fecha
+    const validMessages = chat.messages
+      .filter(msg => msg && msg.message && msg.sender && msg.timestamp)
+      .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
     
+    if (validMessages.length === 0) {
+      return { text: 'No hay mensajes válidos', unread: false };
+    }
+
+    const lastMessage = validMessages[0];
+    const senderId = typeof lastMessage.sender === 'object' ? 
+      lastMessage.sender._id : lastMessage.sender;
+
     return {
       text: lastMessage.message,
-      unread: lastMessage.sender.toString() !== userId && !lastMessage.read
+      timestamp: new Date(lastMessage.timestamp),
+      unread: senderId.toString() !== userId?.toString() && !lastMessage.read
     };
+  };
+
+  const getParticipantName = (chat) => {
+    if (!chat || !userId) return 'Usuario';
+
+    try {
+      if (chat.owner?._id === userId && chat.client) {
+        return [
+          chat.client.name || '',
+          chat.client.lastname || ''
+        ].filter(Boolean).join(' ') || 'Cliente';
+      } else if (chat.owner) {
+        return [
+          chat.owner.name || '',
+          chat.owner.lastname || ''
+        ].filter(Boolean).join(' ') || 'Propietario';
+      }
+    } catch (error) {
+      console.error('Error getting participant name:', error);
+    }
+    return 'Usuario';
   };
   
   useEffect(() => {
     const fetchChats = async () => {
       try {
         setLoading(true);
-        console.log('Fetching chats for user:', userId);
         
         if (!userId) {
           navigate('/auth');
@@ -64,13 +98,33 @@ function ChatsList() {
         }
 
         const response = await getUserChats(userId);
-        console.log('Response from getUserChats:', response);
 
         if (response.success && response.data) {
-          // Asegurarnos de que data es un array
           const chatsArray = Array.isArray(response.data) ? response.data : [];
-          console.log('Setting chats:', chatsArray);
-          setChats(chatsArray);
+          
+          // Ordenar chats por última actividad y mensajes no leídos
+          const sortedChats = chatsArray.sort((a, b) => {
+            const unreadA = getUnreadMessages(a);
+            const unreadB = getUnreadMessages(b);
+            
+            // Primero ordenar por mensajes no leídos
+            if (unreadA !== unreadB) {
+              return unreadB - unreadA;
+            }
+            
+            // Después por última actividad
+            const dateA = new Date(b.lastActivity || b.updatedAt);
+            const dateB = new Date(a.lastActivity || a.updatedAt);
+            return dateA - dateB;
+          });
+
+          console.log('Sorted chats:', sortedChats.map(chat => ({
+            id: chat._id,
+            unreadCount: getUnreadMessages(chat),
+            lastActivity: chat.lastActivity || chat.updatedAt
+          })));
+
+          setChats(sortedChats);
         } else {
           throw new Error(response.message || 'No se pudieron cargar los chats');
         }
@@ -83,10 +137,40 @@ function ChatsList() {
     };
 
     fetchChats();
-    // Actualizar cada 30 segundos
-    const interval = setInterval(fetchChats, 30000);
+    // Actualizar cada 5 segundos
+    const interval = setInterval(fetchChats, 5000);
     return () => clearInterval(interval);
   }, [userId, navigate]);
+
+  const formatDate = (date) => {
+    if (!date) return '';
+    
+    const now = new Date();
+    const messageDate = new Date(date);
+    
+    // Si es hoy, mostrar la hora
+    if (messageDate.toDateString() === now.toDateString()) {
+      return messageDate.toLocaleTimeString([], { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+      });
+    }
+    
+    // Si es este año, mostrar día y mes
+    if (messageDate.getFullYear() === now.getFullYear()) {
+      return messageDate.toLocaleDateString([], { 
+        day: '2-digit', 
+        month: 'short' 
+      });
+    }
+    
+    // Si es otro año, mostrar fecha completa
+    return messageDate.toLocaleDateString([], { 
+      year: 'numeric', 
+      month: 'short', 
+      day: '2-digit' 
+    });
+  };
 
   if (loading) {
     return <div className="chats-loading">Cargando chats...</div>;
@@ -114,6 +198,8 @@ function ChatsList() {
           chats.map(chat => {
             const unreadCount = getUnreadMessages(chat);
             const lastMessage = getLastMessage(chat);
+            const participantName = getParticipantName(chat);
+            
             return (
               <Link 
                 to={`/chats/${chat._id}`} 
@@ -123,9 +209,7 @@ function ChatsList() {
                 <div className="chat-card-header">
                   <h3>{chat.project?.name || 'Proyecto sin nombre'}</h3>
                   <span className="participant-name">
-                    {chat.owner?._id === userId
-                      ? `${chat.client?.name || ''} ${chat.client?.lastname || ''}`
-                      : `${chat.owner?.name || ''} ${chat.owner?.lastname || ''}`}
+                    {participantName}
                   </span>
                   {unreadCount > 0 && (
                     <span className="unread-badge">
@@ -141,7 +225,7 @@ function ChatsList() {
                     {chat.messages?.length || 0} mensajes
                   </span>
                   <span className="chat-date">
-                    {new Date(chat.updatedAt).toLocaleDateString()}
+                    {formatDate(lastMessage.timestamp || chat.updatedAt)}
                   </span>
                 </div>
               </Link>
