@@ -74,6 +74,26 @@ async function getUsers() {
     return await fetchData('users');
 }
 
+async function createOwnProject(id) {
+    return await fetchData(`projects/${id}`, 'POST', data);
+}
+
+async function updateProject(id) {
+    return await fetchData(`projects/${id}`, 'PUT', data);
+}
+
+async function getAllTypes() {
+    return await fetchData('types');
+}
+
+async function getAllStyles() {
+    return await fetchData('styles');
+}
+
+async function getAllSubjects() {
+    return await fetchData('subjects');
+}
+
 async function getUserChats(userId) {
     try {
         if (!userId) {
@@ -87,7 +107,7 @@ async function getUserChats(userId) {
 
         console.log('Fetching chats for user:', userId);
 
-        // Usando la ruta correcta
+        
         const response = await fetch(`${BASE_URL}/chats/user/${userId}`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -104,7 +124,7 @@ async function getUserChats(userId) {
 
         return {
             success: true,
-            data: data.data || data // Por si la respuesta viene directamente o dentro de data
+            data: data.data || data 
         };
     } catch (error) {
         console.error('Error getting user chats:', error);
@@ -238,5 +258,10 @@ export {
     getChatById,
     checkExistingChat,
     addMessage,
-    markChatAsRead
+    markChatAsRead,
+    createOwnProject,
+    updateProject,
+    getAllTypes,
+    getAllStyles,
+    getAllSubjects
 };

@@ -20,7 +20,7 @@ function ChatRoom() {
 
   const initialChat = loaderData?.data || loaderData;
   
-  // Referencia para el ID de usuario para evitar recálculos
+  
   const token = localStorage.getItem("token");
   const getUserId = () => {
     const decoded = jwtDecode(token);
@@ -28,7 +28,7 @@ function ChatRoom() {
   };
   const userId = getUserId();
 
-  // Inicializar los mensajes asegurándonos de que el sender sea string
+  
   const [messages, setMessages] = useState(() => {
     const initialMessages = initialChat?.messages || [];
     return initialMessages.map(msg => ({
@@ -88,7 +88,14 @@ function ChatRoom() {
 
   const scrollToBottom = () => {
     try {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      const chatContainer = document.querySelector('.chat-messages-dsk');
+      if (inputRef.current && chatContainer) {
+        // Hacer scroll hasta que el input sea visible
+        inputRef.current.scrollIntoView({ 
+          behavior: "smooth",
+          block: "end" // esto asegura que el input sea visible en la parte inferior
+        });
+      }
     } catch (error) {
       console.error("Error scrolling to bottom:", error);
     }
