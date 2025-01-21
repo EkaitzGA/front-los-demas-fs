@@ -130,7 +130,7 @@
     border-bottom: 1.5px solid white;
 }
 
-.submenu {
+/* .submenu {
     position: absolute;
     top: 100%;
     right: 0;
@@ -144,6 +144,40 @@
     text-decoration: none;
     color: inherit;
     transition: background-color 0.2s ease;
+} */
+
+.submenu {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.296);
+    z-index: 99;
+    min-width: 100%;
+    display: flex;           /* Añadido */
+    flex-direction: column;  /* Añadido */
+    align-items: center;     /* Añadido */
+    
+}
+
+.submenu .submenu-item {
+    display: block;
+    padding: 8px 16px;
+    text-decoration: none;
+    /* color: white; */
+    transition: background-color 0.2s ease;
+    text-align: center;
+    white-space: nowrap;
+    width: 100%;            /* Añadido */
+}
+
+/* Estilo específico para el botón de logout */
+.submenu button.submenu-item {
+    width: 100%;
+    display: flex;          /* Añadido */
+    justify-content: center; /* Añadido */
+    align-items: center;     /* Añadido */
+    text-align: center;
 }
 
 .submenu-item:hover {
@@ -179,13 +213,31 @@
     transform: translateY(-100%);
 }
 
+.account-trigger.clickable {
+    cursor: pointer;
+}
+
+/* Estilo para el botón de logout */
+.submenu button.submenu-item {
+    width: 100%;
+    text-align: left;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: inherit;
+    color: inherit;
+    padding: 8px 16px;
+    margin: 0;
+}
+
+
+
 /* Estilos para el badge de notificaciones */
-.chat-link {
+/* .chat-link {
     position: relative;
     display: inline-flex;
     align-items: center;
 }
-
 .unread-badge {
     position: absolute;
     top: -8px;
@@ -203,28 +255,57 @@
     font-weight: bold;
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
-/* Nuevas clases para la autenticación */
-.account-trigger.clickable {
-    cursor: pointer;
-}
-
-/* Estilo para el botón de logout */
-.submenu button.submenu-item {
-    width: 100%;
-    text-align: left;
-    border: none;
-    background: none;
-    cursor: pointer;
-    font-size: inherit;
-    color: inherit;
-    padding: 8px 16px;
-    margin: 0;
-}
-/* Estilos para el badge de notificaciones */
 .chat-link {
     position: relative;
     display: inline-flex;
     align-items: center;
+}
+.unread-badge {
+    position: absolute;
+    top: -8px;
+    right: -12px;
+    background-color: #ff4444;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+} */
+
+.chat-li-item {
+    position: absolute;
+    right: 170px;
+    top: 50%;
+    transform: translateY(-50%);
+    list-style: none;
+}
+
+.chat-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    color: #333;
+    text-decoration: none;
+}
+
+.chat-link:hover {
+    color: black;
+}
+
+.chat-link.active-link {
+    color: black;
+    font-weight: bold;
+}
+
+.chat-link svg {
+    width: 24px;
+    height: 24px;
 }
 
 .unread-badge {

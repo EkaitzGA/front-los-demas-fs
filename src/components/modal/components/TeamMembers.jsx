@@ -1,29 +1,77 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { getUSerByUsername } from '../../../utils/api/fetch.js'
 
 const TeamMembers = ({ projectData, setProjectData, onNext, onBack }) => {
     const [searchTerm, setSearchTerm] = useState('');
-    
-    // Mock users data
-    const mockUsers = [
-        { _id: '1', name: 'John Doe', avatar: '/mock-avatar-1.jpg' },
-        { _id: '2', name: 'Jane Smith', avatar: '/mock-avatar-2.jpg' },
-        { _id: '3', name: 'Mike Johnson', avatar: '/mock-avatar-3.jpg' },
-        { _id: '4', name: 'Sarah Wilson', avatar: '/mock-avatar-4.jpg' },
-        { _id: '5', name: 'David Brown', avatar: '/mock-avatar-5.jpg' },
-    ];
+    const [searchResults, setSearchResults] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [selectedUsers, setSelectedUsers] = useState([]);
 
-    const filteredUsers = mockUsers.filter(user => 
-        user.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        !projectData.team_members.includes(user._id)
-    );
+    // Función para buscar usuarios con debounce
+    useEffect(() => {
+        const searchUsers = async () => {
+            if (searchTerm.trim() === '') {
+                setSearchResults([]);
+                return;
+            }
 
-    const handleAddMember = (userId) => {
-        if (!projectData.team_members.includes(userId)) {
+            setIsLoading(true);
+            try {
+                const result = await getUSerByUsername(searchTerm);
+                // Filtramos los usuarios que ya están seleccionados
+                const filteredResults = result.filter(user => 
+                    !projectData.team_members.includes(user._id)
+                );
+                setSearchResults(filteredResults);
+            } catch (error) {
+                console.error('Error searching users:', error);
+                setSearchResults([]);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        // Debounce de 300ms para evitar demasiadas llamadas
+        const timeoutId = setTimeout(() => {
+            if (searchTerm) {
+                searchUsers();
+            }
+        }, 300);
+
+        return () => clearTimeout(timeoutId);
+    }, [searchTerm, projectData.team_members]);
+
+    // Cargar datos de los usuarios seleccionados
+    useEffect(() => {
+        const loadSelectedUsers = async () => {
+            try {
+                const usersData = await Promise.all(
+                    projectData.team_members.map(async (userId) => {
+                        const user = await getUSerByUsername(userId);
+                        return user;
+                    })
+                );
+                setSelectedUsers(usersData.filter(Boolean));
+            } catch (error) {
+                console.error('Error loading selected users:', error);
+            }
+        };
+
+        if (projectData.team_members.length > 0) {
+            loadSelectedUsers();
+        } else {
+            setSelectedUsers([]);
+        }
+    }, [projectData.team_members]);
+
+    const handleAddMember = (user) => {
+        if (!projectData.team_members.includes(user._id)) {
             setProjectData(prev => ({
                 ...prev,
-                team_members: [...prev.team_members, userId]
+                team_members: [...prev.team_members, user._id]
             }));
-            setSearchTerm(''); // Clear search after adding
+            setSearchTerm('');
+            setSearchResults([]);
         }
     };
 
@@ -37,12 +85,6 @@ const TeamMembers = ({ projectData, setProjectData, onNext, onBack }) => {
     const handleContinue = (e) => {
         e.preventDefault();
         onNext();
-    };
-
-    const getSelectedMembers = () => {
-        return projectData.team_members.map(memberId => 
-            mockUsers.find(user => user._id === memberId)
-        ).filter(Boolean);
     };
 
     return (
@@ -62,25 +104,35 @@ const TeamMembers = ({ projectData, setProjectData, onNext, onBack }) => {
                         id="memberSearch"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        placeholder="Type to search users..."
+                        placeholder="Type username to search..."
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                     />
                     
                     {/* Search Results Dropdown */}
                     {searchTerm && (
                         <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto">
-                            {filteredUsers.length > 0 ? (
-                                filteredUsers.map(user => (
+                            {isLoading ? (
+                                <div className="px-4 py-2 text-gray-500">
+                                    Searching...
+                                </div>
+                            ) : searchResults.length > 0 ? (
+                                searchResults.map(user => (
                                     <button
                                         key={user._id}
                                         type="button"
-                                        onClick={() => handleAddMember(user._id)}
+                                        onClick={() => handleAddMember(user)}
                                         className="w-full px-4 py-2 text-left hover:bg-gray-100 flex items-center gap-3"
                                     >
-                                        <div className="flex-shrink-0 w-8 h-8 bg-gray-200 rounded-full">
-                                            {/* Avatar placeholder */}
+                                        <div className="flex-shrink-0 w-8 h-8 bg-gray-200 rounded-full overflow-hidden">
+                                            {user.avatar && (
+                                                <img 
+                                                    src={user.avatar} 
+                                                    alt={user.username}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            )}
                                         </div>
-                                        <span>{user.name}</span>
+                                        <span>{user.username}</span>
                                     </button>
                                 ))
                             ) : (
@@ -99,20 +151,26 @@ const TeamMembers = ({ projectData, setProjectData, onNext, onBack }) => {
                     Selected Team Members
                 </label>
                 <div className="space-y-2">
-                    {getSelectedMembers().map(member => (
+                    {selectedUsers.map(user => (
                         <div 
-                            key={member._id}
+                            key={user._id}
                             className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
                         >
                             <div className="flex items-center gap-3">
-                                <div className="flex-shrink-0 w-8 h-8 bg-gray-200 rounded-full">
-                                    {/* Avatar placeholder */}
+                                <div className="flex-shrink-0 w-8 h-8 bg-gray-200 rounded-full overflow-hidden">
+                                    {user.avatar && (
+                                        <img 
+                                            src={user.avatar} 
+                                            alt={user.username}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    )}
                                 </div>
-                                <span>{member.name}</span>
+                                <span>{user.username}</span>
                             </div>
                             <button
                                 type="button"
-                                onClick={() => handleRemoveMember(member._id)}
+                                onClick={() => handleRemoveMember(user._id)}
                                 className="text-red-500 hover:text-red-700"
                             >
                                 <svg 
@@ -132,7 +190,7 @@ const TeamMembers = ({ projectData, setProjectData, onNext, onBack }) => {
                         </div>
                     ))}
                     
-                    {getSelectedMembers().length === 0 && (
+                    {selectedUsers.length === 0 && (
                         <div className="text-center py-4 text-gray-500">
                             No team members selected
                         </div>

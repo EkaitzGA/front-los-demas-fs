@@ -14,7 +14,7 @@
 .projects-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 24px;
+    gap: 40px;
     padding: 0 20px;
     margin-top: 70px;
     margin-bottom: 150px;

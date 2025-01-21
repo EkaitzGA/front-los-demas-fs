@@ -12,7 +12,7 @@ const SearchFilter = () => {
     types: filterData.types,
     subjects: filterData.subjects
   });
-  
+
   const [openSections, setOpenSections] = useState({
     styles: false,
     types: false,
@@ -32,7 +32,7 @@ const SearchFilter = () => {
       return Object.entries(selectedFilters).every(([section, selected]) => {
         if (section === currentSection) return true;
         if (selected.length === 0) return true;
-        
+
         // Extraemos los nombres de los filtros del proyecto
         const projectFilterNames = project[section].map(getFilterName);
         // Verificamos si alguno de los filtros seleccionados está en el proyecto
@@ -61,7 +61,7 @@ const SearchFilter = () => {
 
     Object.keys(available).forEach(section => {
       const projectsFromOtherSections = getProjectsMatchingOtherSections(section);
-      
+
       projectsFromOtherSections.forEach(project => {
         project[section].forEach(filter => {
           available[section].add(filter.name);
@@ -70,13 +70,13 @@ const SearchFilter = () => {
     });
 
     return {
-      styles: filterData.styles.filter(option => 
+      styles: filterData.styles.filter(option =>
         currentSelections.styles.includes(option) || available.styles.has(option)
       ),
-      types: filterData.types.filter(option => 
+      types: filterData.types.filter(option =>
         currentSelections.types.includes(option) || available.types.has(option)
       ),
-      subjects: filterData.subjects.filter(option => 
+      subjects: filterData.subjects.filter(option =>
         currentSelections.subjects.includes(option) || available.subjects.has(option)
       )
     };
@@ -129,29 +129,32 @@ const SearchFilter = () => {
   };
 
   return (
-    <div className="search-filter" ref={filterRef}>
-      {Object.entries(filterData).map(([section, options]) => (
-        <div key={section} className="filter-section">
-          <button
-            onClick={() => toggleSection(section)}
-            className="section-toggle"
-          >
-            <span className="section-title">{section}</span>
-            <span>{openSections[section] ? '−' : '+'}</span>
-          </button>
-          
-          {openSections[section] && (
-            <div className="options-container">
-              {options.map((option) => {
+    <div className="filter-container">
+      <h2 className="filter-title">FILTER YOUR RESULTS</h2>
+      <div className="search-filter" ref={filterRef}>
+
+        {Object.entries(filterData).map(([section, options]) => (
+          <div key={section} className="filter-section">
+            <button
+              onClick={() => toggleSection(section)}
+              className="section-toggle"
+            >
+              <span className="section-title">{section}</span>
+              <span>{openSections[section] ? '−' : '+'}</span>
+            </button>
+
+            {openSections[section] && (
+              <div className="options-container">
+                {options.map((option) => {
                   const dynamicCount = getDynamicOptionCount(section, option);
                   const isSelected = selectedFilters[section].includes(option);
                   const isAvailable = dynamicCount > 0 || isSelected;
-                  
+
                   if (!isAvailable && !isSelected) return null;
-                  
+
                   return (
-                    <label 
-                      key={option} 
+                    <label
+                      key={option}
                       className="filter-option"
                     >
                       <input
@@ -164,12 +167,13 @@ const SearchFilter = () => {
                     </label>
                   );
                 })
-                .filter(Boolean)
-              }
-            </div>
-          )}
-        </div>
-      ))}
+                  .filter(Boolean)
+                }
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { NavLink, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useFilters } from '../../context/FilterProvider';
 import { getUnreadMessagesCount } from '../../services/chatService';
+import ChatIcon from '@mui/icons-material/Chat';
+
 import './NavBar.css';
 
 function NavBar() {
@@ -167,6 +169,9 @@ function NavBar() {
         };
     }, [lastScrollY, location.pathname]);
 
+    const isUserAuthenticated = localStorage.getItem('userId') && localStorage.getItem('token');
+
+
     return (
         <div className={`nav-bar-dsk 
             ${isVisible ? 'nav-visible' : 'nav-hidden'}
@@ -205,7 +210,7 @@ function NavBar() {
                             </NavLink>
                         </li>
 
-                        <li className="nav-li-item">
+                        {/* <li className="nav-li-item">
                             <NavLink
                                 to="/chats"
                                 className={({ isActive }) => `chat-link ${isActive ? 'active-link' : ''}`}
@@ -215,7 +220,8 @@ function NavBar() {
                                     <span className="unread-badge">{unreadCount}</span>
                                 )}
                             </NavLink>
-                        </li>
+                        </li> */}
+
 
                         <li className={`nav-li-item ${location.pathname.includes('/auth') ? 'auth-active' : ''}`}
                             onMouseEnter={() => setShowSubmenu(true)}
@@ -264,6 +270,20 @@ function NavBar() {
                                 </div>
                             )}
                         </li>
+
+                        {isUserAuthenticated && (
+                            <li className="nav-li-item">
+                                <NavLink
+                                    to="/chats"
+                                    className={({ isActive }) => `chat-link ${isActive ? 'active-link' : ''}`}
+                                >
+                                    <ChatIcon />
+                                    {unreadCount > 0 && (
+                                        <span className="unread-badge">{unreadCount}</span>
+                                    )}
+                                </NavLink>
+                            </li>
+                        )}
                     </ul>
                 </nav>
             </div>
