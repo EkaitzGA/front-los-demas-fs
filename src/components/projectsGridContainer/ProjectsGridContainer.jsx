@@ -3,6 +3,7 @@ import { getProjects } from '../../utils/api/fetch';
 import ProjectContainer from '../projectContainer/ProjectContainer';
 import NewProjectButton from '../projectContainer/NewProjectButton';
 import Modal from '../modal/Modal';
+import './ProjectsGridContainer.css'
 
 const ProjectsGridContainer = ({ userId, projectsData, isFavorites = false, showNewProjectButton = false }) => {
     const [projects, setProjects] = useState([]);
@@ -70,8 +71,22 @@ const ProjectsGridContainer = ({ userId, projectsData, isFavorites = false, show
     }
 
     if (!projects || projects.length === 0) {
-        return <div>No projects found for this user</div>;
+        return <div>
+            {showNewProjectButton && isOwnProfile && (
+                <div className="mb-4-no-project">
+                    <NewProjectButton onClick={handleNewProject} />
+                </div>
+            )}
+            {isOwnProfile ? (
+                <p>Load your first Project!</p>
+            ) : (
+                <p>This user has no projects yet</p>
+            )}
+        </div>;
     }
+
+
+
 
     return (
         <section className="section-grid">
