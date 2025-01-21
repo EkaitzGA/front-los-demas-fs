@@ -8,7 +8,7 @@
 
 /* Especialización backgrounds */
 .client-profile-container.ux-ui {
-    border: 2px solid #FEFF00;
+    border-bottom: 3px solid #FEFF00;
 }
 
 .client-profile-container.ux-ui .section-heading .specialization-profile{
@@ -20,7 +20,7 @@
 }
 
 .client-profile-container.frontend {
-    border: 2px solid #D876D0;
+    border-bottom: 3px solid #D876D0;
 }
 
 .client-profile-container.frontend .section-heading .specialization-profile{
@@ -33,7 +33,7 @@
 }
 
 .client-profile-container.backend {
-    border: 2px solid #00A8A4;
+    border-bottom: 3px solid #00A8A4;
 }
 
 .client-profile-container.backend  .section-heading .specialization-profile{
@@ -45,7 +45,7 @@
 }
 
 .client-profile-container.fullstack {
-    border: 2px solid #0156C1;
+    border-bottom: 3px solid #0156C1;
 }
 
 .client-profile-container.fullstack  .section-heading .specialization-profile{
@@ -58,7 +58,7 @@
 }
 
 .client-profile-container.none {
-    border: 2px solid #FF4101;
+    border-bottom: 3px solid #FF4101;
 }
 
 .client-profile-container.none  .section-heading .specialization-profile{
@@ -242,13 +242,21 @@
 /*Seleccion*/
 .profile-navigation {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    /* grid-template-columns: repeat(4, 1fr); */
     width: 100%;
-    max-width: 600px; 
+    max-width: 700px; 
     margin: 20px auto;
     gap: 20px;
     border-bottom: 1px solid rgb(205, 205, 205);
     /* width: 100%; */
+}
+
+.four-columns {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.three-columns {
+    grid-template-columns: repeat(3, 1fr);
 }
 
 .nav-button {

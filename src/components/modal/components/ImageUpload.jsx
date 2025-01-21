@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
+import CheckIcon from '@mui/icons-material/Check';
 
 const ImageUpload = ({ projectData, setProjectData, onSubmit, onBack }) => {
     const [imageFiles, setImageFiles] = useState({
@@ -212,20 +213,17 @@ const ImageUpload = ({ projectData, setProjectData, onSubmit, onBack }) => {
                     )}
                 </div>
 
-                {/* Optional Images - Similar structure to main image */}
-                {/* Optional Image 1 */}
-                <div className="image-upload-group">
+                
+                {/* <div className="image-upload-group">
                     <label 
                         htmlFor="optional1"
                         className="block mb-2 text-sm font-medium text-gray-900"
                     >
                         Additional Picture (Optional)
                     </label>
-                    {/* Similar structure to main image */}
-                    {/* ... */}
+                    
                 </div>
 
-                {/* Optional Image 2 */}
                 <div className="image-upload-group">
                     <label 
                         htmlFor="optional2"
@@ -233,24 +231,23 @@ const ImageUpload = ({ projectData, setProjectData, onSubmit, onBack }) => {
                     >
                         Additional Picture (Optional)
                     </label>
-                    {/* Similar structure to main image */}
-                    {/* ... */}
-                </div>
+                    
+                </div> */}
             </div>
 
-            <div className="flex justify-between mt-6">
+            <div className="navigation-buttons">
                 <button
                     type="button"
                     onClick={onBack}
-                    className="text-gray-900 bg-white border border-gray-300 hover:bg-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                    className="nav-button"
                 >
                     Back
                 </button>
                 <button
                     type="submit"
-                    className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                    className="check-icon"
                 >
-                    Create Project
+                    <CheckIcon />
                 </button>
             </div>
         </form>

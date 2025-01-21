@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import './ClientProfile.css';
 import UserInfoContainer from '../../components/userInfoContainer/UserInfoContainer';
 import ProjectsGridContainer from '../../components/projectsGridContainer/ProjectsGridContainer';
@@ -8,6 +8,8 @@ import { getUserById } from '../../utils/api/fetch';
 import WindowIcon from '@mui/icons-material/Window';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import GroupsIcon from '@mui/icons-material/Groups';
+import ChatIcon from '@mui/icons-material/Chat';
+
 
 const UserHeader = ({ userData }) => (
     <section id="heading" className="section-heading">
@@ -26,7 +28,9 @@ const UserHeader = ({ userData }) => (
     </section>
 );
 
+
 const ClientProfile = () => {
+    const navigate = useNavigate();
     const { id } = useParams();
     const [userData, setUserData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -53,6 +57,10 @@ const ClientProfile = () => {
         }
     }, [id]);
 
+    const handleChatClick = () => {
+        navigate('/chats');
+    };
+
     const getSpecializationClass = (specialization) => {
         switch (specialization) {
             case 'UX/UI':
@@ -68,16 +76,22 @@ const ClientProfile = () => {
         }
     };
 
+    const loggedUserId = localStorage.getItem('userId');
+    const token = localStorage.getItem('token');
+
+    // Verificar si el usuario está logueado y si está viendo su propio perfil
+    const isOwnProfile = loggedUserId && token && loggedUserId === id;
+
     const renderSection = () => {
         switch (activeSection) {
             case 'my-projects':
                 return <ProjectsGridContainer userId={id} showNewProjectButton={true} />;
             case 'my-favorites':
-                return <ProjectsGridContainer userId={id} projectsData={userData?.projectlike} isFavorites={true} showNewProjectButton={false}/>;
+                return <ProjectsGridContainer userId={id} projectsData={userData?.projectlike} isFavorites={true} showNewProjectButton={false} />;
             case 'my-network':
                 return <MyNetwork userData={userData} />;
             default:
-                return <ProjectsGridContainer userId={id} showNewProjectButton={true}/>;
+                return <ProjectsGridContainer userId={id} showNewProjectButton={true} />;
         }
     };
 
@@ -86,13 +100,14 @@ const ClientProfile = () => {
     }
 
     return (
-        // <div className="client-profile-container">
         <div className={`client-profile-container ${getSpecializationClass(userData?.specialization)}`}>
 
             <UserHeader userData={userData} />
             <UserInfoContainer userData={userData} />
 
-            <div className="profile-navigation">
+            {/* <div className="profile-navigation"> */}
+            <div className={`profile-navigation ${isOwnProfile ? 'four-columns' : 'three-columns'}`}>
+
                 <button
                     className={`nav-button ${activeSection === 'my-projects' ? 'active' : ''}`}
                     onClick={() => setActiveSection('my-projects')}
@@ -111,6 +126,14 @@ const ClientProfile = () => {
                 >
                     <GroupsIcon />
                 </button>
+                {isOwnProfile && (
+                    <button
+                        className="nav-button"
+                        onClick={handleChatClick}
+                    >
+                        <ChatIcon />
+                    </button>
+                )}
             </div>
             <div className="section-content">
                 {renderSection()}
