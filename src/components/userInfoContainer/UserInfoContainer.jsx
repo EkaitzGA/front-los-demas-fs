@@ -4,7 +4,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import { updateUserProfile } from '../../utils/api/fetch';
 
-const UserInfoContainer = ({ userData }) => {
+const UserInfoContainer = ({ userData, onProfileUpdate }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -38,6 +38,10 @@ const UserInfoContainer = ({ userData }) => {
                     country: userData.country || ''
                 },
                 agency: userData.description || '',
+                name: userData.name || '',
+                lastname: userData.lastname || '',
+                specialization: userData.specialization || '',
+                avatar: userData.avatar || '',
                 contact: {
                     email: userData.email || '',
                     website: userData.website || '',
@@ -51,19 +55,19 @@ const UserInfoContainer = ({ userData }) => {
 
     const handleChange = (e, section, subsection = null) => {
         let value = e.target.value;
-    
-    // Formatear URL para el campo website
-    if (section === 'contact' && subsection === 'website' && value) {
-        // Solo formatear si hay un valor y no está vacío
-        if (value.trim()) {
-            // Eliminar protocolos existentes y www si existen
-            value = value.replace(/^(https?:\/\/)?(www\.)?/, '');
-            // Añadir protocolo y www
-            value = `https://www.${value}`;
+
+        // Formatear URL para el campo website
+        if (section === 'contact' && subsection === 'website' && value) {
+            // Solo formatear si hay un valor y no está vacío
+            if (value.trim()) {
+                // Eliminar protocolos existentes y www si existen
+                value = value.replace(/^(https?:\/\/)?(www\.)?/, '');
+                // Añadir protocolo y www
+                value = `https://www.${value}`;
+            }
+            // Asegurarnos de que value es un string y no un array
+            value = value.toString();
         }
-        // Asegurarnos de que value es un string y no un array
-        value = value.toString();
-    }
         if (subsection) {
             setProfileData(prev => ({
                 ...prev,
@@ -87,6 +91,10 @@ const UserInfoContainer = ({ userData }) => {
             city: data.location.city,
             country: data.location.country,
             description: data.agency,
+            name: data.name,
+            lastname: data.lastname,
+            specialization: data.specialization,
+            avatar: data.avatar,
             email: data.contact.email,
             website: data.contact.website ? data.contact.website.toString() : '',
             github: data.contact.github,
@@ -110,27 +118,30 @@ const UserInfoContainer = ({ userData }) => {
         e.preventDefault();
         setIsLoading(true);
         setError(null);
-
+    
         if (!userId) {
             setError('Error: User ID not found');
             setIsLoading(false);
             return;
         }
-
+    
         try {
-            console.log('Datos antes de actualizar:', profileData);
+            console.log('Intentando actualizar usuario con ID:', userId);
             const result = await updateUser(userId, profileData);
-            console.log('Resultado de la actualización:', result);
-
-            // Actualizar los datos locales con la respuesta del servidor
+            console.log('Update result:', result);
+    
             if (result) {
                 setIsEditing(false);
-                setProfileData({
+                const updatedData = {
                     location: {
                         city: result.city || '',
                         country: result.country || ''
                     },
                     agency: result.description || '',
+                    name: result.name || '',
+                    lastname: result.lastname || '',
+                    specialization: result.specialization || '',
+                    avatar: result.avatar || '',
                     contact: {
                         email: result.email || '',
                         website: Array.isArray(result.website) ? result.website[0] || '' : result.website || '',
@@ -138,7 +149,14 @@ const UserInfoContainer = ({ userData }) => {
                         linkedin: result.linkedin || '',
                         instagram: result.instagram || ''
                     }
-                });
+                };
+                
+                setProfileData(updatedData);
+                
+                // Llamar al callback con los datos actualizados
+                if (onProfileUpdate) {
+                    onProfileUpdate(result);
+                }
             }
         } catch (err) {
             setError('Error updating profile. Please try again.');
@@ -161,6 +179,36 @@ const UserInfoContainer = ({ userData }) => {
             ) : isEditing ? (
                 <form onSubmit={handleSubmit} className="profile-form">
                     <div className="profile-container">
+                        {/* Campos ocultos para name y lastname */}
+                        <input
+                            type="text"
+                            placeholder="Name"
+                            value={profileData.name}
+                            onChange={(e) => handleChange(e, 'name')}
+                            className="hidden"
+                        />
+                        <input
+                            type="text"
+                            placeholder="Last Name"
+                            value={profileData.lastname}
+                            onChange={(e) => handleChange(e, 'lastname')}
+                            className="hidden"
+                        />
+
+                        {/* Avatar input */}
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => {
+                                // Manejar la subida del avatar
+                                const file = e.target.files[0];
+                                if (file) {
+                                    // Aquí puedes manejar la subida del archivo
+                                    handleChange({ target: { value: file } }, 'avatar');
+                                }
+                            }}
+                            className="hidden"
+                        />
                         <div className="location-block">
                             <h3>LOCATION</h3>
                             <input
@@ -184,6 +232,22 @@ const UserInfoContainer = ({ userData }) => {
                                 value={profileData.agency}
                                 onChange={(e) => handleChange(e, 'agency')}
                             />
+                        </div>
+
+                        <div className="specialization-block">
+                            <h3>SPECIALIZATION</h3>
+                            <select
+                                value={profileData.specialization}
+                                onChange={(e) => handleChange(e, 'specialization')}
+                            >
+                                <option value="None">None</option>
+                                <option value="UX/UI">UX/UI</option>
+                                <option value="Frontend">Frontend</option>
+                                <option value="Backend">Backend</option>
+                                <option value="Fullstack">Fullstack</option>
+                                <option value="Mobile">Mobile</option>
+                                <option value="Data">Data</option>
+                            </select>
                         </div>
 
                         <div className="contact-block">
@@ -257,6 +321,10 @@ const UserInfoContainer = ({ userData }) => {
                         <div className="agency-block">
                             <h3>DESCRIPTION</h3>
                             {profileData.agency ? <p>{profileData.agency}</p> : <p>No description provided</p>}
+                        </div>
+                        <div className="specialization-block">
+                            <h3>SPECIALIZATION</h3>
+                            <p>{profileData.specialization || 'No specialization provided'}</p>
                         </div>
 
                         <div className="contact-block">
