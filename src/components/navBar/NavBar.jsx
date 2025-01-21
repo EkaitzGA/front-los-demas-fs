@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { NavLink, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useFilters } from '../../context/FilterProvider';
+import { getUnreadMessagesCount } from '../../services/chatService';
+
 import './NavBar.css';
 
 function NavBar() {
@@ -13,7 +15,7 @@ function NavBar() {
     const [isCompact, setIsCompact] = useState(false);
     const [isTransitioning, setIsTransitioning] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-
+    const [unreadCount, setUnreadCount] = useState(0);
 
     const resetFilters = () => {
         setSelectedFilters({
@@ -73,6 +75,30 @@ function NavBar() {
             window.removeEventListener('login', checkAuth);
         };
     }, []);
+    const checkUnreadMessages = async () => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            const count = await getUnreadMessagesCount(token);
+            setUnreadCount(count);
+        }
+    };
+
+    useEffect(() => {
+        // Verificar mensajes no leídos al montar y cada 30 segundos
+        checkUnreadMessages();
+        const interval = setInterval(checkUnreadMessages, 30000);
+        
+        return () => clearInterval(interval);
+    }, []);
+   
+
+    useEffect(() => {
+        // Verificar mensajes no leídos al montar y cada 30 segundos
+        checkUnreadMessages();
+        const interval = setInterval(checkUnreadMessages, 30000);
+        
+        return () => clearInterval(interval);
+    }, []);
 
     useEffect(() => {
         const controlNavbar = () => {
@@ -100,31 +126,18 @@ function NavBar() {
         };
     }, [lastScrollY]);
 
-
-
     return (
-        // <div className={`nav-bar-dsk ${isVisible ? 'nav-visible' : 'nav-hidden'}`}>
-        // <div className={`nav-bar-dsk ${isVisible ? 'nav-visible' : 'nav-hidden'} ${isCompact ? 'nav-compact' : ''}`}>
         <div className={`nav-bar-dsk 
             ${isVisible ? 'nav-visible' : 'nav-hidden'}
             ${isCompact ? 'nav-compact' : ''}
             ${isTransitioning ? 'transitioning' : ''}
         `}>
-
-            {/* <div className='nav-content-wrapper'> */}
             <div className={`nav-content-wrapper ${isCompact ? 'nav-content-compact' : ''}`}>
-
                 <div className='logo-section'>
                     <Link onClick={resetFilters} to="/">
                         <img src="/images/gato.jpg" alt="Logo" />
                     </Link>
                 </div>
-                {/* 
-                <div className='title-section'>
-                    <Link onClick={resetFilters} to="/" className="title-link">
-                        <h1>Kazoku</h1>
-                    </Link>
-                </div> */}
 
                 <nav className='nav-links-dsk'>
                     <ul className='ul-dsk'>
@@ -145,6 +158,18 @@ function NavBar() {
                                 className={({ isActive }) => isActive ? 'active-link' : ''}
                             >
                                 Users
+                            </NavLink>
+                        </li>
+
+                        <li className="nav-li-item">
+                            <NavLink
+                                to="/chats"
+                                className={({ isActive }) => `chat-link ${isActive ? 'active-link' : ''}`}
+                            >
+                                Chats
+                                {unreadCount > 0 && (
+                                    <span className="unread-badge">{unreadCount}</span>
+                                )}
                             </NavLink>
                         </li>
 
@@ -198,7 +223,6 @@ function NavBar() {
                     </ul>
                 </nav>
             </div>
-
         </div>
     );
 }

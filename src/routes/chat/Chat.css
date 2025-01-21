@@ -69,24 +69,48 @@
     gap: 10px;
   }
   
-  .message {
-    max-width: 70%;
-    padding: 10px 15px;
-    border-radius: 15px;
-    margin-bottom: 5px;
-  }
-  
-  .message-sent {
-    align-self: flex-end;
-    background-color: #2b5278;
-    border-bottom-right-radius: 5px;
-  }
-  
-  .message-received {
-    align-self: flex-start;
-    background-color: #3a3a3a;
-    border-bottom-left-radius: 5px;
-  }
+  /* Actualizar estas clases en tu Chat.css */
+.message {
+  max-width: 70%;
+  padding: 10px 15px;
+  border-radius: 15px;
+  margin-bottom: 5px;
+}
+
+.message-sent {
+  align-self: flex-end;
+  background-color: #2b5278;
+  border-bottom-right-radius: 5px;
+  margin-left: auto; /* Esto es crucial para la alineación a la derecha */
+}
+
+.message-received {
+  align-self: flex-start;
+  background-color: #3a3a3a;
+  border-bottom-left-radius: 5px;
+  margin-right: auto; /* Esto es crucial para la alineación a la izquierda */
+}
+
+.unread-messages-indicator {
+  background-color: #f8f9fa;
+  color: #666;
+  padding: 8px 16px;
+  border-radius: 8px;
+  text-align: center;
+  margin: 10px 0;
+  font-size: 0.9rem;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+/* Opcional: Estilo para mensajes no leídos */
+.message.unread .message-content {
+  font-weight: 500;
+  background-color: #f0f4ff;
+}
   
   .message-content {
     margin: 0;
