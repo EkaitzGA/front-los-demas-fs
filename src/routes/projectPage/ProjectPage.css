@@ -148,7 +148,8 @@
     width: 100%;
     padding-top: 56.25%; 
     background-color: #0066cc;
-    border: 10px solid #EAEAEA;
+    border: 8px solid #EAEAEA;
+    border-radius: 10px;
 }
 
 .left-column-first-line img {

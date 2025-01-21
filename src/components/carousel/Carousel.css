@@ -120,6 +120,7 @@
     height: 4px;
     background-color: rgba(0, 0, 0, 0.2);
     border: none;
+    border-radius: 3px;
     padding: 0;
     cursor: pointer;
     transition: background-color 0.3s ease;

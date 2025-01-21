@@ -53,7 +53,7 @@ function Carousel() {
                 setCurrentIndex(prevIndex =>
                     prevIndex === topProjects.length - 1 ? 0 : prevIndex + 1
                 );
-            }, 3000);
+            }, 4000);
         }
 
         return () => {
@@ -84,7 +84,7 @@ function Carousel() {
                     className="carousel-track"
                     style={{
                         transform: `translateX(-${currentIndex * 100}%)`,
-                        transition: 'transform 0.8s ease-in-out'
+                        transition: 'transform 1s ease-in-out'
                     }}
                 >
                     {topProjects.map((project) => (

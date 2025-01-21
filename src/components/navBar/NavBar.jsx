@@ -18,12 +18,12 @@ function NavBar() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [unreadCount, setUnreadCount] = useState(0);
 
-    //new
-    const isProfileRoute = () => {
-        return location.pathname.includes('/myprofile/');
-    };
+    const isProfileRoute = () => location.pathname.includes('/myprofile/');
+    const isInProfileRoute = location.pathname.includes('/myprofile/');
+    
+    
+    
     useEffect(() => {
-        // Establecer isCompact a true si estamos en la ruta del perfil
         setIsCompact(isProfileRoute());
     }, [location.pathname]);
 
@@ -72,13 +72,10 @@ function NavBar() {
             setIsAuthenticated(!!token);
         };
 
-        // Verificar al montar el componente
         checkAuth();
 
-        // Escuchar cambios en el localStorage
         window.addEventListener('storage', checkAuth);
 
-        // También podemos crear un evento personalizado para el login
         window.addEventListener('login', checkAuth);
 
         return () => {
@@ -111,63 +108,32 @@ function NavBar() {
         return () => clearInterval(interval);
     }, []);
 
-    // useEffect(() => {
-    //     const controlNavbar = () => {
-    //         const currentScrollY = window.scrollY;
-
-    //         if (currentScrollY > lastScrollY) { 
-    //             setIsVisible(false);
-    //         } else { 
-    //             setIsVisible(true);
-    //         }
-
-    //         if (currentScrollY > 100) {  
-    //             setIsCompact(true);
-    //         } else {
-    //             setIsCompact(false);
-    //         }
-
-    //         setLastScrollY(currentScrollY);
-    //     };
-
-    //     window.addEventListener('scroll', controlNavbar);
-
-    //     return () => {
-    //         window.removeEventListener('scroll', controlNavbar);
-    //     };
-    // }, [lastScrollY]);
-
     useEffect(() => {
+        if (isInProfileRoute) {
+            setIsCompact(true);
+            return;
+        }
+    
         const controlNavbar = () => {
             const currentScrollY = window.scrollY;
-
-            // Solo aplicar la lógica de scroll si no estamos en la ruta del perfil
-            if (!isProfileRoute()) {
-                if (currentScrollY > lastScrollY) {
-                    setIsVisible(false);
-                } else {
-                    setIsVisible(true);
-                }
-
-                if (currentScrollY > 100) {
-                    setIsCompact(true);
-                } else {
-                    setIsCompact(false);
-                }
+    
+            if (currentScrollY > lastScrollY) {
+                setIsVisible(false);
+            } else {
+                setIsVisible(true);
             }
-
+    
+            setIsCompact(currentScrollY > 100);
             setLastScrollY(currentScrollY);
         };
-
-        // Solo agregar el evento de scroll si no estamos en la ruta del perfil
-        if (!isProfileRoute()) {
-            window.addEventListener('scroll', controlNavbar);
-        }
-
+    
+        window.addEventListener('scroll', controlNavbar);
+        controlNavbar();
+    
         return () => {
             window.removeEventListener('scroll', controlNavbar);
         };
-    }, [lastScrollY, location.pathname]);
+    }, [location.pathname, lastScrollY]);
 
     const isUserAuthenticated = localStorage.getItem('userId') && localStorage.getItem('token');
 
@@ -179,7 +145,6 @@ function NavBar() {
             ${isCompact || isProfileRoute() ? 'nav-compact' : ''}
             ${isTransitioning ? 'transitioning' : ''}
         `}>
-            {/* <div className={`nav-content-wrapper ${isCompact ? 'nav-content-compact' : ''}`}> */}
             <div className={`nav-content-wrapper ${isCompact || isProfileRoute() ? 'nav-content-compact' : ''}`}>
 
                 <div className='logo-section'>
@@ -209,19 +174,6 @@ function NavBar() {
                                 Users
                             </NavLink>
                         </li>
-
-                        {/* <li className="nav-li-item">
-                            <NavLink
-                                to="/chats"
-                                className={({ isActive }) => `chat-link ${isActive ? 'active-link' : ''}`}
-                            >
-                                Chats
-                                {unreadCount > 0 && (
-                                    <span className="unread-badge">{unreadCount}</span>
-                                )}
-                            </NavLink>
-                        </li> */}
-
 
                         <li className={`nav-li-item ${location.pathname.includes('/auth') ? 'auth-active' : ''}`}
                             onMouseEnter={() => setShowSubmenu(true)}

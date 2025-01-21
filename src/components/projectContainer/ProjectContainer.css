@@ -14,7 +14,9 @@
     background-color: rgb(233, 196, 196);
     overflow: hidden;
     border: 5px solid #EAEAEA; 
+    border: 3px solid #333333; 
     /* border-radius: 2%; */
+    border-radius: 10px;
 }
 
 .image-container img {
