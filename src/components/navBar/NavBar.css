@@ -4,7 +4,6 @@
     left: 0;
     right: 0;
     z-index: 1000;
-    /* background-color: rgba(234, 234, 234, 0.8); */
     background-color: white;
     height: auto;
     padding-top: 10px;
@@ -12,19 +11,13 @@
     transition: transform 0.5s ease-in-out;
 }
 
-
-
 .nav-content-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 20px;
-    /* transition: all 0.5s ease-in-out; */
-    /* transition: height 0.3s ease-in-out; */
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     padding-top: 100px; 
-
-
 }
 
 .logo-section {
@@ -32,7 +25,6 @@
     top: 10px;
     left: 50%;
     transform: translateX(-50%);
-    /* Transición para cuando aparece el logo */
     transition: 
         opacity 1s ease-in-out,
         transform 1s ease-in-out;
@@ -76,7 +68,6 @@
     align-items: center;
     justify-content: flex-end;
     position: relative;
-
 }
 
 .active-link {
@@ -88,11 +79,8 @@
 
 .nav-li-item:has(.active-link) {
     border-color: black;
-    /* border-bottom: 1.5px solid #EAEAEA;  */
     border-bottom: 1.5px solid white; 
-
 }
-
 
 .nav-li-item a,
 .nav-li-item a:hover,
@@ -109,9 +97,6 @@
 .nav-li-item a:hover:not(.active-link) {
     color: black;
 }
-
-
-
 
 .nav-li-item {
     width: 120px;
@@ -145,7 +130,6 @@
     border-bottom: 1.5px solid white;
 }
 
-
 .submenu {
     position: absolute;
     top: 100%;
@@ -160,17 +144,11 @@
     text-decoration: none;
     color: inherit;
     transition: background-color 0.2s ease;
-
 }
 
 .submenu-item:hover {
     background-color: #f5f5f5;
 }
-
-
-
-
-
 
 .nav-content-compact {
     position: relative;
@@ -182,7 +160,6 @@
 .nav-content-compact .logo-section {
     opacity: 0;
     visibility: hidden;
-    /* Transición para cuando desaparece el logo */
     transition: 
         opacity 0.2s ease-in-out,
         transform 0.2s ease-in-out;
@@ -219,8 +196,27 @@
     padding: 8px 16px;
     margin: 0;
 }
+/* Estilos para el badge de notificaciones */
+.chat-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
 
-
-
-
-
+.unread-badge {
+    position: absolute;
+    top: -8px;
+    right: -12px;
+    background-color: #ff4444;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
