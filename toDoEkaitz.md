@@ -13,5 +13,5 @@ En la página users habría que modificar la caja de búsqueda para que no sea u
 
  en la sección de ProjectPage debe habe un botón para editar cada proyecto. 
 
- ARREGLAR LA REDIRECCIÓN DEL LOGIN
+ USERINFOCONTAINER arreglar el botón de edit y cancelar. Ahora mismo el cancelar guarda y el aceptar bloquea y no hace nada
 
