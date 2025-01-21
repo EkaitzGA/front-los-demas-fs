@@ -112,9 +112,7 @@ function Home() {
                 ))}
             </div>
 
-            <div className='publi'>
-                <JoinKazoku />
-            </div>
+           
 
             {filteredProjects.length > projectsPerPage && (
                 <div className='pagination'>
@@ -143,7 +141,13 @@ function Home() {
                     </button>
                 </div>
             )}
+                 <div className='publi'>
+                <JoinKazoku />
+                </div>
+
         </div>
+
+        
     )
 }
 
