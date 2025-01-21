@@ -71,13 +71,13 @@ const ClientProfile = () => {
     const renderSection = () => {
         switch (activeSection) {
             case 'my-projects':
-                return <ProjectsGridContainer userId={id} />;
+                return <ProjectsGridContainer userId={id} showNewProjectButton={true} />;
             case 'my-favorites':
-                return <ProjectsGridContainer userId={id} projectsData={userData?.projectlike} isFavorites={true} />;
+                return <ProjectsGridContainer userId={id} projectsData={userData?.projectlike} isFavorites={true} showNewProjectButton={false}/>;
             case 'my-network':
                 return <MyNetwork userData={userData} />;
             default:
-                return <ProjectsGridContainer userId={id} />;
+                return <ProjectsGridContainer userId={id} showNewProjectButton={true}/>;
         }
     };
 
@@ -112,7 +112,7 @@ const ClientProfile = () => {
                     <GroupsIcon />
                 </button>
             </div>
-            <div className="section-content"> 
+            <div className="section-content">
                 {renderSection()}
             </div>
         </div>
