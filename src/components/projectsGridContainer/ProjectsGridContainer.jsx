@@ -4,7 +4,7 @@ import ProjectContainer from '../projectContainer/ProjectContainer';
 import NewProjectButton from '../projectContainer/NewProjectButton';
 import Modal from '../modal/Modal';
 
-const ProjectsGridContainer = ({ userId, projectsData, isFavorites = false }) => {
+const ProjectsGridContainer = ({ userId, projectsData, isFavorites = false, showNewProjectButton = false }) => {
     const [projects, setProjects] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -70,7 +70,11 @@ const ProjectsGridContainer = ({ userId, projectsData, isFavorites = false }) =>
     return (
         <section className="section-grid">
             <div className="projects-grid-dsk">
-                <NewProjectButton onClick={handleNewProject} />
+                {showNewProjectButton && (
+                    <div className="mb-4">
+                        <NewProjectButton onClick={handleNewProject}/>
+                    </div>
+                )}
 
                 {projects.map(project => (
                     <ProjectContainer
