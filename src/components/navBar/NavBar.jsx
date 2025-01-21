@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { NavLink, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useFilters } from '../../context/FilterProvider';
 import { getUnreadMessagesCount } from '../../services/chatService';
+import { getUnreadMessagesCount } from '../../services/chatService';
 import './NavBar.css';
 
 function NavBar() {
@@ -13,6 +14,7 @@ function NavBar() {
     const [lastScrollY, setLastScrollY] = useState(0);
     const [isCompact, setIsCompact] = useState(false);
     const [isTransitioning, setIsTransitioning] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [unreadCount, setUnreadCount] = useState(0);
 
     const resetFilters = () => {
@@ -33,6 +35,61 @@ function NavBar() {
         navigate('/auth?mode=register');
     };
 
+    const handleLogout = (e) => {
+        e.preventDefault();
+        localStorage.removeItem('token');
+        setIsAuthenticated(false);
+        setShowSubmenu(false);
+        navigate('/');
+    };
+
+    const handleAccountClick = (e) => {
+        if (isAuthenticated) {
+            e.preventDefault();
+            navigate('/myprofile');  // Ajustar con el ID del usuario cuando esté disponible
+        }
+    };
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        setIsAuthenticated(!!token);
+    }, []);
+
+    useEffect(() => {
+        const checkAuth = () => {
+            const token = localStorage.getItem('token');
+            setIsAuthenticated(!!token);
+        };
+
+        // Verificar al montar el componente
+        checkAuth();
+
+        // Escuchar cambios en el localStorage
+        window.addEventListener('storage', checkAuth);
+
+        // También podemos crear un evento personalizado para el login
+        window.addEventListener('login', checkAuth);
+
+        return () => {
+            window.removeEventListener('storage', checkAuth);
+            window.removeEventListener('login', checkAuth);
+        };
+    }, []);
+    const checkUnreadMessages = async () => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            const count = await getUnreadMessagesCount(token);
+            setUnreadCount(count);
+        }
+    };
+
+    useEffect(() => {
+        // Verificar mensajes no leídos al montar y cada 30 segundos
+        checkUnreadMessages();
+        const interval = setInterval(checkUnreadMessages, 30000);
+        
+        return () => clearInterval(interval);
+    }, []);
     const checkUnreadMessages = async () => {
         const token = localStorage.getItem('token');
         if (token) {
@@ -126,23 +183,46 @@ function NavBar() {
                             onMouseEnter={() => setShowSubmenu(true)}
                             onMouseLeave={() => setShowSubmenu(false)}
                         >
-                            <span className={`account-trigger ${showSubmenu ? 'active-trigger' : ''}`}>Account</span>
+                            {isAuthenticated ? (
+                                <span 
+                                    onClick={handleAccountClick}
+                                    className={`account-trigger ${showSubmenu ? 'active-trigger' : ''} clickable`}
+                                >
+                                    Account
+                                </span>
+                            ) : (
+                                <span className={`account-trigger ${showSubmenu ? 'active-trigger' : ''}`}>
+                                    Account
+                                </span>
+                            )}
+                            
                             {showSubmenu && (
                                 <div className="submenu">
-                                    <NavLink
-                                        to="/auth?mode=login"
-                                        onClick={handleLoginClick}
-                                        className="submenu-item"
-                                    >
-                                        Login
-                                    </NavLink>
-                                    <NavLink
-                                        to="/auth?mode=register"
-                                        onClick={handleRegisterClick}
-                                        className="submenu-item"
-                                    >
-                                        Register
-                                    </NavLink>
+                                    {isAuthenticated ? (
+                                        <button
+                                            onClick={handleLogout}
+                                            className="submenu-item"
+                                        >
+                                            Logout
+                                        </button>
+                                    ) : (
+                                        <>
+                                            <NavLink
+                                                to="/auth?mode=login"
+                                                onClick={handleLoginClick}
+                                                className="submenu-item"
+                                            >
+                                                Login
+                                            </NavLink>
+                                            <NavLink
+                                                to="/auth?mode=register"
+                                                onClick={handleRegisterClick}
+                                                className="submenu-item"
+                                            >
+                                                Register
+                                            </NavLink>
+                                        </>
+                                    )}
                                 </div>
                             )}
                         </li>

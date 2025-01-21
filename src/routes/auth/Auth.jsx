@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { login, register } from '../../utils/api/fetch';  
 import './Login.css';
 import './Register.css';
 
 const LoginForm = ({ onToggle }) => {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         email: '',
         password: ''
@@ -44,14 +45,21 @@ const LoginForm = ({ onToggle }) => {
                 const response = await login(formData.email, formData.password);
                 
                 if (response.success) {
-                    const { token } = response.data;
+                    const { token, userId } = response.data;
                     localStorage.setItem('token', token);
+
+
+                    window.dispatchEvent(new Event('login'));
+                    
+                    localStorage.setItem('userId', userId);
+                    const id = localStorage.getItem('userId');
+
                     setSuccessMessage('Inicio de sesión exitoso');
                     setFormData({
                         email: '',
                         password: ''
                     });
-                    // Aquí podrías redirigir al usuario
+                    navigate(`/myprofile/${id}`); // Redirigir a la página principal por ahora
                 } else {
                     setErrors({ 
                         submit: response.message || 'Error al iniciar sesión' 
@@ -104,10 +112,28 @@ const LoginForm = ({ onToggle }) => {
     );
 }
 
+const validatePassword = (password) => {
+    const minLength = password.length >= 6;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>-_]/.test(password);
+    
+    const errors = [];
+    if (!minLength) errors.push('tener al menos 6 caracteres');
+    if (!hasUpperCase) errors.push('incluir al menos una mayúscula');
+    if (!hasLowerCase) errors.push('incluir al menos una minúscula');
+    if (!hasSpecialChar) errors.push('incluir al menos un carácter especial');
+    
+    return {
+        isValid: minLength && hasUpperCase && hasLowerCase && hasSpecialChar,
+        errorMessage: errors.length > 0 ? `La contraseña debe ${errors.join(', ')}` : ''
+    };
+};
+
 const RegisterForm = ({ onToggle }) => {
     const [formData, setFormData] = useState({
-        username: '',
         email: '',
+        username: '',
         password: '',
         confirmedPassword: ''
     });
@@ -126,16 +152,20 @@ const RegisterForm = ({ onToggle }) => {
         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
             newErrors.email = 'El correo electrónico no es válido';
         }
+        
+        const passwordValidation = validatePassword(formData.password);
         if (!formData.password) {
             newErrors.password = 'La contraseña es obligatoria';
-        } else if (formData.password.length < 6) {
-            newErrors.password = 'La contraseña debe tener al menos 6 caracteres';
+        } else if (!passwordValidation.isValid) {
+            newErrors.password = passwordValidation.errorMessage;
         }
+        
         if (!formData.confirmedPassword) {
             newErrors.confirmedPassword = 'La confirmación de contraseña es obligatoria';
         } else if (formData.confirmedPassword !== formData.password) {
             newErrors.confirmedPassword = 'Las contraseñas no coinciden';
         }
+        
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -153,22 +183,31 @@ const RegisterForm = ({ onToggle }) => {
         if (validateForm()) {
             setIsLoading(true);
             try {
-                const response = await login(formData.email, formData.password);
+                const response = await register(
+                    formData.email,
+                    formData.username,
+                    formData.password,
+                    formData.confirmedPassword
+                );
                 
-                if (response.token) {
-                    localStorage.setItem('token', response.token);
-                    setSuccessMessage('Inicio de sesión exitoso');
+                if (response.success) {
+                    setSuccessMessage('Registro exitoso');
                     setFormData({
                         email: '',
-                        password: ''
+                        username: '',
+                        password: '',
+                        confirmedPassword: ''
                     });
+                    onToggle(); // Redirige al login
                 } else {
                     setErrors({ 
-                        submit: response.message || 'Error al iniciar sesión' 
+                        submit: response.message || 'Error al registrar usuario' 
                     });
                 }
             } catch (error) {
-                setErrors({ submit: 'Error en el servidor' });
+                setErrors({ 
+                    submit: error.message || 'Error en el servidor' 
+                });
             } finally {
                 setIsLoading(false);
             }
@@ -180,18 +219,6 @@ const RegisterForm = ({ onToggle }) => {
             <h2>Register</h2>
             <form onSubmit={handleSubmit}>
                 <div className="form-group-dsk">
-                    <label htmlFor="username">Username:</label>
-                    <input 
-                        type="text" 
-                        id="username" 
-                        name="username" 
-                        value={formData.username} 
-                        onChange={handleChange}
-                        disabled={isLoading}
-                    />
-                    {errors.username && <span className="error">{errors.username}</span>}
-                </div>
-                <div className="form-group-dsk">
                     <label htmlFor="email">Email:</label>
                     <input 
                         type="email" 
@@ -202,6 +229,18 @@ const RegisterForm = ({ onToggle }) => {
                         disabled={isLoading}
                     />
                     {errors.email && <span className="error">{errors.email}</span>}
+                </div>
+                <div className="form-group-dsk">
+                    <label htmlFor="username">Username:</label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        name="username" 
+                        value={formData.username} 
+                        onChange={handleChange}
+                        disabled={isLoading}
+                    />
+                    {errors.username && <span className="error">{errors.username}</span>}
                 </div>
                 <div className="form-group-dsk">
                     <label htmlFor="password">Password:</label>   
@@ -239,8 +278,17 @@ const RegisterForm = ({ onToggle }) => {
 }
 
 const AuthPage = () => {
+    const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
     const [isLogin, setIsLogin] = useState(searchParams.get('mode') !== 'register');
+
+    useEffect(() => {
+        // Si el usuario está autenticado, redirigir a la página principal
+        const token = localStorage.getItem('token');
+        if (token) {
+            navigate('/');
+        }
+    }, [navigate]);
 
     useEffect(() => {
         setIsLogin(searchParams.get('mode') !== 'register');

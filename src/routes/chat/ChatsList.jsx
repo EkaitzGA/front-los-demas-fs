@@ -93,7 +93,7 @@ function ChatsList() {
         setLoading(true);
         
         if (!userId) {
-          navigate('/auth');
+          navigate("/auth");
           return;
         }
 
@@ -126,11 +126,13 @@ function ChatsList() {
 
           setChats(sortedChats);
         } else {
-          throw new Error(response.message || 'No se pudieron cargar los chats');
+          throw new Error(
+            response.message || "No se pudieron cargar los chats"
+          );
         }
       } catch (error) {
-        console.error('Error fetching chats:', error);
-        setError(error.message || 'Error al cargar los chats');
+        console.error("Error fetching chats:", error);
+        setError(error.message || "Error al cargar los chats");
       } finally {
         setLoading(false);
       }
@@ -190,7 +192,7 @@ function ChatsList() {
   return (
     <div className="chats-list-container">
       <h2>Mis Conversaciones</h2>
-      
+
       <div className="chats-grid">
         {chats.length === 0 ? (
           <p className="no-chats">No tienes conversaciones activas</p>

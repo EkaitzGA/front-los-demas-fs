@@ -1,0 +1,64 @@
+.footer {
+    display: flex;
+    justify-content: space-between;
+    padding: 70px 100px;
+    background-color: white;
+    font-family: sans-serif;
+    padding-bottom: 40px;
+    gap: 40px;
+    flex-wrap: wrap; /* Para que all-rights pueda ir debajo */
+    position: relative; /* Para poder posicionar all-rights */
+
+}
+
+.first-column-footer,
+.second-column-footer,
+.third-column-footer,
+.fourth-column-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.first-column-footer img {
+    width: 100px;
+    height: auto;
+}
+
+.second-column-footer h3,
+.third-column-footer h3,
+.fourth-column-footer h3 {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.second-column-footer p,
+.third-column-footer p,
+.fourth-column-footer p {
+    font-size: 14px;
+    color: #333;
+    margin: 5px 0;
+    cursor: pointer;
+}
+
+.second-column-footer p:hover,
+.third-column-footer p:hover,
+.fourth-column-footer p:hover {
+    text-decoration: underline;
+}
+
+.all-rights {
+    width: 100%;
+    text-align: center;
+    margin-top: 40px;
+    color: #333;
+    font-size: 14px;
+    padding-top: 40px;
+    border-top: 1px solid #EAEAEA;
+}
+
+.all-rights p {
+    margin: 0;
+    cursor: default;
+}

@@ -151,10 +151,6 @@ function ChatRoom() {
   }, [messages]);
 
   useEffect(() => {
-    if (!token) {
-      navigate("/auth");
-      return;
-    }
 
     if (!initialChat?._id) {
       console.error("No chat ID available");

@@ -3,6 +3,7 @@ import ProjectContainer from '../../components/projectContainer/ProjectContainer
 import { useFilters } from '../../context/FilterProvider';
 import SearchFilter from '../../components/searchFilter/SearchFilter';
 import Carousel from '../../components/carousel/Carousel';
+import JoinKazoku from '../../components/joinKazoku/JoinKazoku';
 import { getProjects } from '../../utils/api/fetch';
 
 import './Home.css'
@@ -109,6 +110,10 @@ function Home() {
                         likes={project.likes}
                     />
                 ))}
+            </div>
+
+            <div className='publi'>
+                <JoinKazoku />
             </div>
 
             {filteredProjects.length > projectsPerPage && (

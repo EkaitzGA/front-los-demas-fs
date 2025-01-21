@@ -8,23 +8,67 @@
 
 /* Especialización backgrounds */
 .client-profile-container.ux-ui {
+    border: 2px solid #FEFF00;
+}
+
+.client-profile-container.ux-ui .section-heading .specialization-profile{
     background-color: #FEFF00;
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-weight: 500; 
 }
 
 .client-profile-container.frontend {
+    border: 2px solid #D876D0;
+}
+
+.client-profile-container.frontend .section-heading .specialization-profile{
     background-color: #D876D0;
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-weight: 500; 
+    color: white;
 }
 
 .client-profile-container.backend {
+    border: 2px solid #00A8A4;
+}
+
+.client-profile-container.backend  .section-heading .specialization-profile{
     background-color: #00A8A4;
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-weight: 500; 
 }
 
 .client-profile-container.fullstack {
+    border: 2px solid #0156C1;
+}
+
+.client-profile-container.fullstack  .section-heading .specialization-profile{
     background-color: #0156C1;
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-weight: 500; 
+    color: white;
 }
 
 .client-profile-container.none {
+    border: 2px solid #FF4101;
+}
+
+.client-profile-container.none  .section-heading .specialization-profile{
     background-color: #FF4101;
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-weight: 500; 
+    color: white;
+
 }
 
 /* Section 1 - Heading */
@@ -193,3 +237,63 @@
     width: 100%;
 }
 
+
+
+/*Seleccion*/
+.profile-navigation {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    width: 100%;
+    max-width: 600px; 
+    margin: 20px auto;
+    gap: 20px;
+    border-bottom: 1px solid rgb(205, 205, 205);
+    /* width: 100%; */
+}
+
+.nav-button {
+    background: none;
+    border: none;
+    padding: 15px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.nav-button svg {
+    width: 24px;
+    height: 24px;
+    color: #666; 
+}
+
+.nav-button:hover svg {
+    color: #696969;
+    transform: scale(1.1);
+}
+
+.nav-button.active {
+    position: relative;
+}
+
+.nav-button.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 1px;
+    background-color: #000; 
+}
+
+.nav-button.active svg {
+    color: #000;
+}
+
+.section-content {
+    min-height: 400px; 
+    position: relative;
+    width: 100%;
+}
