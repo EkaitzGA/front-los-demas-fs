@@ -247,6 +247,10 @@ async function markChatAsRead(chatId) {
     return await fetchData(`chats/${chatId}/read`, 'PUT');
 }
 
+async function updateUserProfile(userId, userData) {
+    return await fetchData(`users/${userId}`, 'PUT', userData);
+}
+
 
 
 export {
@@ -268,5 +272,9 @@ export {
     getAllTypes,
     getAllStyles,
     getAllSubjects,
+
     getUSerByUsername
+
+    updateUserProfile
+
 };
