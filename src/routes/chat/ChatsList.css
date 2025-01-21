@@ -96,6 +96,41 @@
     color: #888;
     font-size: 16px;
   }
+
+  .chat-card.has-unread {
+    border-left: 3px solid #ff4b4b;
+  }
+  
+  .unread-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ff4b4b;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-left: 8px;
+    animation: pulse 2s infinite;
+  }
+  
+  .last-message.unread {
+    color: white;
+    font-weight: bold;
+  }
+  
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
   
   @media (max-width: 768px) {
     .chats-list-container {
@@ -106,3 +141,4 @@
       grid-template-columns: 1fr;
     }
   }
+
