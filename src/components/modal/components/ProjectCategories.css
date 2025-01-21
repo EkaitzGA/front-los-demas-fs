@@ -1,0 +1,156 @@
+/* 
+.categories-form {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .category-group {
+    margin-bottom: 24px;
+  }
+  
+  .category-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #333;
+  }
+  
+  .options-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background-color: #f9fafb;
+  }
+  
+  .category-option {
+    padding: 8px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: white;
+    font-size: 0.9rem;
+  }
+  
+  .category-option:hover {
+    border-color: #93c5fd;
+    background-color: #f0f9ff;
+  }
+  
+  .category-option.selected {
+    background-color: #3b82f6;
+    color: white;
+    border-color: #2563eb;
+  }
+  
+  .selection-preview {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f8fafc;
+    border-radius: 8px;
+  }
+  
+  .selection-preview-item {
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+  }
+  
+  .selection-preview-label {
+    font-weight: 600;
+    color: #4b5563;
+    margin-right: 8px;
+  }
+  
+  .navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 24px;
+  }
+  
+  .back-button, .next-button {
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  
+  .back-button {
+    background-color: white;
+    border: 1px solid #d1d5db;
+    color: #374151;
+  }
+  
+  .back-button:hover {
+    background-color: #f3f4f6;
+  }
+  
+  .next-button {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+  }
+  
+  .next-button:hover {
+    background-color: #2563eb;
+  } */
+
+
+  /* ProjectCategories.css */
+.category-section {
+    margin-bottom: 24px;
+}
+
+.category-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #333;
+}
+
+.options-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.option-pill {
+    padding: 8px 16px;
+    border-radius: 25px;
+    background-color: white;
+    border: 1px solid #e0e0e0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.option-pill:hover {
+    background-color: #f0f0f0;
+}
+
+.option-pill.selected {
+    background-color: black;
+    color: white;
+    border-color: black;
+}
+
+.selection-summary {
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+.nav-button {
+    padding: 8px 20px;
+    border-radius: 4px;
+}

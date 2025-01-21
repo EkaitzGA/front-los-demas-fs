@@ -71,18 +71,29 @@ const ProjectsGridContainer = ({ userId, projectsData, isFavorites = false, show
     }
 
     if (!projects || projects.length === 0) {
-        return <div>
-            {showNewProjectButton && isOwnProfile && (
-                <div className="mb-4-no-project">
-                    <NewProjectButton onClick={handleNewProject} />
-                </div>
-            )}
-            {isOwnProfile ? (
-                <p>Load your first Project!</p>
-            ) : (
-                <p>This user has no projects yet</p>
-            )}
-        </div>;
+        return (
+            <div>
+                {/* Aquí agregamos el Modal */}
+                <Modal
+                    isOpen={isModalOpen}
+                    onClose={handleCloseModal}
+                    onProjectCreated={handleProjectCreated}
+                    userId={userId}
+                />
+
+                {/* Resto del código existente */}
+                {showNewProjectButton && isOwnProfile && (
+                    <div className="mb-4-no-project">
+                        <NewProjectButton onClick={handleNewProject} />
+                    </div>
+                )}
+                {isOwnProfile ? (
+                    <p>Load your first Project!</p>
+                ) : (
+                    <p>This user has no projects yet</p>
+                )}
+            </div>
+        );
     }
 
 
