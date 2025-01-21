@@ -273,7 +273,7 @@ export {
     getAllStyles,
     getAllSubjects,
 
-    getUSerByUsername
+    getUSerByUsername,
 
     updateUserProfile
 
