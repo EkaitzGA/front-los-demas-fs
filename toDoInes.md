@@ -5,7 +5,7 @@ USERS
 
 EDITAR PERFIL-> AÑADIR  avatar
 
-DESACTIVAR/BORRAR PERFIL -> No usar endpoint de delete
+DESACTIVAR/BORRAR PERFIL -> Usar endpoint delete
 
 CREAR/AÑADIR PROYECTO
 

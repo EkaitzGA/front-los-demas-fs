@@ -73,6 +73,7 @@
 
 /* Section 1 - Heading */
 .section-heading {
+    position: relative;
     margin-bottom: 40px;
 }
 
@@ -298,6 +299,100 @@
     min-height: 400px; 
     position: relative;
     width: 100%;
+}
+
+/* Estilos para el botón de eliminar y diálogo */
+.delete-user-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.delete-user-container button {
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.delete-user-container button:hover {
+    background-color: rgba(255, 0, 0, 0.1);
+}
+
+.delete-user-container svg {
+    width: 20px;
+    height: 20px;
+    color: #dc2626;
+}
+
+/* Estilos para el diálogo de confirmación */
+.confirm-dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.confirm-dialog {
+    background-color: white;
+    padding: 20px;
+    border-radius: 0;
+    max-width: 500px;
+    width: 90%;
+    border: 1px solid grey;
+}
+
+.confirm-dialog h2 {
+    margin: 0 0 15px 0;
+    font-size: 20px;
+    color: #333;
+}
+
+.confirm-dialog ul {
+    margin: 10px 0;
+    padding-left: 20px;
+    color: #666;
+}
+
+.confirm-dialog-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.confirm-dialog-buttons button {
+    padding: 8px 16px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-size: 14px;
+}
+
+.cancel-button {
+    background-color: #666666;
+    color: white;
+}
+
+.confirm-button {
+    background-color: #dc2626;
+    color: red;
+}
+
+.confirm-button:hover,
+.cancel-button:hover {
+    background-color: #333;
 }
 
 /* Media queries */
