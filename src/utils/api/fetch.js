@@ -262,6 +262,9 @@ async function updateUserProfile(userId, userData) {
     return await fetchData(`users/${userId}`, 'PUT', userData);
 }
 
+async function deleteUserProfile(userId, userData) {
+    return await fetchData(`users/${userId}`, 'DELETE', userData);
+}
 
 
 export {
@@ -283,9 +286,8 @@ export {
     getAllTypes,
     getAllStyles,
     getAllSubjects,
-
     getUSerByUsername,
-
-    updateUserProfile
+    updateUserProfile,
+    deleteUserProfile
 
 };

@@ -15,3 +15,5 @@ En la página users habría que modificar la caja de búsqueda para que no sea u
 
  USERINFOCONTAINER arreglar el botón de edit y cancelar. Ahora mismo el cancelar guarda y el aceptar bloquea y no hace nada
 
+
+AL HACER LOGOUT DEBE BORRARSE USERID DEL LOCALSTORAGE

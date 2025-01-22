@@ -4,30 +4,78 @@ import './ClientProfile.css';
 import UserInfoContainer from '../../components/userInfoContainer/UserInfoContainer';
 import ProjectsGridContainer from '../../components/projectsGridContainer/ProjectsGridContainer';
 import MyNetwork from './MyNetwork';
-import { getUserById } from '../../utils/api/fetch';
+import { getUserById, deleteUserProfile } from '../../utils/api/fetch';
 import WindowIcon from '@mui/icons-material/Window';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import GroupsIcon from '@mui/icons-material/Groups';
 import ChatIcon from '@mui/icons-material/Chat';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 
-const UserHeader = ({ userData }) => (
-    <section id="heading" className="section-heading">
-        <div className="breadcrumb">
-            <span>HOME</span>
-            <span className="separator">·</span>
-            <span>DIRECTORY</span>
-        </div>
-        <h1>
-            {userData?.username
-                ? `${userData.username} | ${userData.name} ${userData.lastname}`
-                : 'Usuario no encontrado'
-            }
-        </h1>
-        <h4 className='specialization-profile'>{userData.specialization} </h4>
-    </section>
-);
+const UserHeader = ({ userData }) => {
+    const navigate = useNavigate();
+    const userId = localStorage.getItem('userId');
+    const isOwnProfile = userId && userData?._id && userId === userData._id.toString();
+    const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
+    const handleDelete = async () => {
+        try {
+            await deleteUserProfile(userData.id);
+            localStorage.clear()
+            navigate('/');
+        } catch (error) {
+            console.error('Error deleting user:', error);
+        }
+    };
+
+    return (
+        <section id="heading" className="section-heading">
+            <div className="breadcrumb">
+                <span>HOME</span>
+                <span className="separator">·</span>
+                <span>DIRECTORY</span>
+            </div>
+            <h1>
+                {userData?.username
+                    ? `${userData.username} | ${userData.name} ${userData.lastname}`
+                    : 'Usuario no encontrado'
+                }
+            </h1>
+            <h4 className='specialization-profile'>{userData.specialization}</h4>
+            
+            {isOwnProfile && (
+                <div className="delete-user-container">
+                    <button onClick={() => setShowConfirmDialog(true)} className="delete-button">
+                        <DeleteIcon />
+                    </button>
+
+                    {showConfirmDialog && (
+                        <div className="confirm-dialog-overlay">
+                            <div className="confirm-dialog">
+                                <h2>¿Estás seguro?</h2>
+                                <p>Esta acción no se puede deshacer. Se eliminará permanentemente tu cuenta y todos los datos asociados, incluyendo:</p>
+                                <ul>
+                                    <li>Tu perfil personal</li>
+                                    <li>Todos tus proyectos</li>
+                                    <li>Tus conexiones y red</li>
+                                    <li>Historial de actividad</li>
+                                </ul>
+                                <div className="confirm-dialog-buttons">
+                                    <button onClick={() => setShowConfirmDialog(false)} className="cancel-button">
+                                        Cancelar
+                                    </button>
+                                    <button onClick={handleDelete} className="confirm-button">
+                                        Eliminar cuenta
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            )}
+        </section>
+    );
+};
 
 const ClientProfile = () => {
     const navigate = useNavigate();
@@ -83,7 +131,6 @@ const ClientProfile = () => {
     const loggedUserId = localStorage.getItem('userId');
     const token = localStorage.getItem('token');
 
-    // Verificar si el usuario está logueado y si está viendo su propio perfil
     const isOwnProfile = loggedUserId && token && loggedUserId === id;
 
     const renderSection = () => {
@@ -105,13 +152,10 @@ const ClientProfile = () => {
 
     return (
         <div className={`client-profile-container ${getSpecializationClass(userData?.specialization)}`}>
-
             <UserHeader userData={userData} />
             <UserInfoContainer userData={userData} onProfileUpdate={handleProfileUpdate} />
 
-            {/* <div className="profile-navigation"> */}
             <div className={`profile-navigation ${isOwnProfile ? 'four-columns' : 'three-columns'}`}>
-
                 <button
                     className={`nav-button ${activeSection === 'my-projects' ? 'active' : ''}`}
                     onClick={() => setActiveSection('my-projects')}
