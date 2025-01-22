@@ -69,7 +69,6 @@
     border-radius: 20px;
     font-weight: 500; 
     color: white;
-
 }
 
 /* Section 1 - Heading */
@@ -101,15 +100,16 @@
     border-radius: 0px;
     position: relative;
     border: 1px solid grey;
+    color: black;
 }
 
-.profile-container {
+.section-profile .profile-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 30px;
 }
 
-.profile-container h3 {
+.section-profile .profile-container h3 {
     color: #666;
     font-size: 14px;
     margin-bottom: 15px;
@@ -118,72 +118,76 @@
 }
 
 /* Estilos para el modo visualización */
-.location-block address {
+.section-profile .location-block address {
     font-style: normal;
     line-height: 1.6;
+    color: black;
 }
 
-.agency-block p {
+.section-profile .agency-block p {
     line-height: 1.6;
-    color: #333;
+    color: black;
 }
 
-.contact-info .contact-row {
+.section-profile .contact-info .contact-row {
     margin-bottom: 10px;
     display: flex;
     gap: 15px;
+    color: black;
 }
 
-.contact-info .label {
+.section-profile .contact-info .label {
     color: #666;
     min-width: 60px;
 }
 
-.contact-info a {
+.section-profile .contact-info a {
     color: #333;
     text-decoration: none;
 }
 
-.contact-info a:hover {
+.section-profile .contact-info a:hover {
     text-decoration: underline;
 }
 
-.empty-field {
+.section-profile .empty-field {
     color: #999;
     font-style: italic;
 }
 
 /* Estilos para el modo edición */
-.profile-form {
+.section-profile .profile-form {
     width: 100%;
 }
 
-.profile-form input,
-.profile-form textarea {
+.section-profile .profile-form input,
+.section-profile .profile-form textarea {
     width: 100%;
     padding: 8px;
     margin-bottom: 10px;
     border: 1px solid #ddd;
-    border-radius:0px;
+    border-radius: 0px;
     font-size: 14px;
+    background-color: white;
+    color: black;
 }
 
-.profile-form textarea {
+.section-profile .profile-form textarea {
     min-height: 100px;
     resize: vertical;
 }
 
-.form-actions {
+.section-profile .form-actions {
     margin-top: 20px;
     display: flex;
     gap: 10px;
     justify-content: flex-end;
 }
 
-/* Botones */
-.edit-button,
-.save-button,
-.cancel-button {
+/* Botones de edición */
+.section-profile .client-edit-button,
+.section-profile .client-save-button,
+.section-profile .client-cancel-button {
     padding: 8px 16px;
     border-radius: 50%;
     font-size: 14px;
@@ -193,36 +197,29 @@
     color: white;
     width: 35px;
     height: 35px;
-
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.edit-button {
+.section-profile .client-edit-button {
     position: absolute;
     top: 15px;
     right: 15px;
     background-color: black;
 }
 
-.save-button {
+.section-profile .client-save-button {
     background-color: black;
 }
 
-.cancel-button {
+.section-profile .client-cancel-button {
     background-color: black;
 }
 
-.edit-button:hover {
-    background-color: #666666;
-}
-
-.save-button:hover {
-    background-color: #666666;
-}
-
-.cancel-button:hover {
+.section-profile .client-edit-button:hover,
+.section-profile .client-save-button:hover,
+.section-profile .client-cancel-button:hover {
     background-color: #666666;
 }
 
@@ -238,18 +235,14 @@
     width: 100%;
 }
 
-
-
-/*Seleccion*/
+/* Navegación */
 .profile-navigation {
     display: grid;
-    /* grid-template-columns: repeat(4, 1fr); */
     width: 100%;
     max-width: 700px; 
     margin: 20px auto;
     gap: 20px;
     border-bottom: 1px solid rgb(205, 205, 205);
-    /* width: 100%; */
 }
 
 .four-columns {
@@ -274,11 +267,11 @@
 .nav-button svg {
     width: 24px;
     height: 24px;
-    color: #666; 
+    color: black; 
 }
 
 .nav-button:hover svg {
-    color: #696969;
+    color: white;
     transform: scale(1.1);
 }
 
@@ -305,4 +298,22 @@
     min-height: 400px; 
     position: relative;
     width: 100%;
+}
+
+/* Media queries */
+@media (max-width: 768px) {
+    .section-profile .profile-container {
+        grid-template-columns: 1fr;
+    }
+
+    .section-profile .form-actions {
+        position: static;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .section-profile .client-edit-button {
+        position: static;
+        margin: 0 auto 20px;
+    }
 }
