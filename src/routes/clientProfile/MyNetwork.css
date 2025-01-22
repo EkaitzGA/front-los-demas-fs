@@ -1,50 +1,207 @@
 .followers-following {
-    padding: 20px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .network-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 40px;
-    max-width: 1200px;
-    margin: 0 auto;
+    padding: 20px;
 }
 
 .column-followers,
 .column-following {
+    background-color: transparent;
     padding: 20px;
 }
 
 .column-followers h2,
 .column-following h2 {
     margin-bottom: 20px;
-    text-align: center;
+    color: #333;
+    font-size: 1.5rem;
 }
 
 .user-card-network {
-    background: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 15px;
     margin-bottom: 10px;
+    background-color: white;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+}
+
+.user-card-network:hover {
+    transform: translateY(-2px);
+}
+
+.user-info {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 4px;
 }
 
 .username-link {
-    color: #000;
+    color: #333;
     text-decoration: none;
     font-weight: 500;
-    font-size: 1.1em;
-    transition: color 0.3s ease;
+    font-size: 1.1rem;
 }
 
 .username-link:hover {
-    color: #666;
+    color: #2b5278;
 }
 
 .specialization {
     color: #666;
-    font-size: 0.9em;
+    font-size: 0.9rem;
+}
+
+.network-follow-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: white;
+    color: black;
+    border: 2px solid black;
+}
+
+.network-follow-button svg {
+    font-size: 20px;
+}
+
+.network-follow-button:hover {
+    background-color: black;
+    color: white;
+}
+
+.network-follow-button.following {
+    background-color: black;
+    color: white;
+}
+
+.network-follow-button.following:hover {
+    background-color: #dc2626;
+    border-color: #dc2626;
+}
+
+/* Modal de autenticación */
+.network-auth-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.network-auth-modal {
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 24px;
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+.network-close-modal {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+}
+
+.network-close-modal:hover {
+    color: #fff;
+}
+
+.network-auth-modal-content {
+    text-align: center;
+}
+
+.network-auth-modal-content h2 {
+    color: #fff;
+    margin: 0 0 16px 0;
+    font-size: 1.5rem;
+}
+
+.network-auth-modal-content p {
+    color: #ccc;
+    margin: 0 0 24px 0;
+}
+
+.network-auth-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+}
+
+.network-auth-button {
+    padding: 10px 24px;
+    border-radius: 20px;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.network-auth-button.login {
+    background-color: #2b5278;
+    color: white;
+}
+
+.network-auth-button.login:hover {
+    background-color: #366290;
+}
+
+.network-auth-button.register {
+    background-color: transparent;
+    color: #2b5278;
+    border: 2px solid #2b5278;
+}
+
+.network-auth-button.register:hover {
+    background-color: #2b5278;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .network-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .button-text {
+        display: none;
+    }
+
+    .network-follow-button {
+        padding: 8px;
+    }
 }

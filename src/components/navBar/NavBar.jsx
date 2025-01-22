@@ -195,12 +195,21 @@ function NavBar() {
                             {showSubmenu && (
                                 <div className="submenu">
                                     {isAuthenticated ? (
-                                        <button
-                                            onClick={handleLogout}
-                                            className="submenu-item"
-                                        >
-                                            Logout
-                                        </button>
+                                      <button 
+                                      onClick={(e) => {
+                                          e.preventDefault();
+                                          localStorage.removeItem('token');
+                                          localStorage.removeItem('userId');
+                                          setIsAuthenticated(false);
+                                          navigate('/');
+                                          setTimeout(() => {
+                                              window.location.reload();
+                                          }, 100);
+                                      }}
+                                      className="submenu-item"
+                                  >
+                                      Logout
+                                  </button>
                                     ) : (
                                         <>
                                             <NavLink

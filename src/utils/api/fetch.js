@@ -74,9 +74,9 @@ async function getUsers() {
     return await fetchData('users');
 }
 
-// async function createOwnProject(id) {
-//     return await fetchData(`projects/${id}`, 'POST', data);
-// }
+async function deleteProject(id) {
+    return await fetchData(`projects/${id}`, 'DELETE');
+}
 
 async function createOwnProject(data) {
     return await fetchData('projects', 'POST', data);
@@ -288,6 +288,8 @@ export {
     getAllSubjects,
     getUSerByUsername,
     updateUserProfile,
-    deleteUserProfile
-
+    deleteUserProfile,
+    deleteProject,
+    getUSerByUsername,
+    updateUserProfile
 };

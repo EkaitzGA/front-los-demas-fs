@@ -7,6 +7,8 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ChatIcon from '@mui/icons-material/Chat';
 import CloseIcon from '@mui/icons-material/Close';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { createChat } from '../../utils/api/fetch';
 import './ProjectPage.css';
 
@@ -58,13 +60,13 @@ function ProjectPage() {
         try {
             const token = localStorage.getItem('token');
             const userId = localStorage.getItem('userId');
-            
+
             const response = await fetch(`http://localhost:3002/users/${userId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            
+
             if (response.ok) {
                 const userData = await response.json();
                 setIsLiked(userData.projectlike.some(project => project._id === projectId));
@@ -114,27 +116,27 @@ function ProjectPage() {
                 setShowAuthModal(true);
                 return;
             }
-    
+
             if (!project?._id) {
                 alert('No se encontró información del proyecto');
                 return;
             }
-    
+
             if (project.owner._id === userId) {
                 alert('No puedes iniciar un chat contigo mismo');
                 return;
             }
-    
+
             setIsLoading(true);
             console.log('Creating chat with:', {
                 projectId: project._id,
                 ownerId: project.owner._id,
                 clientId: userId
             });
-    
+
             const response = await createChat(project._id, project.owner._id);
             console.log('Create chat response:', response);
-    
+
             if (response.success && response.data && response.data._id) {
                 navigate(`/chats/${response.data._id}`);
             } else {
@@ -199,6 +201,12 @@ function ProjectPage() {
 
             <div className='first-line-dsk'>
                 <h1>{projectName} by {ownerName} {ownerLastname}</h1>
+                {isAuthenticated && userId === project.owner._id && (
+                    <div className='edit-and-delete-project'>
+                        <EditIcon className='edit-project-pg' />
+                        <DeleteIcon className='delete-project-pg' />
+                    </div>
+                )}
             </div>
 
             <div className='left-column-first-line'>
@@ -270,7 +278,7 @@ function ProjectPage() {
                         <p>{ownerName} {ownerLastname}</p>
                     </Link>
                     {isAuthenticated && userId && project.owner && userId !== project.owner._id && (
-                        <button 
+                        <button
                             onClick={handleCreateChat}
                             className="chat-button"
                             disabled={isLoading}
@@ -284,7 +292,7 @@ function ProjectPage() {
                     <div>
                         <h5>COLLABORATORS</h5>
                         <p>
-                            {project.team_members.map(member => 
+                            {project.team_members.map(member =>
                                 `${member.name || ''} ${member.lastname || ''}`
                             ).join(', ')}
                         </p>
@@ -296,7 +304,7 @@ function ProjectPage() {
                 </div>
                 <div>
                     <h5>LIKES</h5>
-                    <div 
+                    <div
                         className="likes-wrapper"
                         onClick={handleLikeClick}
                         style={{ cursor: 'pointer' }}

@@ -61,7 +61,7 @@ function ChatRoom() {
         return [
           initialChat.owner.name || "",
           initialChat.owner.lastname || "",
-        ].filter(Boolean).join(" ") || "Propietario";
+        ].filter(Boolean).join(" ") || "Project Owner";
       }
     } catch (error) {
       console.error("Error getting participant name:", error);
@@ -302,7 +302,7 @@ function ChatRoom() {
   if (!initialChat) {
     return (
       <div className="loading-container">
-        <p>Cargando chat...</p>
+        <p>Loading chat...</p>
       </div>
     );
   }
@@ -310,7 +310,7 @@ function ChatRoom() {
   if (!connected) {
     return (
       <div className="connecting-message">
-        Conectando al chat...
+        Connecting to chat ....
         {error && <p className="connection-error">{error}</p>}
       </div>
     );
@@ -323,15 +323,15 @@ function ChatRoom() {
     <div className="chat-container-dsk">
       <div className="chat-top-bar">
         <Link to="/chats" className="back-to-chats">
-          <ArrowBackIcon /> Mis chats
+          <ArrowBackIcon /> My chats
         </Link>
         <span className="current-date">{formatDate()}</span>
       </div>
 
       <div className="chat-header-dsk">
-        <h2>Chat del Proyecto: {projectName}</h2>
+        <h2>Chat Project : {projectName}</h2>
         <p className="chat-participants-dsk">
-          Conversación con {otherParticipantName}
+          Conversation with {otherParticipantName}
         </p>
       </div>
 
@@ -339,7 +339,7 @@ function ChatRoom() {
         {/* Contador de mensajes no leídos */}
         {messages.some(msg => !msg.read && msg.sender.toString() !== userId?.toString()) && (
           <div className="unread-messages-indicator">
-            {messages.filter(msg => !msg.read && msg.sender.toString() !== userId?.toString()).length} mensajes sin leer
+            {messages.filter(msg => !msg.read && msg.sender.toString() !== userId?.toString()).length} messages unread
           </div>
         )}
         
@@ -365,7 +365,7 @@ function ChatRoom() {
         })}
         {typingUser && (
           <div className="typing-indicator">
-            {otherParticipantName} está escribiendo...
+            {otherParticipantName} is typing...
           </div>
         )}
         {error && <div className="error-message-dsk">{error}</div>}
@@ -378,7 +378,7 @@ function ChatRoom() {
             type="text"
             name="message"
             className="chat-input"
-            placeholder="Escribe tu mensaje..."
+            placeholder="Type your message..."
             ref={inputRef}
             disabled={loading || !connected}
             onChange={handleTyping}
@@ -388,7 +388,7 @@ function ChatRoom() {
             className="send-button-dsk"
             disabled={loading || !connected}
           >
-            {loading ? "Enviando..." : "Enviar"}
+            {loading ? "Sending..." : "Send"}
           </button>
         </form>
       </div>

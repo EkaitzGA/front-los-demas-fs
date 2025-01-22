@@ -44,7 +44,7 @@ function ChatsList() {
   };
 
   const getLastMessage = (chat) => {
-    if (!chat?.messages?.length) return { text: 'No hay mensajes', unread: false };
+    if (!chat?.messages?.length) return { text: 'No masseges', unread: false };
     
     // Filtrar mensajes válidos y ordenarlos por fecha
     const validMessages = chat.messages
@@ -52,7 +52,7 @@ function ChatsList() {
       .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
     
     if (validMessages.length === 0) {
-      return { text: 'No hay mensajes válidos', unread: false };
+      return { text: 'No valid masseges', unread: false };
     }
 
     const lastMessage = validMessages[0];
@@ -79,7 +79,7 @@ function ChatsList() {
         return [
           chat.owner.name || '',
           chat.owner.lastname || ''
-        ].filter(Boolean).join(' ') || 'Propietario';
+        ].filter(Boolean).join(' ') || 'Project Owner';
       }
     } catch (error) {
       console.error('Error getting participant name:', error);
@@ -175,7 +175,7 @@ function ChatsList() {
   };
 
   if (loading) {
-    return <div className="chats-loading">Cargando chats...</div>;
+    return <div className="chats-loading">Loading chats...</div>;
   }
 
   if (error) {
@@ -183,7 +183,7 @@ function ChatsList() {
       <div className="chats-error">
         <p>{error}</p>
         <button onClick={() => window.location.reload()}>
-          Intentar de nuevo
+          Try again
         </button>
       </div>
     );
@@ -191,11 +191,11 @@ function ChatsList() {
 
   return (
     <div className="chats-list-container">
-      <h2>Mis Conversaciones</h2>
+      <h2>My conversations</h2>
 
       <div className="chats-grid">
         {chats.length === 0 ? (
-          <p className="no-chats">No tienes conversaciones activas</p>
+          <p className="no-chats">You don't have ative chats</p>
         ) : (
           chats.map(chat => {
             const unreadCount = getUnreadMessages(chat);
@@ -215,7 +215,7 @@ function ChatsList() {
                   </span>
                   {unreadCount > 0 && (
                     <span className="unread-badge">
-                      {unreadCount} mensaje{unreadCount !== 1 ? 's' : ''} sin leer
+                      {unreadCount} messages{unreadCount !== 1 ? 's' : ''} unread
                     </span>
                   )}
                 </div>
@@ -224,7 +224,7 @@ function ChatsList() {
                 </p>
                 <div className="chat-card-footer">
                   <span className="message-count">
-                    {chat.messages?.length || 0} mensajes
+                    {chat.messages?.length || 0} messages
                   </span>
                   <span className="chat-date">
                     {formatDate(lastMessage.timestamp || chat.updatedAt)}
