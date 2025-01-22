@@ -36,6 +36,10 @@ const ClientProfile = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [activeSection, setActiveSection] = useState('my-projects');
 
+    const handleProfileUpdate = (updatedUserData) => {
+        setUserData(updatedUserData);
+    };
+
     useEffect(() => {
         const fetchUserData = async () => {
             try {
@@ -103,7 +107,7 @@ const ClientProfile = () => {
         <div className={`client-profile-container ${getSpecializationClass(userData?.specialization)}`}>
 
             <UserHeader userData={userData} />
-            <UserInfoContainer userData={userData} />
+            <UserInfoContainer userData={userData} onProfileUpdate={handleProfileUpdate} />
 
             {/* <div className="profile-navigation"> */}
             <div className={`profile-navigation ${isOwnProfile ? 'four-columns' : 'three-columns'}`}>
