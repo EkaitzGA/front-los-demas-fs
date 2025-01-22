@@ -20,9 +20,9 @@ function NavBar() {
 
     const isProfileRoute = () => location.pathname.includes('/myprofile/');
     const isInProfileRoute = location.pathname.includes('/myprofile/');
-    
-    
-    
+
+
+
     useEffect(() => {
         setIsCompact(isProfileRoute());
     }, [location.pathname]);
@@ -92,7 +92,6 @@ function NavBar() {
     };
 
     useEffect(() => {
-        // Verificar mensajes no leídos al montar y cada 30 segundos
         checkUnreadMessages();
         const interval = setInterval(checkUnreadMessages, 30000);
 
@@ -101,35 +100,36 @@ function NavBar() {
 
 
     useEffect(() => {
-        // Verificar mensajes no leídos al montar y cada 30 segundos
         checkUnreadMessages();
         const interval = setInterval(checkUnreadMessages, 30000);
 
         return () => clearInterval(interval);
     }, []);
+
+
 
     useEffect(() => {
         if (isInProfileRoute) {
             setIsCompact(true);
             return;
         }
-    
+
         const controlNavbar = () => {
             const currentScrollY = window.scrollY;
-    
+
             if (currentScrollY > lastScrollY) {
                 setIsVisible(false);
             } else {
                 setIsVisible(true);
             }
-    
+
             setIsCompact(currentScrollY > 100);
             setLastScrollY(currentScrollY);
         };
-    
+
         window.addEventListener('scroll', controlNavbar);
         controlNavbar();
-    
+
         return () => {
             window.removeEventListener('scroll', controlNavbar);
         };
@@ -195,21 +195,21 @@ function NavBar() {
                             {showSubmenu && (
                                 <div className="submenu">
                                     {isAuthenticated ? (
-                                      <button 
-                                      onClick={(e) => {
-                                          e.preventDefault();
-                                          localStorage.removeItem('token');
-                                          localStorage.removeItem('userId');
-                                          setIsAuthenticated(false);
-                                          navigate('/');
-                                          setTimeout(() => {
-                                              window.location.reload();
-                                          }, 100);
-                                      }}
-                                      className="submenu-item"
-                                  >
-                                      Logout
-                                  </button>
+                                        <button
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                localStorage.removeItem('token');
+                                                localStorage.removeItem('userId');
+                                                setIsAuthenticated(false);
+                                                navigate('/');
+                                                setTimeout(() => {
+                                                    window.location.reload();
+                                                }, 100);
+                                            }}
+                                            className="submenu-item"
+                                        >
+                                            Logout
+                                        </button>
                                     ) : (
                                         <>
                                             <NavLink
