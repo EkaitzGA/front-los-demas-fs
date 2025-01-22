@@ -11,7 +11,6 @@ import GroupsIcon from '@mui/icons-material/Groups';
 import ChatIcon from '@mui/icons-material/Chat';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-
 const UserHeader = ({ userData }) => {
     const navigate = useNavigate();
     const userId = localStorage.getItem('userId');
@@ -130,19 +129,18 @@ const ClientProfile = () => {
 
     const loggedUserId = localStorage.getItem('userId');
     const token = localStorage.getItem('token');
-
     const isOwnProfile = loggedUserId && token && loggedUserId === id;
 
     const renderSection = () => {
         switch (activeSection) {
             case 'my-projects':
-                return <ProjectsGridContainer userId={id} showNewProjectButton={true} />;
+                return <ProjectsGridContainer userId={id} showNewProjectButton={true} showLikes={true} />;
             case 'my-favorites':
-                return <ProjectsGridContainer userId={id} projectsData={userData?.projectlike} isFavorites={true} showNewProjectButton={false} />;
+                return <ProjectsGridContainer userId={id} projectsData={userData?.projectlike} isFavorites={true} showNewProjectButton={false} showLikes={false} />;
             case 'my-network':
                 return <MyNetwork userData={userData} />;
             default:
-                return <ProjectsGridContainer userId={id} showNewProjectButton={true} />;
+                return <ProjectsGridContainer userId={id} showNewProjectButton={true} showLikes={true} />;
         }
     };
 
