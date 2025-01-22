@@ -19,12 +19,6 @@ const ProjectsGridContainer = ({ userId, projectsData, isFavorites = false, show
         setIsModalOpen(false);
     };
 
-            // await llamar a la api oara crear proyevto
-    // const handleProjectCreated =async  (newProject) => {
-    //     setProjects(prevProjects => [...prevProjects, newProject]);
-    //     setIsModalOpen(false);
-    // };
-
     const handleProjectCreated = async (newProject) => {
         try {
             const response = await createOwnProject(newProject);
@@ -33,13 +27,10 @@ const ProjectsGridContainer = ({ userId, projectsData, isFavorites = false, show
                 throw new Error(response.message || 'Error al crear el proyecto');
             }
     
-            // Si la creación fue exitosa, actualizamos el estado con el proyecto devuelto por la API
             setProjects(prevProjects => [...prevProjects, response.data]);
             setIsModalOpen(false);
         } catch (error) {
             console.error('Error creating project:', error);
-            // Aquí deberías mostrar algún mensaje de error al usuario
-            // Por ejemplo, si tienes un sistema de notificaciones o alerts
         }
     };
 
@@ -58,7 +49,6 @@ const ProjectsGridContainer = ({ userId, projectsData, isFavorites = false, show
                     throw new Error(response.message || 'Error fetching projects');
                 }
 
-                // Filtramos los proyectos donde el owner._id coincida con nuestro userId
                 const userProjects = response.data.filter(project =>
                     project.owner && project.owner._id === userId
                 );
@@ -79,8 +69,6 @@ const ProjectsGridContainer = ({ userId, projectsData, isFavorites = false, show
 
     const loggedUserId = localStorage.getItem('userId');
     const token = localStorage.getItem('token');
-
-    // Verificar si el usuario está logueado y si está viendo su propio perfil
     const isOwnProfile = loggedUserId && token && loggedUserId === userId;
 
     if (isLoading) {
@@ -94,7 +82,6 @@ const ProjectsGridContainer = ({ userId, projectsData, isFavorites = false, show
     if (!projects || projects.length === 0) {
         return (
             <div>
-                {/* Aquí agregamos el Modal */}
                 <Modal
                     isOpen={isModalOpen}
                     onClose={handleCloseModal}
@@ -102,7 +89,6 @@ const ProjectsGridContainer = ({ userId, projectsData, isFavorites = false, show
                     userId={userId}
                 />
 
-                {/* Resto del código existente */}
                 {showNewProjectButton && isOwnProfile && (
                     <div className="mb-4-no-project">
                         <NewProjectButton onClick={handleNewProject} />
@@ -117,18 +103,9 @@ const ProjectsGridContainer = ({ userId, projectsData, isFavorites = false, show
         );
     }
 
-
-
-
     return (
         <section className="section-grid">
             <div className="projects-grid-dsk">
-                {/* {showNewProjectButton && (
-                    <div className="mb-4">
-                        <NewProjectButton onClick={handleNewProject} />
-                    </div>
-                )} */}
-
                 {showNewProjectButton && isOwnProfile && (
                     <div className="mb-4">
                         <NewProjectButton onClick={handleNewProject} />
@@ -144,6 +121,7 @@ const ProjectsGridContainer = ({ userId, projectsData, isFavorites = false, show
                         date={project.date}
                         url={project.url}
                         likes={project.likes}
+                        showLikes={!isFavorites}
                     />
                 ))}
 

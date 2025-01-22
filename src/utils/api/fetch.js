@@ -29,7 +29,7 @@ async function fetchData(route, method = 'GET', data = null) {
         const responseData = await response.json();
 
         if (!response.ok) {
-            throw new Error(responseData.message || 'Error en la petición');
+            throw new Error(responseData.message || 'Error en la peticiÃ³n');
         }
 
         return {
@@ -290,6 +290,4 @@ export {
     updateUserProfile,
     deleteUserProfile,
     deleteProject,
-    getUSerByUsername,
-    updateUserProfile
 };

@@ -6,12 +6,11 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 
 import './ProjectContainer.css';
 
-function ProjectContainer({ img, owner = {}, _id, date, url, likes = 0, showInfo = true }) {
+function ProjectContainer({ img, owner = {}, _id, date, url, likes = 0, showInfo = true, showLikes = true }) {
     const [isLiked, setIsLiked] = useState(false);
     const [likeCount, setLikeCount] = useState(likes);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-    // Desestructuramos owner con valores por defecto
     const { 
         username = 'Usuario',
         _id: ownerId = '',
@@ -19,15 +18,12 @@ function ProjectContainer({ img, owner = {}, _id, date, url, likes = 0, showInfo
         lastname = ''
     } = owner || {};
 
-    // Creamos el nombre completo solo si hay name o lastname
     const fullName = [name, lastname].filter(Boolean).join(' ') || username;
 
     useEffect(() => {
-        // Verificar si el usuario está autenticado
         const token = localStorage.getItem('token');
         setIsAuthenticated(!!token);
 
-        // Si está autenticado, verificar si ya le dio like al proyecto
         if (token) {
             checkIfProjectLiked();
         }
@@ -55,7 +51,7 @@ function ProjectContainer({ img, owner = {}, _id, date, url, likes = 0, showInfo
     };
 
     const handleLikeClick = async (e) => {
-        e.preventDefault(); // Prevenir navegación si está dentro de un Link
+        e.preventDefault();
         
         const token = localStorage.getItem('token');
         if (!token || !isAuthenticated) {
@@ -68,7 +64,7 @@ function ProjectContainer({ img, owner = {}, _id, date, url, likes = 0, showInfo
             const userId = localStorage.getItem('userId');
 
             const response = await fetch('http://localhost:3002/users/like-project', {
-                method: 'PUT', // Cambiado a PUT para coincidir con el backend
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
@@ -88,7 +84,6 @@ function ProjectContainer({ img, owner = {}, _id, date, url, likes = 0, showInfo
             console.error('Error updating like:', error);
         }
     };
-
 
     return (
         <div className='project-container-dsk'>
@@ -110,10 +105,9 @@ function ProjectContainer({ img, owner = {}, _id, date, url, likes = 0, showInfo
                 <div className='project-info-dsk'>
                     <div className='info-main-row'>
                         <Link to={`/myprofile/${ownerId}`}>
-                        {/* <Link to={ownerId === localStorage.getItem('userId') ? `/myprofile/${ownerId}` : `/directory/${ownerId}`}> */}
                             <p>{fullName}</p>
                         </Link>
-                        {isAuthenticated && (
+                        {isAuthenticated && showLikes && (
                             <div 
                                 className='likes-container' 
                                 onClick={handleLikeClick}
