@@ -60,7 +60,7 @@ const UserHeader = ({ userData }) => {
                                     <li>Historial de actividad</li>
                                 </ul>
                                 <div className="confirm-dialog-buttons">
-                                    <button onClick={() => setShowConfirmDialog(false)} className="cancel-button">
+                                    <button onClick={() => setShowConfirmDialog(false)} className="cancelDelete-button">
                                         Cancelar
                                     </button>
                                     <button onClick={handleDelete} className="confirm-button">
