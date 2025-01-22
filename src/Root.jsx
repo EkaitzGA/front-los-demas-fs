@@ -12,11 +12,6 @@ function Root() {
     const location = useLocation();
     const [showSplash, setShowSplash] = useState(true);
 
-
-    // useEffect(() => {
-    //     window.scrollTo(0, 0);
-    // }, [location]);
-
     useEffect(() => {
         window.scrollTo(0, 0);
     }, [location]);
@@ -29,10 +24,12 @@ function Root() {
         <FilterProvider>
         <div>
             <NavBar></NavBar>
-            <main className='main-desktop-general'>
+            <main className='main-desktop-general' key={location.pathname}>
                 <Outlet />
             </main>
-            <Footer />
+            <div className="fade-in" key={`footer-${location.pathname}`}>
+                <Footer />
+            </div>
         </div>
         </FilterProvider>
     )
