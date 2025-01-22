@@ -140,7 +140,7 @@ function ChatsList() {
 
     fetchChats();
     // Actualizar cada 5 segundos
-    const interval = setInterval(fetchChats, 5000);
+    const interval = setInterval(fetchChats, 20000);
     return () => clearInterval(interval);
   }, [userId, navigate]);
 
@@ -213,19 +213,17 @@ function ChatsList() {
                   <span className="participant-name">
                     {participantName}
                   </span>
-                  {unreadCount > 0 && (
-                    <span className="unread-badge">
-                      {unreadCount} messages{unreadCount !== 1 ? 's' : ''} unread
-                    </span>
-                  )}
+                  
                 </div>
                 <p className={`last-message ${lastMessage.unread ? 'unread' : ''}`}>
                   {lastMessage.text}
                 </p>
                 <div className="chat-card-footer">
-                  <span className="message-count">
-                    {chat.messages?.length || 0} messages
-                  </span>
+                {unreadCount > 0 && (
+                    <span className="unread-badge-list">
+                      {unreadCount} messages{unreadCount !== 1 ? 's' : ''} unread
+                    </span>
+                  )}
                   <span className="chat-date">
                     {formatDate(lastMessage.timestamp || chat.updatedAt)}
                   </span>
