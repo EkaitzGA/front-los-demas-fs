@@ -290,6 +290,4 @@ export {
     updateUserProfile,
     deleteUserProfile,
     deleteProject,
-    getUSerByUsername,
-    updateUserProfile
 };

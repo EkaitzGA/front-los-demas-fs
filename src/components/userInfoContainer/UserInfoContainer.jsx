@@ -427,11 +427,7 @@ const UserInfoContainer = ({ userData, onProfileUpdate }) => {
                             <h3>DESCRIPTION</h3>
                             {profileData.agency ? <p>{profileData.agency}</p> : <p>No description provided</p>}
                         </div>
-                        <div className="specialization-block">
-                            <h3>SPECIALIZATION</h3>
-                            <p>{profileData.specialization || 'No specialization provided'}</p>
-                        </div>
-
+                      
                         <div className="contact-block">
                             <h3>CONTACT</h3>
                             <div className="contact-info">
