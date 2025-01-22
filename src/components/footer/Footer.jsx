@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import './Footer.css'
 
 function Footer() {
@@ -10,7 +11,9 @@ function Footer() {
             <div className='second-column-footer'>
                 <h3>KAZOKU</h3>
                 <p>About us</p>
-                <p>Join the Community</p>
+                <Link to="/auth?mode=login">
+                    <p>Join the Community</p>
+                </Link>
                 <p>Values: Collaboration, Inclusion & Growth</p>
             </div>
 
@@ -24,8 +27,12 @@ function Footer() {
 
             <div className='fourth-column-footer'>
                 <h3>Explore</h3>
-                <p>Web Projects</p>
+                <Link to="/">
+                    <p>Web Projects</p>
+                </Link>
+                <Link to="/profiles">
                 <p>Users</p>
+                </Link>
                 <p>Contact</p>
             </div>
 
