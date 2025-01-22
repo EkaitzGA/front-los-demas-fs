@@ -18,17 +18,18 @@ function Modal({ isOpen, onClose, onProjectCreated, userId }) {
         subjects: [],
         images: [],
         owner: userId,
-        team_members: [userId],
+        team_members: [{userId,username:"yourUser"}],
     });
 
     const nextStep = () => setStep(step + 1);
     const prevStep = () => setStep(step - 1);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async () => {
         try {
             // Lógica de submit
-            onProjectCreated(projectData);
+            const newProjectData = projectData;
+            newProjectData.team_members = newProjectData.team_members.map(user=>user.userId)
+            onProjectCreated(newProjectData);
             onClose();
         } catch (error) {
             console.error('Error creating project:', error);

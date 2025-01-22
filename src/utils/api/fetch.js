@@ -74,8 +74,12 @@ async function getUsers() {
     return await fetchData('users');
 }
 
-async function createOwnProject(id) {
-    return await fetchData(`projects/${id}`, 'POST', data);
+// async function createOwnProject(id) {
+//     return await fetchData(`projects/${id}`, 'POST', data);
+// }
+
+async function createOwnProject(data) {
+    return await fetchData('projects', 'POST', data);
 }
 
 async function updateProject(id) {
@@ -94,8 +98,15 @@ async function getAllSubjects() {
     return await fetchData('subjects');
 }
 
+// async function getUSerByUsername(username) {
+//     return await fetchData(`users/username/${username}`);
+// }
 async function getUSerByUsername(username) {
-    return await fetchData(`users/username/${username}`);
+    const response = await fetchData(`users/username/${username}`);
+    if (!response.success) {
+        throw new Error(response.message || 'Error fetching user');
+    }
+    return response.data;
 }
 
 async function getUserChats(userId) {
