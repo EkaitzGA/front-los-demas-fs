@@ -303,12 +303,12 @@ const AuthPage = () => {
     };
 
     return (
-        <>
+        <div className="auth-page">
             {isLogin 
                 ? <LoginForm onToggle={toggleForm} />
                 : <RegisterForm onToggle={toggleForm} />
             }
-        </>
+        </div>
     );
 };
 
