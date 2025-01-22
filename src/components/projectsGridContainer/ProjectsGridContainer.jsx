@@ -3,6 +3,7 @@ import { getProjects } from '../../utils/api/fetch';
 import ProjectContainer from '../projectContainer/ProjectContainer';
 import NewProjectButton from '../projectContainer/NewProjectButton';
 import Modal from '../modal/Modal';
+import { createOwnProject } from '../../utils/api/fetch.js'
 import './ProjectsGridContainer.css'
 
 const ProjectsGridContainer = ({ userId, projectsData, isFavorites = false, showNewProjectButton = false }) => {
@@ -17,9 +18,29 @@ const ProjectsGridContainer = ({ userId, projectsData, isFavorites = false, show
     const handleCloseModal = () => {
         setIsModalOpen(false);
     };
-    const handleProjectCreated = (newProject) => {
-        setProjects(prevProjects => [...prevProjects, newProject]);
-        setIsModalOpen(false);
+
+            // await llamar a la api oara crear proyevto
+    // const handleProjectCreated =async  (newProject) => {
+    //     setProjects(prevProjects => [...prevProjects, newProject]);
+    //     setIsModalOpen(false);
+    // };
+
+    const handleProjectCreated = async (newProject) => {
+        try {
+            const response = await createOwnProject(newProject);
+            
+            if (!response.success) {
+                throw new Error(response.message || 'Error al crear el proyecto');
+            }
+    
+            // Si la creación fue exitosa, actualizamos el estado con el proyecto devuelto por la API
+            setProjects(prevProjects => [...prevProjects, response.data]);
+            setIsModalOpen(false);
+        } catch (error) {
+            console.error('Error creating project:', error);
+            // Aquí deberías mostrar algún mensaje de error al usuario
+            // Por ejemplo, si tienes un sistema de notificaciones o alerts
+        }
     };
 
     useEffect(() => {

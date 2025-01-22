@@ -120,37 +120,38 @@ const ImageUpload = ({ projectData, setProjectData, onSubmit, onBack }) => {
 
     const handleSubmitForm = async (e) => {
         e.preventDefault();
+        console.log("onsubmit")
+        onSubmit();
+        // if (imagePreviewUrls.main && !cropsAccepted.main) {
+        //     alert('Please accept the crop for the main image');
+        //     return;
+        // }
 
-        if (imagePreviewUrls.main && !cropsAccepted.main) {
-            alert('Please accept the crop for the main image');
-            return;
-        }
-
-        try {
-            const formData = new FormData();
+        // try {
+        //     const formData = new FormData();
             
-            // Add project data
-            Object.keys(projectData).forEach(key => {
-                if (key !== 'images') {
-                    formData.append(key, projectData[key]);
-                }
-            });
+        //     // Add project data
+        //     Object.keys(projectData).forEach(key => {
+        //         if (key !== 'images') {
+        //             formData.append(key, projectData[key]);
+        //         }
+        //     });
     
-            // Add images
-            if (imageFiles.main) {
-                formData.append('mainImage', imageFiles.main);
-            }
-            if (imageFiles.optional1 && cropsAccepted.optional1) {
-                formData.append('optional1', imageFiles.optional1);
-            }
-            if (imageFiles.optional2 && cropsAccepted.optional2) {
-                formData.append('optional2', imageFiles.optional2);
-            }
+        //     // Add images
+        //     if (imageFiles.main) {
+        //         formData.append('mainImage', imageFiles.main);
+        //     }
+        //     if (imageFiles.optional1 && cropsAccepted.optional1) {
+        //         formData.append('optional1', imageFiles.optional1);
+        //     }
+        //     if (imageFiles.optional2 && cropsAccepted.optional2) {
+        //         formData.append('optional2', imageFiles.optional2);
+        //     }
     
-            onSubmit(formData);
-        } catch (error) {
-            console.error('Error preparing form data:', error);
-        }
+        //     onSubmit(formData);
+        // } catch (error) {
+        //     console.error('Error preparing form data:', error);
+        // }
     };
 
     return (
@@ -191,10 +192,14 @@ const ImageUpload = ({ projectData, setProjectData, onSubmit, onBack }) => {
                                     type="button" 
                                     onClick={async () => {
                                         const croppedImage = await getCroppedImg(imagePreviewUrls.main, crops.main);
-                                        setImageFiles(prev => ({
+                                        setProjectData(prev => ({
                                             ...prev,
-                                            main: croppedImage
-                                        }));
+                                            images: [...prev.images,croppedImage]
+                                        }))
+                                        // setProjectData(prev => ({
+                                        //     ...prev,
+                                        //     images: [...(prev.images || []), croppedImage]
+                                        // }));
                                         setCropsAccepted(prev => ({
                                             ...prev,
                                             main: true

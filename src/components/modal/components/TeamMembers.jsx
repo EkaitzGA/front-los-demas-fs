@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react';
-import { getUSerByUsername } from '../../../utils/api/fetch.js'
+import { getUSerByUsername } from '../../../utils/api/fetch.js';
 
 const TeamMembers = ({ projectData, setProjectData, onNext, onBack }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [selectedUsers, setSelectedUsers] = useState([]);
 
-    // Función para buscar usuarios con debounce
+    // Search users with debounce
     useEffect(() => {
         const searchUsers = async () => {
             if (searchTerm.trim() === '') {
@@ -18,12 +17,27 @@ const TeamMembers = ({ projectData, setProjectData, onNext, onBack }) => {
             setIsLoading(true);
             try {
                 const result = await getUSerByUsername(searchTerm);
-                // Filtramos los usuarios que ya están seleccionados
-                const filteredResults = result.filter(user => 
-                    !projectData.team_members.includes(user._id)
+                console.log("resultado", result);
+                // Si no hay resultados, establecer array vacío
+                if (!result) {
+                    setSearchResults([]);
+                    return;
+                }
+                // Ensure result is always an array
+                const users = [result];
+                console.log("users", users)
+                // Filter out already selected users
+                const filteredResults = users.filter(user => 
+                    user && user.userId && !projectData.team_members.includes(user.userId)
                 );
+                console.log("firesult", filteredResults)
                 setSearchResults(filteredResults);
             } catch (error) {
+                // Si el error es 404, significa que no se encontró el usuario
+                if (error.message === "User not found") {
+                    setSearchResults([]);
+                    return;
+                }
                 console.error('Error searching users:', error);
                 setSearchResults([]);
             } finally {
@@ -31,7 +45,6 @@ const TeamMembers = ({ projectData, setProjectData, onNext, onBack }) => {
             }
         };
 
-        // Debounce de 300ms para evitar demasiadas llamadas
         const timeoutId = setTimeout(() => {
             if (searchTerm) {
                 searchUsers();
@@ -41,34 +54,40 @@ const TeamMembers = ({ projectData, setProjectData, onNext, onBack }) => {
         return () => clearTimeout(timeoutId);
     }, [searchTerm, projectData.team_members]);
 
-    // Cargar datos de los usuarios seleccionados
-    useEffect(() => {
-        const loadSelectedUsers = async () => {
-            try {
-                const usersData = await Promise.all(
-                    projectData.team_members.map(async (userId) => {
-                        const user = await getUSerByUsername(userId);
-                        return user;
-                    })
-                );
-                setSelectedUsers(usersData.filter(Boolean));
-            } catch (error) {
-                console.error('Error loading selected users:', error);
-            }
-        };
+    // Load selected users data
+    // useEffect(() => {
+    //     const loadSelectedUsers = async () => {
+    //         try {
+    //             const usersData = await Promise.all(
+    //                 projectData.team_members.map(async (userId) => {
+    //                     try {
+    //                         const user = await getUSerByUsername(userId);
+    //                         return Array.isArray(user) ? user[0] : user;
+    //                     } catch (error) {
+    //                         console.error(`Error loading user ${userId}:`, error);
+    //                         return null;
+    //                     }
+    //                 })
+    //             );
+    //             setSelectedUsers(usersData.filter(Boolean));
+    //         } catch (error) {
+    //             console.error('Error loading selected users:', error);
+    //             setSelectedUsers([]);
+    //         }
+    //     };
 
-        if (projectData.team_members.length > 0) {
-            loadSelectedUsers();
-        } else {
-            setSelectedUsers([]);
-        }
-    }, [projectData.team_members]);
+    //     if (projectData.team_members.length > 0) {
+    //         loadSelectedUsers();
+    //     } else {
+    //         setSelectedUsers([]);
+    //     }
+    // }, [projectData.team_members]);
 
     const handleAddMember = (user) => {
-        if (!projectData.team_members.includes(user._id)) {
+        if (!projectData.team_members.includes(user.userId)) {
             setProjectData(prev => ({
                 ...prev,
-                team_members: [...prev.team_members, user._id]
+                team_members: [...prev.team_members, user]
             }));
             setSearchTerm('');
             setSearchResults([]);
@@ -118,7 +137,7 @@ const TeamMembers = ({ projectData, setProjectData, onNext, onBack }) => {
                             ) : searchResults.length > 0 ? (
                                 searchResults.map(user => (
                                     <button
-                                        key={user._id}
+                                        key={user.userId}
                                         type="button"
                                         onClick={() => handleAddMember(user)}
                                         className="w-full px-4 py-2 text-left hover:bg-gray-100 flex items-center gap-3"
@@ -151,9 +170,9 @@ const TeamMembers = ({ projectData, setProjectData, onNext, onBack }) => {
                     Selected Team Members
                 </label>
                 <div className="space-y-2">
-                    {selectedUsers.map(user => (
+                    {projectData.team_members.map(user => (
                         <div 
-                            key={user._id}
+                            key={user.userId}
                             className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
                         >
                             <div className="flex items-center gap-3">
@@ -170,7 +189,7 @@ const TeamMembers = ({ projectData, setProjectData, onNext, onBack }) => {
                             </div>
                             <button
                                 type="button"
-                                onClick={() => handleRemoveMember(user._id)}
+                                onClick={() => handleRemoveMember(user.userId)}
                                 className="text-red-500 hover:text-red-700"
                             >
                                 <svg 
@@ -190,7 +209,7 @@ const TeamMembers = ({ projectData, setProjectData, onNext, onBack }) => {
                         </div>
                     ))}
                     
-                    {selectedUsers.length === 0 && (
+                    {projectData.team_members.length === 0 && (
                         <div className="text-center py-4 text-gray-500">
                             No team members selected
                         </div>
