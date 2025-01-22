@@ -52,7 +52,7 @@
     line-height: 1.5;
 }
 
-.pagination {
+/* .pagination {
     display: flex;
     justify-content: center;
     gap: 10px;
@@ -82,6 +82,76 @@
     background-color: #f5f5f5;
     cursor: not-allowed;
     opacity: 0.5;
+} */
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin: 40px 0;
+    /* font-family: 'Arial', sans-serif; */
+}
+
+.pagination-button {
+    min-width: 40px;
+    height: 40px;
+    padding: 0 15px;
+    border: none;
+    background-color: transparent;
+    color: #666;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Botones de número */
+.pagination-button:not(:first-child):not(:last-child) {
+    width: 40px;
+    padding: 0;
+}
+
+/* Hover effect */
+.pagination-button:hover:not(:disabled) {
+    background-color: #f0f0f0;
+    color: #000;
+    transform: translateY(-2px);
+    /* box-shadow: 0 2px 8px rgba(0,0,0,0.1); */
+}
+
+/* Botón activo */
+.pagination-button.active {
+    background-color: #000;
+    color: white;
+    font-weight: bold;
+    /* box-shadow: 0 4px 12px rgba(0,0,0,0.15); */
+}
+
+/* Previous y Next buttons */
+.pagination-button:first-child,
+.pagination-button:last-child {
+    font-weight: 600;
+    color: #000;
+}
+
+/* Botones deshabilitados */
+.pagination-button:disabled {
+    background-color: transparent;
+    color: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Efecto hover en botón activo */
+.pagination-button.active:hover {
+    transform: none;
+    /* box-shadow: 0 4px 12px rgba(0,0,0,0.2); */
 }
 
 
