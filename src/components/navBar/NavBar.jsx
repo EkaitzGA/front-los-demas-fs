@@ -18,13 +18,21 @@ function NavBar() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [unreadCount, setUnreadCount] = useState(0);
 
-    const isProfileRoute = () => location.pathname.includes('/myprofile/');
-    const isInProfileRoute = location.pathname.includes('/myprofile/');
+    // const isProfileRoute = () => location.pathname.includes('/myprofile/');
+    // const isInProfileRoute = location.pathname.includes('/myprofile/');
+
+    const isCompactRoute = () => {
+        return location.pathname.includes('/myprofile/') || 
+               location.pathname.includes('/chats');
+    };
 
 
+    // useEffect(() => {
+    //     setIsCompact(isProfileRoute());
+    // }, [location.pathname]);
 
     useEffect(() => {
-        setIsCompact(isProfileRoute());
+        setIsCompact(isCompactRoute());
     }, [location.pathname]);
 
     const resetFilters = () => {
@@ -108,28 +116,55 @@ function NavBar() {
 
 
 
+    // useEffect(() => {
+    //     if (isInProfileRoute) {
+    //         setIsCompact(true);
+    //         return;
+    //     }
+
+    //     const controlNavbar = () => {
+    //         const currentScrollY = window.scrollY;
+
+    //         if (currentScrollY > lastScrollY) {
+    //             setIsVisible(false);
+    //         } else {
+    //             setIsVisible(true);
+    //         }
+
+    //         setIsCompact(currentScrollY > 100);
+    //         setLastScrollY(currentScrollY);
+    //     };
+
+    //     window.addEventListener('scroll', controlNavbar);
+    //     controlNavbar();
+
+    //     return () => {
+    //         window.removeEventListener('scroll', controlNavbar);
+    //     };
+    // }, [location.pathname, lastScrollY]);
+
     useEffect(() => {
-        if (isInProfileRoute) {
+        if (isCompactRoute()) {
             setIsCompact(true);
             return;
         }
-
+    
         const controlNavbar = () => {
             const currentScrollY = window.scrollY;
-
+    
             if (currentScrollY > lastScrollY) {
                 setIsVisible(false);
             } else {
                 setIsVisible(true);
             }
-
+    
             setIsCompact(currentScrollY > 100);
             setLastScrollY(currentScrollY);
         };
-
+    
         window.addEventListener('scroll', controlNavbar);
         controlNavbar();
-
+    
         return () => {
             window.removeEventListener('scroll', controlNavbar);
         };
@@ -142,10 +177,10 @@ function NavBar() {
         <div className={`nav-bar-dsk 
             ${isVisible ? 'nav-visible' : 'nav-hidden'}
             ${isCompact ? 'nav-compact' : ''}
-            ${isCompact || isProfileRoute() ? 'nav-compact' : ''}
+            ${isCompact || isCompactRoute() ? 'nav-compact' : ''}
             ${isTransitioning ? 'transitioning' : ''}
         `}>
-            <div className={`nav-content-wrapper ${isCompact || isProfileRoute() ? 'nav-content-compact' : ''}`}>
+            <div className={`nav-content-wrapper ${isCompact || isCompactRoute() ? 'nav-content-compact' : ''}`}>
 
                 <div className='logo-section'>
                     <Link onClick={resetFilters} to="/">

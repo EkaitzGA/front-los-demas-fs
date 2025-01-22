@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
 import './Footer.css'
 
-function Footer() {
+function Footer({ className }) {
     return (
-        <div className='footer'>
+        <div className={`footer ${className || ''}`}>
             <div className='first-column-footer'>
                 <img src="/images/gato.jpg" alt="Kazoku" />
             </div>
