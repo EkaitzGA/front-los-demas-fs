@@ -11,7 +11,7 @@ function ProjectContainer({ img, owner = {}, _id, date, url, likes = 0, showInfo
     const [likeCount, setLikeCount] = useState(likes);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-    const { 
+    const {
         username = 'Usuario',
         _id: ownerId = '',
         name = '',
@@ -34,13 +34,13 @@ function ProjectContainer({ img, owner = {}, _id, date, url, likes = 0, showInfo
             console.log('Checking if project is liked...');
             const token = localStorage.getItem('token');
             const userId = localStorage.getItem('userId');
-            
+
             const response = await fetch(`http://localhost:3002/users/${userId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            
+
             if (response.ok) {
                 const userData = await response.json();
                 setIsLiked(userData.projectlike.some(project => project._id === _id));
@@ -52,7 +52,7 @@ function ProjectContainer({ img, owner = {}, _id, date, url, likes = 0, showInfo
 
     const handleLikeClick = async (e) => {
         e.preventDefault();
-        
+
         const token = localStorage.getItem('token');
         if (!token || !isAuthenticated) {
             console.log('Usuario no autenticado');
@@ -107,9 +107,9 @@ function ProjectContainer({ img, owner = {}, _id, date, url, likes = 0, showInfo
                         <Link to={`/myprofile/${ownerId}`}>
                             <p>{fullName}</p>
                         </Link>
-                        {isAuthenticated && showLikes && (
-                            <div 
-                                className='likes-container' 
+                        {isAuthenticated && (
+                            <div
+                                className='likes-container'
                                 onClick={handleLikeClick}
                                 style={{ cursor: 'pointer' }}
                             >
@@ -117,8 +117,9 @@ function ProjectContainer({ img, owner = {}, _id, date, url, likes = 0, showInfo
                                     <FavoriteIcon style={{ color: '#ff0000' }} />
                                 ) : (
                                     <FavoriteBorderIcon />
+                                )}  {showLikes && (
+                                    <span>{likeCount}</span>
                                 )}
-                                <span>{likeCount}</span>
                             </div>
                         )}
                     </div>
