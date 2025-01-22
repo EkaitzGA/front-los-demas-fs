@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { NavLink, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useFilters } from '../../context/FilterProvider';
 import { getUnreadMessagesCount } from '../../services/chatService';
+import ChatIcon from '@mui/icons-material/Chat';
+
 import './NavBar.css';
 
 function NavBar() {
@@ -15,6 +17,15 @@ function NavBar() {
     const [isTransitioning, setIsTransitioning] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [unreadCount, setUnreadCount] = useState(0);
+
+    const isProfileRoute = () => location.pathname.includes('/myprofile/');
+    const isInProfileRoute = location.pathname.includes('/myprofile/');
+    
+    
+    
+    useEffect(() => {
+        setIsCompact(isProfileRoute());
+    }, [location.pathname]);
 
     const resetFilters = () => {
         setSelectedFilters({
@@ -46,7 +57,7 @@ function NavBar() {
         if (isAuthenticated) {
             e.preventDefault();
             const id = localStorage.getItem('userId');
-            navigate(`/myprofile/${id}`);  
+            navigate(`/myprofile/${id}`);
         }
     };
 
@@ -61,13 +72,10 @@ function NavBar() {
             setIsAuthenticated(!!token);
         };
 
-        // Verificar al montar el componente
         checkAuth();
 
-        // Escuchar cambios en el localStorage
         window.addEventListener('storage', checkAuth);
 
-        // También podemos crear un evento personalizado para el login
         window.addEventListener('login', checkAuth);
 
         return () => {
@@ -87,52 +95,58 @@ function NavBar() {
         // Verificar mensajes no leídos al montar y cada 30 segundos
         checkUnreadMessages();
         const interval = setInterval(checkUnreadMessages, 30000);
-        
+
         return () => clearInterval(interval);
     }, []);
-   
+
 
     useEffect(() => {
         // Verificar mensajes no leídos al montar y cada 30 segundos
         checkUnreadMessages();
         const interval = setInterval(checkUnreadMessages, 30000);
-        
+
         return () => clearInterval(interval);
     }, []);
 
     useEffect(() => {
+        if (isInProfileRoute) {
+            setIsCompact(true);
+            return;
+        }
+    
         const controlNavbar = () => {
             const currentScrollY = window.scrollY;
-            
-            if (currentScrollY > lastScrollY) { 
+    
+            if (currentScrollY > lastScrollY) {
                 setIsVisible(false);
-            } else { 
+            } else {
                 setIsVisible(true);
             }
     
-            if (currentScrollY > 100) {  
-                setIsCompact(true);
-            } else {
-                setIsCompact(false);
-            }
-            
+            setIsCompact(currentScrollY > 100);
             setLastScrollY(currentScrollY);
         };
     
         window.addEventListener('scroll', controlNavbar);
+        controlNavbar();
     
         return () => {
             window.removeEventListener('scroll', controlNavbar);
         };
-    }, [lastScrollY]);
+    }, [location.pathname, lastScrollY]);
+
+    const isUserAuthenticated = localStorage.getItem('userId') && localStorage.getItem('token');
+
 
     return (
         <div className={`nav-bar-dsk 
             ${isVisible ? 'nav-visible' : 'nav-hidden'}
             ${isCompact ? 'nav-compact' : ''}
+            ${isCompact || isProfileRoute() ? 'nav-compact' : ''}
             ${isTransitioning ? 'transitioning' : ''}
         `}>
-            <div className={`nav-content-wrapper ${isCompact ? 'nav-content-compact' : ''}`}>
+            <div className={`nav-content-wrapper ${isCompact || isProfileRoute() ? 'nav-content-compact' : ''}`}>
+
                 <div className='logo-section'>
                     <Link onClick={resetFilters} to="/">
                         <img src="/images/gato.jpg" alt="Logo" />
@@ -161,24 +175,12 @@ function NavBar() {
                             </NavLink>
                         </li>
 
-                        <li className="nav-li-item">
-                            <NavLink
-                                to="/chats"
-                                className={({ isActive }) => `chat-link ${isActive ? 'active-link' : ''}`}
-                            >
-                                Chats
-                                {unreadCount > 0 && (
-                                    <span className="unread-badge">{unreadCount}</span>
-                                )}
-                            </NavLink>
-                        </li>
-
                         <li className={`nav-li-item ${location.pathname.includes('/auth') ? 'auth-active' : ''}`}
                             onMouseEnter={() => setShowSubmenu(true)}
                             onMouseLeave={() => setShowSubmenu(false)}
                         >
                             {isAuthenticated ? (
-                                <span 
+                                <span
                                     onClick={handleAccountClick}
                                     className={`account-trigger ${showSubmenu ? 'active-trigger' : ''} clickable`}
                                 >
@@ -189,7 +191,7 @@ function NavBar() {
                                     Account
                                 </span>
                             )}
-                            
+
                             {showSubmenu && (
                                 <div className="submenu">
                                     {isAuthenticated ? (
@@ -220,6 +222,20 @@ function NavBar() {
                                 </div>
                             )}
                         </li>
+
+                        {isUserAuthenticated && (
+                            <li className="nav-li-item">
+                                <NavLink
+                                    to="/chats"
+                                    className={({ isActive }) => `chat-link ${isActive ? 'active-link' : ''}`}
+                                >
+                                    <ChatIcon />
+                                    {unreadCount > 0 && (
+                                        <span className="unread-badge">{unreadCount}</span>
+                                    )}
+                                </NavLink>
+                            </li>
+                        )}
                     </ul>
                 </nav>
             </div>

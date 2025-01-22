@@ -70,19 +70,20 @@
     flex-direction: column;
     align-items: center;
     position: relative;
+    padding-top: 50px;
 }
 
 .carousel-title {
     position: absolute;
     left: -80px;
-    top: 180px;
+    top: 230px;
     transform: rotate(180deg) translateY(50%);
     writing-mode: vertical-lr;
     text-align: center;
     font-size: 1rem;
     margin: 0;
     white-space: nowrap;
-    font-family: 'Cutive Mono', monospace;
+    /* font-family: 'Cutive Mono', monospace; */
     letter-spacing: 1.8px;
 }
 
@@ -119,6 +120,7 @@
     height: 4px;
     background-color: rgba(0, 0, 0, 0.2);
     border: none;
+    border-radius: 3px;
     padding: 0;
     cursor: pointer;
     transition: background-color 0.3s ease;

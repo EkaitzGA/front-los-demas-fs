@@ -1,6 +1,6 @@
 .projects-page {
     padding: 20px;
-    padding-top: 0px;
+    padding-top: 140px;
     padding-left: 100px;
     padding-right: 100px;
     /* max-width: 1400px; */
@@ -14,7 +14,7 @@
 .projects-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 24px;
+    gap: 45px;
     padding: 0 20px;
     margin-top: 70px;
     margin-bottom: 150px;

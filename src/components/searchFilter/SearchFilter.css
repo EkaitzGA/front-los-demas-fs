@@ -1,34 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap');
+
+.filter-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin-top: 150px;
+    margin-bottom: 100px;
+}
+
 .search-filter {
-    /* padding: 20px; */
     display: flex;
     gap: 20px;
     justify-content: center;
-    position: relative;
-    /* margin-top: 10px; */
+    width: 100%;
     background-color: white;
+    margin-top: 20px;
+}
+
+.filter-title {
+    font-size: 1.125rem;  /* 18px */
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    /* border-bottom: 1px solid #e5e7eb; */
+    /* font-family: 'Cutive Mono', monospace; */
+    letter-spacing: 1.8px;
+
 }
 
 .filter-section {
     flex: 1;
-    max-width: 300px; 
+    max-width: 200px; 
     position: relative;
 }
 
 .section-toggle {
     width: 100%;
-    padding: 10px;
-    background: none;
-    border: none;
+    /* padding: 10px; */
+    background-color: white;
+    border: 1 px solid black;
+    padding: 10px 15px;
+    border-radius: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
     font-weight: 500;
     /* border-bottom: 1px solid #eee; */
+    align-items: center;
+    justify-content: center;
 }
 
 .section-title {
-    text-transform: capitalize;
+    text-transform: uppercase;
+    color: black;
 }
 
 .options-container {

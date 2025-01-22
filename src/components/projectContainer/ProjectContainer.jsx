@@ -89,6 +89,7 @@ function ProjectContainer({ img, owner = {}, _id, date, url, likes = 0, showInfo
         }
     };
 
+
     return (
         <div className='project-container-dsk'>
             <div className='image-container'>
@@ -109,6 +110,7 @@ function ProjectContainer({ img, owner = {}, _id, date, url, likes = 0, showInfo
                 <div className='project-info-dsk'>
                     <div className='info-main-row'>
                         <Link to={`/myprofile/${ownerId}`}>
+                        {/* <Link to={ownerId === localStorage.getItem('userId') ? `/myprofile/${ownerId}` : `/directory/${ownerId}`}> */}
                             <p>{fullName}</p>
                         </Link>
                         {isAuthenticated && (

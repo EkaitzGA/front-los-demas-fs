@@ -17,9 +17,9 @@ function Footer() {
             <div className='third-column-footer'>
                 <h3>The Team</h3>
                 <p><a href="https://github.com/EkaitzGA" target="_blank" rel="noopener noreferrer">Ekaitz Guerra</a></p>
-<p><a href="https://github.com/Izorrai" target="_blank" rel="noopener noreferrer">Jon Latxiondo</a></p>
-<p><a href="https://github.com/saulm96" target="_blank" rel="noopener noreferrer">Saul Mora</a></p>
-<p><a href="https://github.com/inesuribeb" target="_blank" rel="noopener noreferrer">Ines Uribe</a></p>
+                <p><a href="https://github.com/Izorrai" target="_blank" rel="noopener noreferrer">Jon Latxiondo</a></p>
+                <p><a href="https://github.com/saulm96" target="_blank" rel="noopener noreferrer">Saul Mora</a></p>
+                <p><a href="https://github.com/inesuribeb" target="_blank" rel="noopener noreferrer">Ines Uribe</a></p>
             </div>
 
             <div className='fourth-column-footer'>
