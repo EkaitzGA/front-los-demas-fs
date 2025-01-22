@@ -523,10 +523,10 @@ select:focus {
 .profile-form input,
 .profile-form textarea,
 .profile-form select {
-    background-color: #2a2a2a;
+    background-color: white;
     border: 1px solid #444;
     border-radius: 4px;
-    color: white;
+    color: black;
     padding: 8px 12px;
     width: 100%;
     margin-top: 8px;
