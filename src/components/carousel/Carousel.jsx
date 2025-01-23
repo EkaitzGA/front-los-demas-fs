@@ -51,7 +51,7 @@ function Carousel({ projects }) {
                     }}
                 >
                     {infiniteProjects.map((project, index) => (
-                    {infiniteProjects.map((project, index) => (
+                    
                         <div
                             key={`${project._id}-${index}`}
                             className="carousel-item"
