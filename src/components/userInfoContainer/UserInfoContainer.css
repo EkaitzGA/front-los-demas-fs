@@ -49,22 +49,9 @@
 }
 
 /* Modal de autenticación */
-.auth-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
 .auth-modal {
-    background-color: #1a1a1a;
-    border: 1px solid #333;
+    background-color: rgb(175, 175, 175);
+    border: 1px solid black;
     border-radius: 8px;
     padding: 24px;
     width: 90%;
@@ -103,7 +90,7 @@
 }
 
 .auth-modal-content p {
-    color: #ccc;
+    color: black;
     margin: 0 0 24px 0;
     font-size: 1rem;
 }
@@ -124,22 +111,22 @@
 }
 
 .auth-button.login {
-    background-color: #2b5278;
+    background-color: black;
     color: white;
 }
 
 .auth-button.login:hover {
-    background-color: #366290;
+    background-color: black;
 }
 
 .auth-button.register {
     background-color: transparent;
-    color: #2b5278;
-    border: 2px solid #2b5278;
+    color: black;
+    border: 2px solid black;
 }
 
 .auth-button.register:hover {
-    background-color: #2b5278;
+    background-color: black;
     color: white;
 }
 
@@ -350,64 +337,7 @@ select:focus {
     background-color: #dc2626;
 }
 
-.auth-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
 
-.auth-modal {
-    background-color: #1a1a1a;
-    border: 1px solid #333;
-    border-radius: 8px;
-    padding: 24px;
-    width: 90%;
-    max-width: 400px;
-    position: relative;
-    animation: modalSlideIn 0.3s ease-out;
-}
-
-.close-modal {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    background: none;
-    border: none;
-    color: #666;
-    cursor: pointer;
-    padding: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: color 0.2s ease;
-}
-
-.close-modal:hover {
-    color: #fff;
-}
-
-.auth-modal-content {
-    text-align: center;
-}
-
-.auth-modal-content h2 {
-    color: #fff;
-    margin: 0 0 16px 0;
-    font-size: 1.5rem;
-}
-
-.auth-modal-content p {
-    color: #ccc;
-    margin: 0 0 24px 0;
-    font-size: 1rem;
-}
 
 .auth-buttons {
     display: flex;
@@ -422,26 +352,6 @@ select:focus {
     font-weight: 500;
     text-decoration: none;
     transition: all 0.2s ease;
-}
-
-.auth-button.login {
-    background-color: #2b5278;
-    color: white;
-}
-
-.auth-button.login:hover {
-    background-color: #366290;
-}
-
-.auth-button.register {
-    background-color: transparent;
-    color: #2b5278;
-    border: 2px solid #2b5278;
-}
-
-.auth-button.register:hover {
-    background-color: #2b5278;
-    color: white;
 }
 
 .location-block,
