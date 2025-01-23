@@ -88,9 +88,10 @@ function Carousel({ projects }) {
                         transition: 'transform 1s ease-in-out'
                     }}
                 >
-                    {infiniteProjects.map((project) => (
+                    {infiniteProjects.map((project, index) => (
                         <div
-                            key={project._id}
+                            // key={project._id}
+                            key={`${project._id}-${index}`}
                             className="carousel-item"
                         >
                             <ProjectContainer
