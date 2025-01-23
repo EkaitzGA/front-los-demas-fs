@@ -18,12 +18,12 @@ const LoginForm = ({ onToggle }) => {
     const validateForm = () => {
         const newErrors = {};
         if (!formData.email) {
-            newErrors.email = 'El correo electrónico es obligatorio';
+            newErrors.email = 'Email address is required';
         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-            newErrors.email = 'El correo electrónico no es válido';
+            newErrors.email = 'Email address is not valid';
         }
         if (!formData.password) {
-            newErrors.password = 'La contraseña es obligatoria';
+            newErrors.password = 'Password is required';
         }
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -54,7 +54,7 @@ const LoginForm = ({ onToggle }) => {
                     localStorage.setItem('userId', userId);
                     const id = localStorage.getItem('userId');
 
-                    setSuccessMessage('Inicio de sesión exitoso');
+                    setSuccessMessage('Login successful');
                     setFormData({
                         email: '',
                         password: ''
@@ -62,11 +62,11 @@ const LoginForm = ({ onToggle }) => {
                     navigate(`/myprofile/${id}`); // Redirigir a la página principal por ahora
                 } else {
                     setErrors({ 
-                        submit: response.message || 'Error al iniciar sesión' 
+                        submit: response.message || 'Error logging in' 
                     });
                 }
             } catch (error) {
-                setErrors({ submit: 'Error en el servidor' });
+                setErrors({ submit: 'Server error' });
             } finally {
                 setIsLoading(false);
             }
@@ -78,7 +78,7 @@ const LoginForm = ({ onToggle }) => {
             <h2>Login</h2>
             <form onSubmit={handleSubmit}>
                 <div className="form-group-dsk">
-                    <label htmlFor="email">Email:</label>
+                    <label htmlFor="email">Email</label>
                     <input
                         type="email"
                         id="email"
@@ -90,7 +90,7 @@ const LoginForm = ({ onToggle }) => {
                     {errors.email && <span className="error">{errors.email}</span>}
                 </div>
                 <div className="form-group-dsk">
-                    <label htmlFor="password">Password:</label>
+                    <label htmlFor="password">Password</label>
                     <input
                         type="password"
                         id="password"
@@ -119,14 +119,14 @@ const validatePassword = (password) => {
     const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>-_]/.test(password);
     
     const errors = [];
-    if (!minLength) errors.push('tener al menos 6 caracteres');
-    if (!hasUpperCase) errors.push('incluir al menos una mayúscula');
-    if (!hasLowerCase) errors.push('incluir al menos una minúscula');
-    if (!hasSpecialChar) errors.push('incluir al menos un carácter especial');
+    if (!minLength) errors.push('be at least 6 characters long');
+    if (!hasUpperCase) errors.push('include at least one uppercase letter');
+    if (!hasLowerCase) errors.push('include at least one lowercase letter');
+    if (!hasSpecialChar) errors.push('include at least one special character');
     
     return {
         isValid: minLength && hasUpperCase && hasLowerCase && hasSpecialChar,
-        errorMessage: errors.length > 0 ? `La contraseña debe ${errors.join(', ')}` : ''
+        errorMessage: errors.length > 0 ? `Password must ${errors.join(', ')}` : ''
     };
 };
 
@@ -145,25 +145,25 @@ const RegisterForm = ({ onToggle }) => {
     const validateForm = () => {
         const newErrors = {};
         if (!formData.username) {
-            newErrors.username = 'El nombre de usuario es obligatorio';
+            newErrors.username = 'Username is required';
         }
         if (!formData.email) {
-            newErrors.email = 'El correo electrónico es obligatorio';
+            newErrors.email = 'Email address is required';
         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-            newErrors.email = 'El correo electrónico no es válido';
+            newErrors.email = 'Email address is not valid';
         }
         
         const passwordValidation = validatePassword(formData.password);
         if (!formData.password) {
-            newErrors.password = 'La contraseña es obligatoria';
+            newErrors.password = 'Password is required';
         } else if (!passwordValidation.isValid) {
             newErrors.password = passwordValidation.errorMessage;
         }
         
         if (!formData.confirmedPassword) {
-            newErrors.confirmedPassword = 'La confirmación de contraseña es obligatoria';
+            newErrors.confirmedPassword = 'Password confirmation is required';
         } else if (formData.confirmedPassword !== formData.password) {
-            newErrors.confirmedPassword = 'Las contraseñas no coinciden';
+            newErrors.confirmedPassword = 'Passwords do not match';
         }
         
         setErrors(newErrors);
@@ -191,7 +191,7 @@ const RegisterForm = ({ onToggle }) => {
                 );
                 
                 if (response.success) {
-                    setSuccessMessage('Registro exitoso');
+                    setSuccessMessage('Successful registration');
                     setFormData({
                         email: '',
                         username: '',
@@ -201,12 +201,12 @@ const RegisterForm = ({ onToggle }) => {
                     onToggle(); // Redirige al login
                 } else {
                     setErrors({ 
-                        submit: response.message || 'Error al registrar usuario' 
+                        submit: response.message || 'Error registering user' 
                     });
                 }
             } catch (error) {
                 setErrors({ 
-                    submit: error.message || 'Error en el servidor' 
+                    submit: error.message || 'Server Error' 
                 });
             } finally {
                 setIsLoading(false);
@@ -219,7 +219,7 @@ const RegisterForm = ({ onToggle }) => {
             <h2>Register</h2>
             <form onSubmit={handleSubmit}>
                 <div className="form-group-dsk">
-                    <label htmlFor="email">Email:</label>
+                    <label htmlFor="email">Email</label>
                     <input 
                         type="email" 
                         id="email" 
@@ -231,7 +231,7 @@ const RegisterForm = ({ onToggle }) => {
                     {errors.email && <span className="error">{errors.email}</span>}
                 </div>
                 <div className="form-group-dsk">
-                    <label htmlFor="username">Username:</label>
+                    <label htmlFor="username">Username</label>
                     <input 
                         type="text" 
                         id="username" 
@@ -243,7 +243,7 @@ const RegisterForm = ({ onToggle }) => {
                     {errors.username && <span className="error">{errors.username}</span>}
                 </div>
                 <div className="form-group-dsk">
-                    <label htmlFor="password">Password:</label>   
+                    <label htmlFor="password">Password</label>   
                     <input 
                         type="password" 
                         id="password" 
@@ -255,7 +255,7 @@ const RegisterForm = ({ onToggle }) => {
                     {errors.password && <span className="error">{errors.password}</span>}
                 </div>
                 <div className="form-group-dsk">
-                    <label htmlFor="confirmedPassword">Confirm password:</label>
+                    <label htmlFor="confirmedPassword">Confirm password</label>
                     <input 
                         type="password" 
                         id="confirmedPassword" 
