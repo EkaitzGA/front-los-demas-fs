@@ -35,14 +35,19 @@ const UserHeader = ({ userData }) => {
                 <span className="separator">·</span>
                 <span>DIRECTORY</span>
             </div>
-            <h1>
-                {userData?.username
-                    ? `${userData.username} | ${userData.name} ${userData.lastname}`
-                    : 'User not found'
-                }
-            </h1>
+            <div className='picture-and-name'>
+                <div className='my-profile-image'>
+                    <img src="/images/mancat.png" alt="" />
+                </div>
+                <h1>
+                    {userData?.username
+                        ? `${userData.username} | ${userData.name} ${userData.lastname}`
+                        : 'User not found'
+                    }
+                </h1>
+            </div>
             <h4 className='specialization-profile'>{userData.specialization}</h4>
-            
+
             {isOwnProfile && (
                 <div className="delete-user-container">
                     <button onClick={() => setShowConfirmDialog(true)} className="delete-button">
@@ -168,40 +173,44 @@ const ClientProfile = () => {
     }
 
     return (
-        <div className={`client-profile-container ${getSpecializationClass(userData?.specialization)}`}>
-            <UserHeader userData={userData} />
-            <UserInfoContainer userData={userData} onProfileUpdate={handleProfileUpdate} />
+        <div className="bg-container">
+            <div className="white-container">
+                <div className={`client-profile-container ${getSpecializationClass(userData?.specialization)}`}>
+                    <UserHeader userData={userData} />
+                    <UserInfoContainer userData={userData} onProfileUpdate={handleProfileUpdate} />
 
-            <div className={`profile-navigation ${isOwnProfile ? 'four-columns' : 'three-columns'}`}>
-                <button
-                    className={`nav-button ${activeSection === 'my-projects' ? 'active' : ''}`}
-                    onClick={() => setActiveSection('my-projects')}
-                >
-                    <WindowIcon />
-                </button>
-                <button
-                    className={`nav-button ${activeSection === 'my-favorites' ? 'active' : ''}`}
-                    onClick={() => setActiveSection('my-favorites')}
-                >
-                    <FavoriteBorderIcon />
-                </button>
-                <button
-                    className={`nav-button ${activeSection === 'my-network' ? 'active' : ''}`}
-                    onClick={() => setActiveSection('my-network')}
-                >
-                    <GroupsIcon />
-                </button>
-                {isOwnProfile && (
-                    <button
-                        className="nav-button"
-                        onClick={handleChatClick}
-                    >
-                        <ChatIcon />
-                    </button>
-                )}
-            </div>
-            <div className="section-content">
-                {renderSection()}
+                    <div className={`profile-navigation ${isOwnProfile ? 'four-columns' : 'three-columns'}`}>
+                        <button
+                            className={`nav-button ${activeSection === 'my-projects' ? 'active' : ''}`}
+                            onClick={() => setActiveSection('my-projects')}
+                        >
+                            <WindowIcon />
+                        </button>
+                        <button
+                            className={`nav-button ${activeSection === 'my-favorites' ? 'active' : ''}`}
+                            onClick={() => setActiveSection('my-favorites')}
+                        >
+                            <FavoriteBorderIcon />
+                        </button>
+                        <button
+                            className={`nav-button ${activeSection === 'my-network' ? 'active' : ''}`}
+                            onClick={() => setActiveSection('my-network')}
+                        >
+                            <GroupsIcon />
+                        </button>
+                        {isOwnProfile && (
+                            <button
+                                className="nav-button"
+                                onClick={handleChatClick}
+                            >
+                                <ChatIcon />
+                            </button>
+                        )}
+                    </div>
+                    <div className="section-content">
+                        {renderSection()}
+                    </div>
+                </div>
             </div>
         </div>
     );

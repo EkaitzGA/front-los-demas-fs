@@ -194,13 +194,13 @@
 }
 
 
-.edit-button:hover,
+/* .edit-button:hover,
 .save-button:hover {
     color: #2b5278;
-}
+} */
 
 .cancel-button:hover {
-    color: #dc2626;
+    color: #363636;
 }
 
 .form-actions {
@@ -358,8 +358,8 @@ select:focus {
 .agency-block,
 .specialization-block,
 .contact-block {
-    padding: 20px;
-    border-bottom: 0.5px solid rgb(175, 175, 175);
+    padding: 10px;
+    /* border-bottom: 0.5px solid rgb(175, 175, 175); */
 }
 
 .location-block h3,
@@ -406,10 +406,10 @@ select:focus {
     position: absolute;
     top: 20px;
     right: 20px;
-    background: black;
+    background: white;
     border-radius: 120%;
     border: none;
-    color: white;
+    color: black;
     cursor: pointer;
     transition: color 0.2s ease;
 }
@@ -461,9 +461,7 @@ select:focus {
 
 
 
-.save-button:hover {
-    color: #4CAF50;
-}
+
 
 
 
