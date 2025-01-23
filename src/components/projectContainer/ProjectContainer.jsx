@@ -29,6 +29,14 @@ function ProjectContainer({ img, owner = {}, _id, date, url, likes = 0, showInfo
         }
     }, []);
 
+     const checkUrls = (url) => {
+        if (url.startsWith("http")) {
+          return url;
+        } else {
+          return import.meta.env.VITE_BACKEND_URL +"/"+ url;
+        }
+      };
+
     const checkIfProjectLiked = async () => {
         try {
             console.log('Checking if project is liked...');
@@ -89,10 +97,10 @@ function ProjectContainer({ img, owner = {}, _id, date, url, likes = 0, showInfo
         <div className='project-container-dsk'>
             <div className='image-container'>
                 <Link to={`/webproject/${_id}`} className="image-link">
-                    <img
-                        src={img || '/placeholder-image.jpg'}
-                        alt={`Project by ${username}`}
-                    />
+                <img
+                src={checkUrls(img)}
+                alt={`Project by ${username}`}
+/>
                 </Link>
                 {url && (
                     <a href={url} target="_blank" rel="noopener noreferrer">

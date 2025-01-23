@@ -4,7 +4,6 @@ import { getProjects } from '../../utils/api/fetch';
 import './Carousel.css';
 
 function Carousel({ projects }) {
-
     const [currentIndex, setCurrentIndex] = useState(0);
     const timeoutRef = useRef(null);
 
@@ -18,41 +17,6 @@ function Carousel({ projects }) {
         setCurrentIndex(index);
     };
 
-    // useEffect(() => {
-    //     if (topProjects.length > 0) {
-    //         timeoutRef.current = setTimeout(() => {
-    //             setCurrentIndex(prevIndex =>
-    //                 prevIndex === topProjects.length - 1 ? 0 : prevIndex + 1
-    //             );
-    //         }, 4000);
-    //     }
-
-    //     return () => {
-    //         if (timeoutRef.current) {
-    //             clearTimeout(timeoutRef.current);
-    //         }
-    //     };
-    // }, [currentIndex, topProjects.length]);
-
-    // useEffect(() => {
-    //     if (topProjects.length > 0) {
-    //         timeoutRef.current = setTimeout(() => {
-    //             setCurrentIndex(prevIndex => {
-    //                 if (prevIndex === infiniteProjects.length - 1) {
-    //                     return 0; // Volver al principio
-    //                 }
-    //                 return prevIndex + 1;
-    //             });
-    //         }, 4000);
-    //     }
-     
-    //     return () => {
-    //         if (timeoutRef.current) {
-    //             clearTimeout(timeoutRef.current);
-    //         }
-    //     };
-    //  }, [currentIndex, infiniteProjects.length]);
-
     useEffect(() => {
         if (topProjects.length > 0) {
             timeoutRef.current = setTimeout(() => {
@@ -61,9 +25,7 @@ function Carousel({ projects }) {
                     if (trackElement) {
                         trackElement.style.transition = 'none';
                         trackElement.style.transform = 'translateX(0)';
-                        // Forzar reflow
                         trackElement.offsetHeight;
-                        // Restablecer transición
                         trackElement.style.transition = 'transform 1s ease-in-out';
                     }
                     setCurrentIndex(0);
@@ -88,9 +50,9 @@ function Carousel({ projects }) {
                         transition: 'transform 1s ease-in-out'
                     }}
                 >
-                    {infiniteProjects.map((project) => (
+                    {infiniteProjects.map((project, index) => (
                         <div
-                            key={project._id}
+                            key={`${project._id}-${index}`}
                             className="carousel-item"
                         >
                             <ProjectContainer
@@ -109,7 +71,7 @@ function Carousel({ projects }) {
             <div className="carousel-indicators">
                 {topProjects.map((_, index) => (
                     <button
-                        key={index}
+                        key={`indicator-${index}`}
                         className={`carousel-indicator ${index === currentIndex ? 'active' : ''}`}
                         onClick={() => goToSlide(index)}
                         aria-label={`Ir a proyecto ${index + 1}`}
