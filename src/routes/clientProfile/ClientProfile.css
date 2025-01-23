@@ -320,14 +320,14 @@
     justify-content: center;
 }
 
-.delete-user-container button:hover {
+/* .delete-user-container button:hover {
     background-color: rgba(255, 0, 0, 0.1);
-}
+} */
 
 .delete-user-container svg {
     width: 20px;
     height: 20px;
-    color: #dc2626;
+    color: black;
 }
 
 /* Estilos para el diálogo de confirmación */
@@ -380,19 +380,21 @@
     font-size: 14px;
 }
 
-.cancel-button {
+.cancelDelete-button {
     background-color: #666666;
-    color: white;
+    color: black;
 }
 
 .confirm-button {
     background-color: #dc2626;
-    color: red;
+    color: rgb(196, 15, 15);
 }
 
-.confirm-button:hover,
-.cancel-button:hover {
-    background-color: #333;
+.confirm-button:hover{
+    background-color: #fabada
+}
+.cancelDelete-button:hover {
+    background-color: #a8a3a3;
 }
 
 /* Media queries */
