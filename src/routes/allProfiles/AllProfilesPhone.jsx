@@ -1,8 +1,11 @@
+import PhoneComponent from '../../components/phoneComponent/PhoneComponent';
 import './AllProfilesPhone.css'
 
 function AllProfilesPhone () {
     return (
-        <div></div>
+        <div>
+            <PhoneComponent></PhoneComponent>
+        </div>
     )
 }
 
