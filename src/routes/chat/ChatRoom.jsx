@@ -20,14 +20,12 @@ function ChatRoom() {
 
   const initialChat = loaderData?.data || loaderData;
   
-  
   const token = localStorage.getItem("token");
   const getUserId = () => {
     const decoded = jwtDecode(token);
     return decoded?.id || null;
   };
   const userId = getUserId();
-
   
   const [messages, setMessages] = useState(() => {
     const initialMessages = initialChat?.messages || [];
@@ -88,12 +86,10 @@ function ChatRoom() {
 
   const scrollToBottom = () => {
     try {
-      const chatContainer = document.querySelector('.chat-messages-dsk');
-      if (inputRef.current && chatContainer) {
-        // Hacer scroll hasta que el input sea visible
-        inputRef.current.scrollIntoView({ 
+      if (messagesEndRef.current) {
+        messagesEndRef.current.scrollIntoView({ 
           behavior: "smooth",
-          block: "end" // esto asegura que el input sea visible en la parte inferior
+          block: "end"
         });
       }
     } catch (error) {
@@ -120,7 +116,6 @@ function ChatRoom() {
   
         const data = await response.json();
   
-        // Actualizar los mensajes solo si obtuvimos datos válidos del servidor
         if (data.success && data.data?.messages) {
             setMessages(data.data.messages.map(msg => ({
                 ...msg,
@@ -129,17 +124,13 @@ function ChatRoom() {
         }
     } catch (error) {
         console.error('Error marking messages as read:', error);
-        // Opcional: mostrar un mensaje de error al usuario
-        // setError('Error al marcar mensajes como leídos');
     }
   };
 
   useEffect(() => {
     if (initialChat?._id && userId) {
-      // Marcar mensajes como leídos al montar el componente
       markMessagesAsRead();
 
-      // Configurar intervalo para verificar mensajes sin leer
       const interval = setInterval(() => {
         const hasUnreadMessages = messages.some(msg => 
           msg.sender?.toString() !== userId?.toString() && !msg.read
@@ -154,11 +145,16 @@ function ChatRoom() {
   }, [initialChat?._id, userId]);
 
   useEffect(() => {
+    if (connected && messages.length > 0) {
+      scrollToBottom();
+    }
+  }, [connected]);
+
+  useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
   useEffect(() => {
-
     if (!initialChat?._id) {
       console.error("No chat ID available");
       return;
@@ -207,7 +203,6 @@ function ChatRoom() {
             return prev;
           });
           
-          // Marcar como leído después de recibir un nuevo mensaje
           markMessagesAsRead();
         }
       });
@@ -336,14 +331,12 @@ function ChatRoom() {
       </div>
 
       <div className="chat-messages-dsk">
-        {/* Contador de mensajes no leídos */}
         {messages.some(msg => !msg.read && msg.sender.toString() !== userId?.toString()) && (
           <div className="unread-messages-indicator">
             {messages.filter(msg => !msg.read && msg.sender.toString() !== userId?.toString()).length} messages unread
           </div>
         )}
         
-        {/* Lista de mensajes */}
         {messages.map((msg, index) => {
           const isOwnMessage = msg.sender?.toString() === userId?.toString();
           return (
