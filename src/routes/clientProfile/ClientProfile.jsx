@@ -4,30 +4,103 @@ import './ClientProfile.css';
 import UserInfoContainer from '../../components/userInfoContainer/UserInfoContainer';
 import ProjectsGridContainer from '../../components/projectsGridContainer/ProjectsGridContainer';
 import MyNetwork from './MyNetwork';
-import { getUserById } from '../../utils/api/fetch';
+import { getUserById, deleteUserProfile } from '../../utils/api/fetch';
 import WindowIcon from '@mui/icons-material/Window';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import GroupsIcon from '@mui/icons-material/Groups';
 import ChatIcon from '@mui/icons-material/Chat';
+import DeleteIcon from '@mui/icons-material/Delete';
+import CloseIcon from '@mui/icons-material/Close';
 
+const UserHeader = ({ userData }) => {
+    const navigate = useNavigate();
+    const userId = localStorage.getItem('userId');
+    const isOwnProfile = userId && userData?._id && userId === userData._id.toString();
+    const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
-const UserHeader = ({ userData }) => (
-    <section id="heading" className="section-heading">
-        <div className="breadcrumb">
-            <span>HOME</span>
-            <span className="separator">·</span>
-            <span>DIRECTORY</span>
-        </div>
-        <h1>
-            {userData?.username
-                ? `${userData.username} | ${userData.name} ${userData.lastname}`
-                : 'Usuario no encontrado'
-            }
-        </h1>
-        <h4 className='specialization-profile'>{userData.specialization} </h4>
-    </section>
-);
+    const handleDelete = async () => {
+        try {
+            await deleteUserProfile(userData.id);
+            localStorage.clear();
+            navigate('/');
+        } catch (error) {
+            console.error('Error deleting user:', error);
+        }
+    };
 
+    return (
+        <section id="heading" className="section-heading">
+            <div className="breadcrumb">
+                <span>HOME</span>
+                <span className="separator">·</span>
+                <span>DIRECTORY</span>
+            </div>
+            <div className='picture-and-name'>
+                <div className='my-profile-image'>
+                    <img src="/images/mancat.png" alt="" />
+                </div>
+                <h1>
+                    {userData?.username
+                        ? `${userData.username} | ${userData.name} ${userData.lastname}`
+                        : 'User not found'
+                    }
+                </h1>
+            </div>
+            <h4 className='specialization-profile'>{userData.specialization}</h4>
+
+            {isOwnProfile && (
+                <div className="delete-user-container">
+                    <button onClick={() => setShowConfirmDialog(true)} className="delete-button">
+                        <DeleteIcon />
+                    </button>
+
+                    {showConfirmDialog && (
+                        <div className="auth-modal-overlay">
+                            <div className="auth-modal">
+                                <button 
+                                    className="close-modal" 
+                                    onClick={() => setShowConfirmDialog(false)}
+                                >
+                                    
+                                </button>
+                                
+                                <div className="auth-modal-content">
+                                    <h2>Delete Profile</h2>
+                                    <p>Are you sure you want to delete your profile? This action cannot be undone and will result in:</p>
+                                    <span>
+                                        <span>Permanent removal of your profile</span>
+                                        <span></span>
+                                        <span>Loss of all your projects</span>
+                                        <br></br>
+                                        <span>Deletion of your connections and network</span>
+                                        <br></br>
+                                        <span>Removal of all activity history</span>
+                                        <span></span>
+                                    </span>
+                                    
+                                    <div className="auth-buttons">
+                                        <button 
+                                            className="auth-button login"
+                                            onClick={handleDelete}
+                                        >
+                                            Delete Profile
+                                        </button>
+                                        <button 
+                                            className="auth-button register"
+                                            onClick={() => setShowConfirmDialog(false)}
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            )}
+        </section>
+    );
+};
 
 const ClientProfile = () => {
     const navigate = useNavigate();
@@ -44,8 +117,6 @@ const ClientProfile = () => {
         const fetchUserData = async () => {
             try {
                 const response = await getUserById(id);
-                console.log('Respuesta de la API:', response);
-
                 if (response.success) {
                     setUserData(response.data);
                 }
@@ -82,20 +153,18 @@ const ClientProfile = () => {
 
     const loggedUserId = localStorage.getItem('userId');
     const token = localStorage.getItem('token');
-
-    // Verificar si el usuario está logueado y si está viendo su propio perfil
     const isOwnProfile = loggedUserId && token && loggedUserId === id;
 
     const renderSection = () => {
         switch (activeSection) {
             case 'my-projects':
-                return <ProjectsGridContainer userId={id} showNewProjectButton={true} />;
+                return <ProjectsGridContainer userId={id} showNewProjectButton={true} showLikes={true} />;
             case 'my-favorites':
-                return <ProjectsGridContainer userId={id} projectsData={userData?.projectlike} isFavorites={true} showNewProjectButton={false} />;
+                return <ProjectsGridContainer userId={id} projectsData={userData?.projectlike} isFavorites={true} showNewProjectButton={false} showLikes={false} />;
             case 'my-network':
                 return <MyNetwork userData={userData} />;
             default:
-                return <ProjectsGridContainer userId={id} showNewProjectButton={true} />;
+                return <ProjectsGridContainer userId={id} showNewProjectButton={true} showLikes={true} />;
         }
     };
 
@@ -104,43 +173,44 @@ const ClientProfile = () => {
     }
 
     return (
-        <div className={`client-profile-container ${getSpecializationClass(userData?.specialization)}`}>
+        <div className="bg-container">
+            <div className="white-container">
+                <div className={`client-profile-container ${getSpecializationClass(userData?.specialization)}`}>
+                    <UserHeader userData={userData} />
+                    <UserInfoContainer userData={userData} onProfileUpdate={handleProfileUpdate} />
 
-            <UserHeader userData={userData} />
-            <UserInfoContainer userData={userData} onProfileUpdate={handleProfileUpdate} />
-
-            {/* <div className="profile-navigation"> */}
-            <div className={`profile-navigation ${isOwnProfile ? 'four-columns' : 'three-columns'}`}>
-
-                <button
-                    className={`nav-button ${activeSection === 'my-projects' ? 'active' : ''}`}
-                    onClick={() => setActiveSection('my-projects')}
-                >
-                    <WindowIcon />
-                </button>
-                <button
-                    className={`nav-button ${activeSection === 'my-favorites' ? 'active' : ''}`}
-                    onClick={() => setActiveSection('my-favorites')}
-                >
-                    <FavoriteBorderIcon />
-                </button>
-                <button
-                    className={`nav-button ${activeSection === 'my-network' ? 'active' : ''}`}
-                    onClick={() => setActiveSection('my-network')}
-                >
-                    <GroupsIcon />
-                </button>
-                {isOwnProfile && (
-                    <button
-                        className="nav-button"
-                        onClick={handleChatClick}
-                    >
-                        <ChatIcon />
-                    </button>
-                )}
-            </div>
-            <div className="section-content">
-                {renderSection()}
+                    <div className={`profile-navigation ${isOwnProfile ? 'four-columns' : 'three-columns'}`}>
+                        <button
+                            className={`nav-button ${activeSection === 'my-projects' ? 'active' : ''}`}
+                            onClick={() => setActiveSection('my-projects')}
+                        >
+                            <WindowIcon />
+                        </button>
+                        <button
+                            className={`nav-button ${activeSection === 'my-favorites' ? 'active' : ''}`}
+                            onClick={() => setActiveSection('my-favorites')}
+                        >
+                            <FavoriteBorderIcon />
+                        </button>
+                        <button
+                            className={`nav-button ${activeSection === 'my-network' ? 'active' : ''}`}
+                            onClick={() => setActiveSection('my-network')}
+                        >
+                            <GroupsIcon />
+                        </button>
+                        {isOwnProfile && (
+                            <button
+                                className="nav-button"
+                                onClick={handleChatClick}
+                            >
+                                <ChatIcon />
+                            </button>
+                        )}
+                    </div>
+                    <div className="section-content">
+                        {renderSection()}
+                    </div>
+                </div>
             </div>
         </div>
     );

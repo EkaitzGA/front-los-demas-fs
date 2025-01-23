@@ -130,33 +130,17 @@
     border-bottom: 1.5px solid white;
 }
 
-/* .submenu {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    background: white;
-    z-index: 99;
-}
-
-.submenu-item {
-    display: block;
-    padding: 8px 16px;
-    text-decoration: none;
-    color: inherit;
-    transition: background-color 0.2s ease;
-} */
-
 .submenu {
     position: absolute;
     top: 100%;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.296);
     z-index: 99;
     min-width: 100%;
-    display: flex;           /* Añadido */
-    flex-direction: column;  /* Añadido */
-    align-items: center;     /* Añadido */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.8);
     
 }
 
@@ -164,24 +148,29 @@
     display: block;
     padding: 8px 16px;
     text-decoration: none;
-    /* color: white; */
-    transition: background-color 0.2s ease;
+    color: white;
     text-align: center;
     white-space: nowrap;
-    width: 100%;            /* Añadido */
+    width: 100%;
 }
 
-/* Estilo específico para el botón de logout */
 .submenu button.submenu-item {
     width: 100%;
-    display: flex;          /* Añadido */
-    justify-content: center; /* Añadido */
-    align-items: center;     /* Añadido */
+    display: flex;
+    justify-content: center;
+    align-items: center;
     text-align: center;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: white;
 }
 
-.submenu-item:hover {
-    background-color: #f5f5f5;
+.submenu .submenu-item:hover,
+.submenu button.submenu-item:hover {
+    color: black;
+    background-color: white;
+    border-top: black solid 1.5px;
 }
 
 .nav-content-compact {
@@ -216,67 +205,6 @@
 .account-trigger.clickable {
     cursor: pointer;
 }
-
-/* Estilo para el botón de logout */
-.submenu button.submenu-item {
-    width: 100%;
-    text-align: left;
-    border: none;
-    background: none;
-    cursor: pointer;
-    font-size: inherit;
-    color: inherit;
-    padding: 8px 16px;
-    margin: 0;
-}
-
-
-
-/* Estilos para el badge de notificaciones */
-/* .chat-link {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-}
-.unread-badge {
-    position: absolute;
-    top: -8px;
-    right: -12px;
-    background-color: #ff4444;
-    color: white;
-    border-radius: 50%;
-    padding: 2px 6px;
-    font-size: 12px;
-    min-width: 18px;
-    height: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-.chat-link {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-}
-.unread-badge {
-    position: absolute;
-    top: -8px;
-    right: -12px;
-    background-color: #ff4444;
-    color: white;
-    border-radius: 50%;
-    padding: 2px 6px;
-    font-size: 12px;
-    min-width: 18px;
-    height: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-} */
 
 .chat-li-item {
     position: absolute;
@@ -324,4 +252,41 @@
     justify-content: center;
     font-weight: bold;
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@media (max-width: 768px) {
+    .nav-bar-dsk {
+        padding: 5px;
+    }
+    
+    .nav-content-wrapper {
+        padding-top: 60px;
+    }
+    
+    .logo-section img {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .nav-li-item {
+        width: auto;
+        padding: 6px 10px;
+    }
+    
+    .chat-li-item {
+        right: 120px;
+    }
 }

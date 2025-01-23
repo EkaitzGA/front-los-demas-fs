@@ -2,7 +2,7 @@ import { useLoaderData, useNavigate, Link } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import { io } from "socket.io-client";
 import ChatErrorBoundary from "../../components/chat/ErrorBoundary";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { ArrowLeft } from "lucide-react";
 import "./Chat.css";
 import { jwtDecode } from "jwt-decode";
 
@@ -20,14 +20,12 @@ function ChatRoom() {
 
   const initialChat = loaderData?.data || loaderData;
   
-  
   const token = localStorage.getItem("token");
   const getUserId = () => {
     const decoded = jwtDecode(token);
     return decoded?.id || null;
   };
   const userId = getUserId();
-
   
   const [messages, setMessages] = useState(() => {
     const initialMessages = initialChat?.messages || [];
@@ -49,24 +47,24 @@ function ChatRoom() {
   const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3002";
 
   const getOtherParticipantName = () => {
-    if (!initialChat || !userId) return "Usuario";
+    if (!initialChat || !userId) return "User";
     
     try {
       if (initialChat.owner?._id === userId && initialChat.client) {
         return [
           initialChat.client.name || "",
           initialChat.client.lastname || "",
-        ].filter(Boolean).join(" ") || "Cliente";
+        ].filter(Boolean).join(" ") || "Client";
       } else if (initialChat.owner) {
         return [
           initialChat.owner.name || "",
           initialChat.owner.lastname || "",
-        ].filter(Boolean).join(" ") || "Propietario";
+        ].filter(Boolean).join(" ") || "Project Owner";
       }
     } catch (error) {
       console.error("Error getting participant name:", error);
     }
-    return "Usuario";
+    return "User";
   };
 
   const formatDate = () => {
@@ -78,7 +76,7 @@ function ChatRoom() {
         month: "long",
         day: "numeric",
       };
-      return now.toLocaleDateString("es-ES", options)
+      return now.toLocaleDateString("en-US", options)
         .replace(/^\w/, (c) => c.toUpperCase());
     } catch (error) {
       console.error("Error formatting date:", error);
@@ -88,12 +86,10 @@ function ChatRoom() {
 
   const scrollToBottom = () => {
     try {
-      const chatContainer = document.querySelector('.chat-messages-dsk');
-      if (inputRef.current && chatContainer) {
-        // Hacer scroll hasta que el input sea visible
-        inputRef.current.scrollIntoView({ 
+      if (messagesEndRef.current) {
+        messagesEndRef.current.scrollIntoView({ 
           behavior: "smooth",
-          block: "end" // esto asegura que el input sea visible en la parte inferior
+          block: "end"
         });
       }
     } catch (error) {
@@ -115,12 +111,11 @@ function ChatRoom() {
   
         if (!response.ok) {
             const data = await response.json();
-            throw new Error(data.message || `Error del servidor: ${response.status}`);
+            throw new Error(data.message || `Server error: ${response.status}`);
         }
   
         const data = await response.json();
   
-        // Actualizar los mensajes solo si obtuvimos datos válidos del servidor
         if (data.success && data.data?.messages) {
             setMessages(data.data.messages.map(msg => ({
                 ...msg,
@@ -129,17 +124,13 @@ function ChatRoom() {
         }
     } catch (error) {
         console.error('Error marking messages as read:', error);
-        // Opcional: mostrar un mensaje de error al usuario
-        // setError('Error al marcar mensajes como leídos');
     }
   };
 
   useEffect(() => {
     if (initialChat?._id && userId) {
-      // Marcar mensajes como leídos al montar el componente
       markMessagesAsRead();
 
-      // Configurar intervalo para verificar mensajes sin leer
       const interval = setInterval(() => {
         const hasUnreadMessages = messages.some(msg => 
           msg.sender?.toString() !== userId?.toString() && !msg.read
@@ -154,11 +145,16 @@ function ChatRoom() {
   }, [initialChat?._id, userId]);
 
   useEffect(() => {
+    if (connected && messages.length > 0) {
+      scrollToBottom();
+    }
+  }, [connected]);
+
+  useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
   useEffect(() => {
-
     if (!initialChat?._id) {
       console.error("No chat ID available");
       return;
@@ -176,15 +172,15 @@ function ChatRoom() {
       });
 
       socketRef.current.on("connect", () => {
-        console.log("Socket conectado en ChatRoom");
+        console.log("Socket connected in ChatRoom");
         setConnected(true);
         socketRef.current.emit("register-socket", userId);
         socketRef.current.emit("join-chat", initialChat._id);
       });
 
       socketRef.current.on("connect_error", (error) => {
-        console.error("Error de conexión socket:", error);
-        setError("Error de conexión. Reconectando...");
+        console.error("Socket connection error:", error);
+        setError("Connection error. Reconnecting...");
       });
 
       socketRef.current.on("private-message", (data) => {
@@ -207,7 +203,6 @@ function ChatRoom() {
             return prev;
           });
           
-          // Marcar como leído después de recibir un nuevo mensaje
           markMessagesAsRead();
         }
       });
@@ -220,7 +215,7 @@ function ChatRoom() {
       });
 
       socketRef.current.on("disconnect", () => {
-        console.log("Socket desconectado");
+        console.log("Socket disconnected");
         setConnected(false);
       });
 
@@ -232,7 +227,7 @@ function ChatRoom() {
       };
     } catch (error) {
       console.error("Error setting up socket connection:", error);
-      setError("Error al establecer la conexión");
+      setError("Error establishing connection");
     }
   }, [initialChat?._id, userId, navigate, token, baseUrl]);
 
@@ -292,7 +287,7 @@ function ChatRoom() {
       inputRef.current?.focus();
     } catch (error) {
       console.error('Error sending message:', error);
-      setError(error.message || 'Error al enviar mensaje');
+      setError(error.message || 'Error sending message');
       setTimeout(() => setError(null), 3000);
     } finally {
       setLoading(false);
@@ -302,7 +297,7 @@ function ChatRoom() {
   if (!initialChat) {
     return (
       <div className="loading-container">
-        <p>Cargando chat...</p>
+        <p>Loading chat...</p>
       </div>
     );
   }
@@ -310,7 +305,7 @@ function ChatRoom() {
   if (!connected) {
     return (
       <div className="connecting-message">
-        Conectando al chat...
+        Connecting to chat...
         {error && <p className="connection-error">{error}</p>}
       </div>
     );
@@ -323,27 +318,25 @@ function ChatRoom() {
     <div className="chat-container-dsk">
       <div className="chat-top-bar">
         <Link to="/chats" className="back-to-chats">
-          <ArrowBackIcon /> Mis chats
+          <ArrowLeft /> My chats
         </Link>
         <span className="current-date">{formatDate()}</span>
       </div>
 
       <div className="chat-header-dsk">
-        <h2>Chat del Proyecto: {projectName}</h2>
+        <h2>Chat Project: {projectName}</h2>
         <p className="chat-participants-dsk">
-          Conversación con {otherParticipantName}
+          Conversation with {otherParticipantName}
         </p>
       </div>
 
       <div className="chat-messages-dsk">
-        {/* Contador de mensajes no leídos */}
         {messages.some(msg => !msg.read && msg.sender.toString() !== userId?.toString()) && (
           <div className="unread-messages-indicator">
-            {messages.filter(msg => !msg.read && msg.sender.toString() !== userId?.toString()).length} mensajes sin leer
+            {messages.filter(msg => !msg.read && msg.sender.toString() !== userId?.toString()).length} unread messages
           </div>
         )}
         
-        {/* Lista de mensajes */}
         {messages.map((msg, index) => {
           const isOwnMessage = msg.sender?.toString() === userId?.toString();
           return (
@@ -365,7 +358,7 @@ function ChatRoom() {
         })}
         {typingUser && (
           <div className="typing-indicator">
-            {otherParticipantName} está escribiendo...
+            {otherParticipantName} is typing...
           </div>
         )}
         {error && <div className="error-message-dsk">{error}</div>}
@@ -378,7 +371,7 @@ function ChatRoom() {
             type="text"
             name="message"
             className="chat-input"
-            placeholder="Escribe tu mensaje..."
+            placeholder="Type your message..."
             ref={inputRef}
             disabled={loading || !connected}
             onChange={handleTyping}
@@ -388,7 +381,7 @@ function ChatRoom() {
             className="send-button-dsk"
             disabled={loading || !connected}
           >
-            {loading ? "Enviando..." : "Enviar"}
+            {loading ? "Sending..." : "Send"}
           </button>
         </form>
       </div>

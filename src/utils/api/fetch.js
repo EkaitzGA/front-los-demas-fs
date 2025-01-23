@@ -29,7 +29,7 @@ async function fetchData(route, method = 'GET', data = null) {
         const responseData = await response.json();
 
         if (!response.ok) {
-            throw new Error(responseData.message || 'Error en la petición');
+            throw new Error(responseData.message || 'Error en la peticiÃ³n');
         }
 
         return {
@@ -74,9 +74,9 @@ async function getUsers() {
     return await fetchData('users');
 }
 
-// async function createOwnProject(id) {
-//     return await fetchData(`projects/${id}`, 'POST', data);
-// }
+async function deleteProject(id) {
+    return await fetchData(`projects/${id}`, 'DELETE');
+}
 
 async function createOwnProject(data) {
     return await fetchData('projects', 'POST', data);
@@ -262,6 +262,9 @@ async function updateUserProfile(userId, userData) {
     return await fetchData(`users/${userId}`, 'PUT', userData);
 }
 
+async function deleteUserProfile(userId, userData) {
+    return await fetchData(`users/${userId}`, 'DELETE', userData);
+}
 
 
 export {
@@ -283,9 +286,8 @@ export {
     getAllTypes,
     getAllStyles,
     getAllSubjects,
-
     getUSerByUsername,
-
-    updateUserProfile
-
+    updateUserProfile,
+    deleteUserProfile,
+    deleteProject,
 };

@@ -5,7 +5,10 @@
     height: 100vh;
     background-color: #1a1a1a;
     color: white;
+    padding-top: 50px;
   }
+
+  
   
   .chat-top-bar {
     display: flex;
@@ -231,33 +234,7 @@
     gap: 20px;
   }
   
-  .chat-card {
-    background-color: #2a2a2a;
-    border-radius: 8px;
-    padding: 20px;
-    text-decoration: none;
-    color: white;
-    transition: transform 0.2s, background-color 0.2s;
-  }
-  
-  .chat-card:hover {
-    transform: translateY(-2px);
-    background-color: #3a3a3a;
-  }
-  
-  .chat-card-header {
-    display: flex;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-  
-  .chat-card-header h3 {
-    margin: 0;
-    color: white;
-    font-size: 18px;
-    margin-right: auto;
-  }
+ 
   
   .participant-name {
     color: #888;
@@ -289,10 +266,7 @@
     }
   }
   
-  .chat-card:has(.unread-badge) {
-    border-left: 3px solid #ff4b4b;
-  }
-  
+    
   .last-message {
     color: #ccc;
     font-size: 14px;
@@ -302,14 +276,7 @@
     text-overflow: ellipsis;
   }
   
-  .chat-card-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 15px;
-    font-size: 12px;
-    color: #888;
-  }
+ 
   
   .message-count {
     background-color: #4a4a4a;

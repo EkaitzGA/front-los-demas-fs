@@ -28,6 +28,21 @@ const SearchFilter = () => {
     subjects: false
   });
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (filterRef.current && !filterRef.current.contains(event.target)) {
+        setOpenSections({
+          styles: false,
+          types: false,
+          subjects: false
+        });
+      }
+    };
+  
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   // Función auxiliar para obtener el nombre de un objeto de filtro
   useEffect(() => {
     const fetchData = async () => {

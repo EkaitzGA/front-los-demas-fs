@@ -20,6 +20,7 @@
     max-height: 90vh;
     overflow-y: auto;
     position: relative;
+    z-index: 6000;
 }
 
 .modal-close {
@@ -108,8 +109,8 @@
 }
 
 .form-actions button[type="submit"] {
-    background-color: #007bff;
-    color: white;
+    /* background-color: #007bff; */
+    color: black;
     border: none;
 }
 

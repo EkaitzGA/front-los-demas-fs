@@ -160,7 +160,7 @@ function AllProfiles() {
                                 {user.specialization}
                             </p>
                             <div className='user-image'>
-                                <img src="./images/gato.jpg" alt="" />
+                                <img src="./images/mancat.png" alt="" />
                             </div>
                             <h3>{user.username}</h3>
                             <p>{user.name} {user.lastname}</p>

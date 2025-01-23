@@ -20,13 +20,20 @@ function Home() {
     const hasActiveFilters = Object.values(selectedFilters).some(arr => arr.length > 0);
 
     useEffect(() => {
+        if (currentPage > 1) {
+            scrollToProjects();
+        }
+    }, [currentPage])
+
+
+    useEffect(() => {
         const fetchProjects = async () => {
             setLoading(true);
             try {
                 console.log('Iniciando petición a getProjects...');
                 const response = await getProjects();
                 console.log('Respuesta de getProjects:', response);
-                
+
                 if (response.success) {
                     console.log('Datos recibidos:', response.data);
                     const validatedProjects = response.data.map(project => ({
@@ -62,17 +69,17 @@ function Home() {
         }
 
         const matchesStyles = selectedFilters.styles.length === 0 ||
-            selectedFilters.styles.some(style => 
+            selectedFilters.styles.some(style =>
                 project.styles?.some(projectStyle => projectStyle.name === style)
             );
 
         const matchesTypes = selectedFilters.types.length === 0 ||
-            selectedFilters.types.some(type => 
+            selectedFilters.types.some(type =>
                 project.types?.some(projectType => projectType.name === type)
             );
 
         const matchesSubjects = selectedFilters.subjects.length === 0 ||
-            selectedFilters.subjects.some(subject => 
+            selectedFilters.subjects.some(subject =>
                 project.subjects?.some(projectSubject => projectSubject.name === subject)
             );
 
@@ -89,7 +96,7 @@ function Home() {
             const navbarHeight = 80; // Ajusta este valor según la altura de tu navbar
             const elementPosition = projectsGridRef.current.getBoundingClientRect().top;
             const offsetPosition = elementPosition + window.pageYOffset - navbarHeight;
-            
+
             window.scrollTo({
                 top: offsetPosition,
                 behavior: 'smooth'
@@ -113,7 +120,7 @@ function Home() {
 
     return (
         <div className='projects-page'>
-            {!hasActiveFilters && <Carousel />} 
+            {!hasActiveFilters && <Carousel projects={projects} /> }
             <SearchFilter />
             <div className='projects-grid' ref={projectsGridRef}>
                 {currentProjects.map(project => (
@@ -148,7 +155,9 @@ function Home() {
                         </button>
                     ))}
                     <button
-                        onClick={(e) => paginate(e, currentPage + 1)}
+                        onClick={(e) => {
+                            paginate(e, currentPage + 1);
+                        }}
                         disabled={currentPage === totalPages}
                         className='pagination-button'
                     >

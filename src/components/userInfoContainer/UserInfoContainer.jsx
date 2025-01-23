@@ -17,13 +17,13 @@ const UserInfoContainer = ({ userData, onProfileUpdate }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [showAuthModal, setShowAuthModal] = useState(false);
     console.log('userData recibido:', userData);
-    
+
     const [profileData, setProfileData] = useState({
         location: { city: '', country: '' },
         agency: '',
         contact: {
             email: '',
-            website: '',
+            website: [],
             github: '',
             linkedin: '',
             instagram: ''
@@ -55,7 +55,11 @@ const UserInfoContainer = ({ userData, onProfileUpdate }) => {
                 avatar: userData.avatar || '',
                 contact: {
                     email: userData.email || '',
-                    website: userData.website || '',
+                    website: Array.isArray(userData.website)
+                        ? userData.website
+                        : userData.website
+                            ? [userData.website]
+                            : [],
                     github: userData.github || '',
                     linkedin: userData.linkedin || '',
                     instagram: userData.instagram || ''
@@ -72,7 +76,7 @@ const UserInfoContainer = ({ userData, onProfileUpdate }) => {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            
+
             if (response.ok) {
                 const currentUserData = await response.json();
                 setIsFollowing(currentUserData.following.some(user => user._id === userData._id));
@@ -110,17 +114,42 @@ const UserInfoContainer = ({ userData, onProfileUpdate }) => {
         }
     };
 
+    const formatUrlForBackend = (urlString) => {
+        if (!urlString) return [];
+
+        // Dividir por comas y limpiar espacios
+        const urlArray = urlString.split(',').map(url => url.trim()).filter(url => url !== '');
+
+        return urlArray.map(url => {
+            // Si ya tiene http:// o https://, lo dejamos como está
+            if (url.match(/^https?:\/\//)) {
+                return url;
+            }
+
+            // Si empieza con www., añadimos https://
+            if (url.startsWith('www.')) {
+                return `https://${url}`;
+            }
+
+            // Si no tiene ningún prefijo, añadimos https://www.
+            return `https://www.${url}`;
+        });
+    };
+
     const handleChange = (e, section, subsection = null) => {
         let value = e.target.value;
 
-        if (section === 'contact' && subsection === 'website' && value) {
-            if (value.trim()) {
-                value = value.replace(/^(https?:\/\/)?(www\.)?/, '');
-                value = `https://www.${value}`;
-            }
-            value = value.toString();
-        }
-        if (subsection) {
+        if (section === 'contact' && subsection === 'website') {
+            // Guardamos la URL limpia para mostrar al usuario
+
+            setProfileData(prev => ({
+                ...prev,
+                contact: {
+                    ...prev.contact,
+                    website: value
+                }
+            }));
+        } else if (subsection) {
             setProfileData(prev => ({
                 ...prev,
                 [section]: {
@@ -134,10 +163,11 @@ const UserInfoContainer = ({ userData, onProfileUpdate }) => {
                 [section]: value
             }));
         }
-        console.log('Updated profileData:', profileData);
     };
 
     const updateUser = async (userId, data) => {
+        const websiteArray = formatUrlForBackend(data.contact.website);
+
         const updateData = {
             city: data.location.city,
             country: data.location.country,
@@ -147,7 +177,7 @@ const UserInfoContainer = ({ userData, onProfileUpdate }) => {
             specialization: data.specialization,
             avatar: data.avatar,
             email: data.contact.email,
-            website: data.contact.website ? data.contact.website.toString() : '',
+            website: websiteArray,
             github: data.contact.github,
             linkedin: data.contact.linkedin,
             instagram: data.contact.instagram
@@ -169,18 +199,18 @@ const UserInfoContainer = ({ userData, onProfileUpdate }) => {
         e.preventDefault();
         setIsLoading(true);
         setError(null);
-    
+
         if (!userId) {
             setError('Error: User ID not found');
             setIsLoading(false);
             return;
         }
-    
+
         try {
             console.log('Intentando actualizar usuario con ID:', userId);
             const result = await updateUser(userId, profileData);
             console.log('Update result:', result);
-    
+
             if (result) {
                 setIsEditing(false);
                 const updatedData = {
@@ -201,9 +231,9 @@ const UserInfoContainer = ({ userData, onProfileUpdate }) => {
                         instagram: result.instagram || ''
                     }
                 };
-                
+
                 setProfileData(updatedData);
-                
+
                 if (onProfileUpdate) {
                     onProfileUpdate(result);
                 }
@@ -248,19 +278,18 @@ const UserInfoContainer = ({ userData, onProfileUpdate }) => {
 
             {/* Botón de Follow/Unfollow */}
             {!isOwner && (
-                <button 
+                <button
                     className={`follow-button ${isFollowing ? 'following' : ''}`}
                     onClick={handleFollowClick}
                 >
                     {isFollowing ? (
                         <>
                             <PersonRemoveIcon />
-                            <span>Unfollow</span>
                         </>
                     ) : (
                         <>
                             <PersonAddIcon />
-                            <span>Follow</span>
+
                         </>
                     )}
                 </button>
@@ -271,32 +300,21 @@ const UserInfoContainer = ({ userData, onProfileUpdate }) => {
             ) : isEditing ? (
                 <form onSubmit={handleSubmit} className="profile-form">
                     <div className="profile-container">
-                        <input
-                            type="text"
-                            placeholder="Name"
-                            value={profileData.name}
-                            onChange={(e) => handleChange(e, 'name')}
-                            className="hidden"
-                        />
-                        <input
-                            type="text"
-                            placeholder="Last Name"
-                            value={profileData.lastname}
-                            onChange={(e) => handleChange(e, 'lastname')}
-                            className="hidden"
-                        />
-
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => {
-                                const file = e.target.files[0];
-                                if (file) {
-                                    handleChange({ target: { value: file } }, 'avatar');
-                                }
-                            }}
-                            className="hidden"
-                        />
+                        <div className="personal-info-block">
+                            <h3>PERSONAL INFO</h3>
+                            <input
+                                type="text"
+                                placeholder="Name"
+                                value={profileData.name}
+                                onChange={(e) => handleChange(e, 'name')}
+                            />
+                            <input
+                                type="text"
+                                placeholder="Last Name"
+                                value={profileData.lastname}
+                                onChange={(e) => handleChange(e, 'lastname')}
+                            />
+                        </div>
                         <div className="location-block">
                             <h3>LOCATION</h3>
                             <input
@@ -347,8 +365,8 @@ const UserInfoContainer = ({ userData, onProfileUpdate }) => {
                                 onChange={(e) => handleChange(e, 'contact', 'email')}
                             />
                             <input
-                                type="url"
-                                placeholder="Website"
+                                type="text"
+                                placeholder="Websites (separate multiple with commas)"
                                 value={profileData.contact.website}
                                 onChange={(e) => handleChange(e, 'contact', 'website')}
                             />
@@ -407,13 +425,9 @@ const UserInfoContainer = ({ userData, onProfileUpdate }) => {
 
                         <div className="agency-block">
                             <h3>DESCRIPTION</h3>
-                            {profileData.agency ? <p>{profileData.agency}</p> : <p>No description provided</p>}
+                            {profileData.agency ? <p>{profileData.agency}</p> : <p>None</p>}
                         </div>
-                        <div className="specialization-block">
-                            <h3>SPECIALIZATION</h3>
-                            <p>{profileData.specialization || 'No specialization provided'}</p>
-                        </div>
-
+                      
                         <div className="contact-block">
                             <h3>CONTACT</h3>
                             <div className="contact-info">
@@ -421,17 +435,28 @@ const UserInfoContainer = ({ userData, onProfileUpdate }) => {
                                     <span className="label">Email</span>
                                     {profileData.contact.email ?
                                         <a href={`mailto:${profileData.contact.email}`}>{profileData.contact.email}</a> :
-                                        <span className="empty-field">No email provided</span>
+                                        <span className="empty-field">None</span>
                                     }
                                 </div>
                                 <div className="contact-row">
                                     <span className="label">Website</span>
-                                    {profileData.contact.website && typeof profileData.contact.website === 'string' ?
-                                        <a href={profileData.contact.website} target="_blank" rel="noopener noreferrer">
-                                            {profileData.contact.website.replace(/^https?:\/\/(www\.)?/, '')}
-                                        </a> :
-                                        <span className="empty-field">No website provided</span>
-                                    }
+                                    {Array.isArray(profileData.contact.website) && profileData.contact.website.length > 0 ? (
+                                        <div className="website-list">
+                                            {profileData.contact.website.map((site, index) => (
+                                                <div key={index}>
+                                                    <a
+                                                        href={site}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                    >
+                                                        {site.replace(/^https?:\/\/(www\.)?/, '')}
+                                                    </a>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <span className="empty-field">None</span>
+                                    )}
                                 </div>
                                 <div className="contact-row">
                                     <span className="label">Linkedin</span>
@@ -439,7 +464,7 @@ const UserInfoContainer = ({ userData, onProfileUpdate }) => {
                                         <a href={`https://linkedin.com/in/${profileData.contact.linkedin}`} target="_blank" rel="noopener noreferrer">
                                             {profileData.contact.linkedin}
                                         </a> :
-                                        <span className="empty-field">No Linkedin provided</span>
+                                        <span className="empty-field">None</span>
                                     }
                                 </div>
                                 <div className="contact-row">
@@ -448,7 +473,7 @@ const UserInfoContainer = ({ userData, onProfileUpdate }) => {
                                         <a href={`https://instagram.com/${profileData.contact.instagram}`} target="_blank" rel="noopener noreferrer">
                                             {profileData.contact.instagram}
                                         </a> :
-                                        <span className="empty-field">No Instagram provided</span>
+                                        <span className="empty-field">None</span>
                                     }
                                 </div>
                             </div>
