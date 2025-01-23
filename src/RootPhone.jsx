@@ -1,7 +1,12 @@
-function RootPhone () {
+import PhoneComponent from './components/phoneComponent/PhoneComponent';
+import './RootPhone.css'
+
+function RootPhone() {
     return (
-        <div>
-            <h1>Hello</h1>
+        <div className="root-phone__content">
+            <main className='mobile-main'>
+            <PhoneComponent />
+            </main>
         </div>
     )
 }
