@@ -54,17 +54,17 @@ function ProjectPage() {
             fetchProject();
         }
     }, [_id]);
+    const userId = localStorage.getItem('userId');
 
     const handleDeleteProject = async () => {
         try {
             await deleteProject(project._id);
-            navigate('/');
+            navigate(`/myprofile/${userId}`);
         } catch (error) {
             console.error('Error deleting project:', error);
         }
     };
 
-    const userId = localStorage.getItem('userId');
 
     const checkIfProjectLiked = async (projectId) => {
         try {
