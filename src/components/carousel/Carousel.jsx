@@ -3,77 +3,78 @@ import ProjectContainer from '../projectContainer/ProjectContainer';
 import { getProjects } from '../../utils/api/fetch';
 import './Carousel.css';
 
-function Carousel() {
-    const [projects, setProjects] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+function Carousel({ projects }) {
+
     const [currentIndex, setCurrentIndex] = useState(0);
     const timeoutRef = useRef(null);
-
-    useEffect(() => {
-        const fetchProjects = async () => {
-            try {
-                const response = await getProjects();
-
-                if (response.success) {
-                    const validatedProjects = response.data.map(project => ({
-                        _id: project._id,
-                        images: project.images || [],
-                        owner: project.owner || {},
-                        date: project.date || new Date().toISOString(),
-                        url: project.url || '',
-                        likes: project.likes || 0
-                    }));
-                    setProjects(validatedProjects);
-                } else {
-                    setError(response.message);
-                }
-            } catch (err) {
-                console.error('Error fetching projects:', err);
-                setError('Error al cargar los proyectos');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchProjects();
-    }, []);
 
     const topProjects = [...projects]
         .sort((a, b) => b.likes - a.likes)
         .slice(0, 5);
 
+    const infiniteProjects = [...topProjects, topProjects[0]];
+
     const goToSlide = (index) => {
         setCurrentIndex(index);
     };
 
+    // useEffect(() => {
+    //     if (topProjects.length > 0) {
+    //         timeoutRef.current = setTimeout(() => {
+    //             setCurrentIndex(prevIndex =>
+    //                 prevIndex === topProjects.length - 1 ? 0 : prevIndex + 1
+    //             );
+    //         }, 4000);
+    //     }
+
+    //     return () => {
+    //         if (timeoutRef.current) {
+    //             clearTimeout(timeoutRef.current);
+    //         }
+    //     };
+    // }, [currentIndex, topProjects.length]);
+
+    // useEffect(() => {
+    //     if (topProjects.length > 0) {
+    //         timeoutRef.current = setTimeout(() => {
+    //             setCurrentIndex(prevIndex => {
+    //                 if (prevIndex === infiniteProjects.length - 1) {
+    //                     return 0; // Volver al principio
+    //                 }
+    //                 return prevIndex + 1;
+    //             });
+    //         }, 4000);
+    //     }
+     
+    //     return () => {
+    //         if (timeoutRef.current) {
+    //             clearTimeout(timeoutRef.current);
+    //         }
+    //     };
+    //  }, [currentIndex, infiniteProjects.length]);
+
     useEffect(() => {
         if (topProjects.length > 0) {
             timeoutRef.current = setTimeout(() => {
-                setCurrentIndex(prevIndex =>
-                    prevIndex === topProjects.length - 1 ? 0 : prevIndex + 1
-                );
+                if (currentIndex === infiniteProjects.length - 1) {
+                    const trackElement = document.querySelector('.carousel-track');
+                    if (trackElement) {
+                        trackElement.style.transition = 'none';
+                        trackElement.style.transform = 'translateX(0)';
+                        // Forzar reflow
+                        trackElement.offsetHeight;
+                        // Restablecer transición
+                        trackElement.style.transition = 'transform 1s ease-in-out';
+                    }
+                    setCurrentIndex(0);
+                } else {
+                    setCurrentIndex(currentIndex + 1);
+                }
             }, 4000);
         }
-
-        return () => {
-            if (timeoutRef.current) {
-                clearTimeout(timeoutRef.current);
-            }
-        };
-    }, [currentIndex, topProjects.length]);
-
-    if (loading) {
-        return <div className="carousel-loading">Cargando proyectos destacados...</div>;
-    }
-
-    if (error) {
-        return <div className="carousel-error">{error}</div>;
-    }
-
-    if (!topProjects.length) {
-        return null;
-    }
+    
+        return () => clearTimeout(timeoutRef.current);
+    }, [currentIndex, infiniteProjects.length, topProjects.length]);
 
     return (
         <div className="carousel-container">
@@ -87,7 +88,7 @@ function Carousel() {
                         transition: 'transform 1s ease-in-out'
                     }}
                 >
-                    {topProjects.map((project) => (
+                    {infiniteProjects.map((project) => (
                         <div
                             key={project._id}
                             className="carousel-item"
