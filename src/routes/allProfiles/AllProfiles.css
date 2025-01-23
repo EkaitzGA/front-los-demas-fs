@@ -128,14 +128,18 @@
 
 /* Botón de Follow */
 .follow-button-card {
-    width: calc(100% - 150px);
+    width: 40px;
+    height: 40px;
+    position:absolute;
+    top: 1px;
+    right: 10px;
     margin: 10px auto;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
     padding: 8px 16px;
-    border-radius: 20px;
+    border-radius: 50%;
     border: none;
     font-size: 14px;
     font-weight: 500;
