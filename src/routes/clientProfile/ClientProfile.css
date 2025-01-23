@@ -309,15 +309,12 @@
 }
 
 .delete-user-container button {
-    background: none;
-    border: none;
-    padding: 8px;
-    cursor: pointer;
-    border-radius: 50%;
-    transition: background-color 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    padding: 10px 24px;
+    border-radius: 20px;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
 }
 
 .delete-user-container button:hover {

@@ -10,6 +10,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import GroupsIcon from '@mui/icons-material/Groups';
 import ChatIcon from '@mui/icons-material/Chat';
 import DeleteIcon from '@mui/icons-material/Delete';
+import CloseIcon from '@mui/icons-material/Close';
 
 const UserHeader = ({ userData }) => {
     const navigate = useNavigate();
@@ -20,7 +21,7 @@ const UserHeader = ({ userData }) => {
     const handleDelete = async () => {
         try {
             await deleteUserProfile(userData.id);
-            localStorage.clear()
+            localStorage.clear();
             navigate('/');
         } catch (error) {
             console.error('Error deleting user:', error);
@@ -37,7 +38,7 @@ const UserHeader = ({ userData }) => {
             <h1>
                 {userData?.username
                     ? `${userData.username} | ${userData.name} ${userData.lastname}`
-                    : 'Usuario no encontrado'
+                    : 'User not found'
                 }
             </h1>
             <h4 className='specialization-profile'>{userData.specialization}</h4>
@@ -49,23 +50,43 @@ const UserHeader = ({ userData }) => {
                     </button>
 
                     {showConfirmDialog && (
-                        <div className="confirm-dialog-overlay">
-                            <div className="confirm-dialog">
-                                <h2>¿Estás seguro?</h2>
-                                <p>Esta acción no se puede deshacer. Se eliminará permanentemente tu cuenta y todos los datos asociados, incluyendo:</p>
-                                <ul>
-                                    <li>Tu perfil personal</li>
-                                    <li>Todos tus proyectos</li>
-                                    <li>Tus conexiones y red</li>
-                                    <li>Historial de actividad</li>
-                                </ul>
-                                <div className="confirm-dialog-buttons">
-                                    <button onClick={() => setShowConfirmDialog(false)} className="cancel-button">
-                                        Cancelar
-                                    </button>
-                                    <button onClick={handleDelete} className="confirm-button">
-                                        Eliminar cuenta
-                                    </button>
+                        <div className="auth-modal-overlay">
+                            <div className="auth-modal">
+                                <button 
+                                    className="close-modal" 
+                                    onClick={() => setShowConfirmDialog(false)}
+                                >
+                                    
+                                </button>
+                                
+                                <div className="auth-modal-content">
+                                    <h2>Delete Profile</h2>
+                                    <p>Are you sure you want to delete your profile? This action cannot be undone and will result in:</p>
+                                    <span>
+                                        <span>Permanent removal of your profile</span>
+                                        <span></span>
+                                        <span>Loss of all your projects</span>
+                                        <br></br>
+                                        <span>Deletion of your connections and network</span>
+                                        <br></br>
+                                        <span>Removal of all activity history</span>
+                                        <span></span>
+                                    </span>
+                                    
+                                    <div className="auth-buttons">
+                                        <button 
+                                            className="auth-button login"
+                                            onClick={handleDelete}
+                                        >
+                                            Delete Profile
+                                        </button>
+                                        <button 
+                                            className="auth-button register"
+                                            onClick={() => setShowConfirmDialog(false)}
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -91,8 +112,6 @@ const ClientProfile = () => {
         const fetchUserData = async () => {
             try {
                 const response = await getUserById(id);
-                console.log('Respuesta de la API:', response);
-
                 if (response.success) {
                     setUserData(response.data);
                 }

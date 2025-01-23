@@ -120,7 +120,7 @@ function Home() {
 
     return (
         <div className='projects-page'>
-            {!hasActiveFilters && <Carousel />}
+            {!hasActiveFilters && <Carousel projects={projects} /> }
             <SearchFilter />
             <div className='projects-grid' ref={projectsGridRef}>
                 {currentProjects.map(project => (
