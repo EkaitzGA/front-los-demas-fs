@@ -2,7 +2,7 @@ import { useLoaderData, useNavigate, Link } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import { io } from "socket.io-client";
 import ChatErrorBoundary from "../../components/chat/ErrorBoundary";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { ArrowLeft } from "lucide-react";
 import "./Chat.css";
 import { jwtDecode } from "jwt-decode";
 
@@ -47,14 +47,14 @@ function ChatRoom() {
   const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3002";
 
   const getOtherParticipantName = () => {
-    if (!initialChat || !userId) return "Usuario";
+    if (!initialChat || !userId) return "User";
     
     try {
       if (initialChat.owner?._id === userId && initialChat.client) {
         return [
           initialChat.client.name || "",
           initialChat.client.lastname || "",
-        ].filter(Boolean).join(" ") || "Cliente";
+        ].filter(Boolean).join(" ") || "Client";
       } else if (initialChat.owner) {
         return [
           initialChat.owner.name || "",
@@ -64,7 +64,7 @@ function ChatRoom() {
     } catch (error) {
       console.error("Error getting participant name:", error);
     }
-    return "Usuario";
+    return "User";
   };
 
   const formatDate = () => {
@@ -76,7 +76,7 @@ function ChatRoom() {
         month: "long",
         day: "numeric",
       };
-      return now.toLocaleDateString("es-ES", options)
+      return now.toLocaleDateString("en-US", options)
         .replace(/^\w/, (c) => c.toUpperCase());
     } catch (error) {
       console.error("Error formatting date:", error);
@@ -111,7 +111,7 @@ function ChatRoom() {
   
         if (!response.ok) {
             const data = await response.json();
-            throw new Error(data.message || `Error del servidor: ${response.status}`);
+            throw new Error(data.message || `Server error: ${response.status}`);
         }
   
         const data = await response.json();
@@ -172,15 +172,15 @@ function ChatRoom() {
       });
 
       socketRef.current.on("connect", () => {
-        console.log("Socket conectado en ChatRoom");
+        console.log("Socket connected in ChatRoom");
         setConnected(true);
         socketRef.current.emit("register-socket", userId);
         socketRef.current.emit("join-chat", initialChat._id);
       });
 
       socketRef.current.on("connect_error", (error) => {
-        console.error("Error de conexión socket:", error);
-        setError("Error de conexión. Reconectando...");
+        console.error("Socket connection error:", error);
+        setError("Connection error. Reconnecting...");
       });
 
       socketRef.current.on("private-message", (data) => {
@@ -215,7 +215,7 @@ function ChatRoom() {
       });
 
       socketRef.current.on("disconnect", () => {
-        console.log("Socket desconectado");
+        console.log("Socket disconnected");
         setConnected(false);
       });
 
@@ -227,7 +227,7 @@ function ChatRoom() {
       };
     } catch (error) {
       console.error("Error setting up socket connection:", error);
-      setError("Error al establecer la conexión");
+      setError("Error establishing connection");
     }
   }, [initialChat?._id, userId, navigate, token, baseUrl]);
 
@@ -287,7 +287,7 @@ function ChatRoom() {
       inputRef.current?.focus();
     } catch (error) {
       console.error('Error sending message:', error);
-      setError(error.message || 'Error al enviar mensaje');
+      setError(error.message || 'Error sending message');
       setTimeout(() => setError(null), 3000);
     } finally {
       setLoading(false);
@@ -305,7 +305,7 @@ function ChatRoom() {
   if (!connected) {
     return (
       <div className="connecting-message">
-        Connecting to chat ....
+        Connecting to chat...
         {error && <p className="connection-error">{error}</p>}
       </div>
     );
@@ -318,13 +318,13 @@ function ChatRoom() {
     <div className="chat-container-dsk">
       <div className="chat-top-bar">
         <Link to="/chats" className="back-to-chats">
-          <ArrowBackIcon /> My chats
+          <ArrowLeft /> My chats
         </Link>
         <span className="current-date">{formatDate()}</span>
       </div>
 
       <div className="chat-header-dsk">
-        <h2>Chat Project : {projectName}</h2>
+        <h2>Chat Project: {projectName}</h2>
         <p className="chat-participants-dsk">
           Conversation with {otherParticipantName}
         </p>
@@ -333,7 +333,7 @@ function ChatRoom() {
       <div className="chat-messages-dsk">
         {messages.some(msg => !msg.read && msg.sender.toString() !== userId?.toString()) && (
           <div className="unread-messages-indicator">
-            {messages.filter(msg => !msg.read && msg.sender.toString() !== userId?.toString()).length} messages unread
+            {messages.filter(msg => !msg.read && msg.sender.toString() !== userId?.toString()).length} unread messages
           </div>
         )}
         
