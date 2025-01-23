@@ -1,73 +1,97 @@
+.bg-container {
+    background-color: black;
+    min-height: 100vh;
+    padding: 0rem;
+}
+
+.white-container {
+    background-color: white;
+    /* border-radius: 0.5rem; */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 0rem;
+    padding-top: 100px;
+    padding-bottom: 70px;
+    border-bottom: 1px solid black;
+
+
+}
+
 /* Container principal */
 .client-profile-container {
-    max-width: 1200px;
+    max-width: 900px;
     margin: 0 auto;
     padding: 20px;
-    background-color: #f5f5f5;
-    padding-top: 100px;
+    background-color: white;
+    /* padding-top: 100px; */
+    /* width: 100%; */
 }
 
 /* Especialización backgrounds */
 .client-profile-container.ux-ui {
-    border-bottom: 3px solid #FEFF00;
+    border: 2px solid #FEFF00;
+    border-radius: 12px;
 }
 
-.client-profile-container.ux-ui .section-heading .specialization-profile{
+.client-profile-container.ux-ui .section-heading .specialization-profile {
     background-color: #FEFF00;
     display: inline-block;
     padding: 5px 10px;
     border-radius: 20px;
-    font-weight: 500; 
+    font-weight: 500;
 }
 
 .client-profile-container.frontend {
-    border-bottom: 3px solid #D876D0;
+    border: 2px solid #D876D0;
+    border-radius: 12px;
 }
 
-.client-profile-container.frontend .section-heading .specialization-profile{
+.client-profile-container.frontend .section-heading .specialization-profile {
     background-color: #D876D0;
     display: inline-block;
     padding: 5px 10px;
     border-radius: 20px;
-    font-weight: 500; 
+    font-weight: 500;
     color: white;
 }
 
 .client-profile-container.backend {
-    border-bottom: 3px solid #00A8A4;
+    border: 2px solid #00A8A4;
+    border-radius: 12px;
 }
 
-.client-profile-container.backend  .section-heading .specialization-profile{
+.client-profile-container.backend .section-heading .specialization-profile {
     background-color: #00A8A4;
     display: inline-block;
     padding: 5px 10px;
     border-radius: 20px;
-    font-weight: 500; 
+    font-weight: 500;
 }
 
 .client-profile-container.fullstack {
-    border-bottom: 3px solid #0156C1;
+    border: 2px solid #0156C1;
+    border-radius: 12px;
 }
 
-.client-profile-container.fullstack  .section-heading .specialization-profile{
+.client-profile-container.fullstack .section-heading .specialization-profile {
     background-color: #0156C1;
     display: inline-block;
     padding: 5px 10px;
     border-radius: 20px;
-    font-weight: 500; 
+    font-weight: 500;
     color: white;
 }
 
 .client-profile-container.none {
-    border-bottom: 3px solid #FF4101;
+    border: 2px solid #FF4101;
+    border-radius: 12px;
 }
 
-.client-profile-container.none  .section-heading .specialization-profile{
+.client-profile-container.none .section-heading .specialization-profile {
     background-color: #FF4101;
     display: inline-block;
     padding: 5px 10px;
     border-radius: 20px;
-    font-weight: 500; 
+    font-weight: 500;
     color: white;
 }
 
@@ -85,6 +109,27 @@
 
 .breadcrumb .separator {
     margin: 0 8px;
+}
+
+.picture-and-name {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 10px;
+    padding-top: 20px;
+}
+
+.my-profile-image {
+    width: 120px;
+    height: 120px;
+}
+
+.my-profile-image img {
+    width: 90%;
+    height: 90%;
+    object-fit: cover;
+    border-radius: 50%;
+    /* border: 1px solid black; */
 }
 
 .section-heading h1 {
@@ -195,28 +240,29 @@
     cursor: pointer;
     transition: background-color 0.2s;
     border: none;
-    color: white;
+    color: black;
     width: 35px;
     height: 35px;
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: white;
 }
 
 .section-profile .client-edit-button {
     position: absolute;
     top: 15px;
     right: 15px;
-    background-color: black;
+    /* background-color: black; */
 }
 
-.section-profile .client-save-button {
+/* .section-profile .client-save-button {
     background-color: black;
-}
+} */
 
-.section-profile .client-cancel-button {
+/* .section-profile .client-cancel-button {
     background-color: black;
-}
+} */
 
 .section-profile .client-edit-button:hover,
 .section-profile .client-save-button:hover,
@@ -240,7 +286,7 @@
 .profile-navigation {
     display: grid;
     width: 100%;
-    max-width: 700px; 
+    max-width: 700px;
     margin: 20px auto;
     gap: 20px;
     border-bottom: 1px solid rgb(205, 205, 205);
@@ -268,11 +314,11 @@
 .nav-button svg {
     width: 24px;
     height: 24px;
-    color: black; 
+    color: black;
 }
 
 .nav-button:hover svg {
-    color: white;
+    color: #616161;
     transform: scale(1.1);
 }
 
@@ -288,7 +334,7 @@
     transform: translateX(-50%);
     width: 30px;
     height: 1px;
-    background-color: #000; 
+    background-color: #000;
 }
 
 .nav-button.active svg {
@@ -296,35 +342,40 @@
 }
 
 .section-content {
-    min-height: 400px; 
+    min-height: 400px;
     position: relative;
     width: 100%;
 }
 
 /* Estilos para el botón de eliminar y diálogo */
-.delete-user-container {
+.delete-user-container .delete-button {
     position: absolute;
     top: 0;
     right: 0;
+    background-color: white;
+    border: 1px solid white;
+    cursor: pointer;
+
 }
 
-.delete-user-container button {
+.delete-user-container .delete-button button {
     padding: 10px 24px;
     border-radius: 20px;
     font-size: 1rem;
     font-weight: 500;
     text-decoration: none;
     transition: all 0.2s ease;
+    background-color: white;
 }
 
-.delete-user-container button:hover {
-    background-color: rgba(255, 0, 0, 0.1);
+.delete-user-container .delete-button button:hover {
+    color: #363636;
 }
 
-.delete-user-container svg {
+.delete-user-container .delete-button svg {
     width: 20px;
     height: 20px;
-    color: #dc2626;
+    color: black;
 }
 
 /* Estilos para el diálogo de confirmación */
@@ -377,7 +428,7 @@
     font-size: 14px;
 }
 
-.cancel-button {
+/* .cancel-button {
     background-color: #666666;
     color: white;
 }
@@ -385,11 +436,93 @@
 .confirm-button {
     background-color: #dc2626;
     color: red;
-}
+} */
 
-.confirm-button:hover,
+/* .confirm-button:hover,
 .cancel-button:hover {
     background-color: #333;
+} */
+
+/* Modal de autenticación */
+.auth-modal {
+    background-color: rgb(175, 175, 175);
+    border: 1px solid black;
+    border-radius: 8px;
+    padding: 24px;
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+.close-modal {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+}
+
+.close-modal:hover {
+    color: #fff;
+}
+
+.auth-modal-content {
+    text-align: center;
+}
+
+.auth-modal-content h2 {
+    color: #fff;
+    margin: 0 0 16px 0;
+    font-size: 1.5rem;
+}
+
+.auth-modal-content p {
+    color: black;
+    margin: 0 0 24px 0;
+    font-size: 1rem;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+}
+
+.auth-button {
+    padding: 10px 24px;
+    border-radius: 20px;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.auth-button.login {
+    background-color: black;
+    color: white;
+}
+
+.auth-button.login:hover {
+    background-color: black;
+}
+
+.auth-button.register {
+    background-color: transparent;
+    color: black;
+    border: 2px solid black;
+}
+
+.auth-button.register:hover {
+    background-color: black;
+    color: white;
 }
 
 /* Media queries */

@@ -425,7 +425,7 @@ const UserInfoContainer = ({ userData, onProfileUpdate }) => {
 
                         <div className="agency-block">
                             <h3>DESCRIPTION</h3>
-                            {profileData.agency ? <p>{profileData.agency}</p> : <p>No description provided</p>}
+                            {profileData.agency ? <p>{profileData.agency}</p> : <p>None</p>}
                         </div>
                       
                         <div className="contact-block">
@@ -435,7 +435,7 @@ const UserInfoContainer = ({ userData, onProfileUpdate }) => {
                                     <span className="label">Email</span>
                                     {profileData.contact.email ?
                                         <a href={`mailto:${profileData.contact.email}`}>{profileData.contact.email}</a> :
-                                        <span className="empty-field">No email provided</span>
+                                        <span className="empty-field">None</span>
                                     }
                                 </div>
                                 <div className="contact-row">
@@ -455,7 +455,7 @@ const UserInfoContainer = ({ userData, onProfileUpdate }) => {
                                             ))}
                                         </div>
                                     ) : (
-                                        <span className="empty-field">No website provided</span>
+                                        <span className="empty-field">None</span>
                                     )}
                                 </div>
                                 <div className="contact-row">
@@ -464,7 +464,7 @@ const UserInfoContainer = ({ userData, onProfileUpdate }) => {
                                         <a href={`https://linkedin.com/in/${profileData.contact.linkedin}`} target="_blank" rel="noopener noreferrer">
                                             {profileData.contact.linkedin}
                                         </a> :
-                                        <span className="empty-field">No Linkedin provided</span>
+                                        <span className="empty-field">None</span>
                                     }
                                 </div>
                                 <div className="contact-row">
@@ -473,7 +473,7 @@ const UserInfoContainer = ({ userData, onProfileUpdate }) => {
                                         <a href={`https://instagram.com/${profileData.contact.instagram}`} target="_blank" rel="noopener noreferrer">
                                             {profileData.contact.instagram}
                                         </a> :
-                                        <span className="empty-field">No Instagram provided</span>
+                                        <span className="empty-field">None</span>
                                     }
                                 </div>
                             </div>

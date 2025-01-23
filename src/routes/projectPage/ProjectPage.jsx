@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { getProjectsById } from '../../utils/api/fetch';
+import { getProjectsById, deleteProject} from '../../utils/api/fetch';
 import { getRelativeTime } from '../../utils/dateUtils';
 import { useFilters } from '../../context/FilterProvider';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -23,6 +23,7 @@ function ProjectPage() {
     const [likeCount, setLikeCount] = useState(0);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [showAuthModal, setShowAuthModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -53,6 +54,15 @@ function ProjectPage() {
             fetchProject();
         }
     }, [_id]);
+
+    const handleDeleteProject = async () => {
+        try {
+            await deleteProject(project._id);
+            navigate('/');
+        } catch (error) {
+            console.error('Error deleting project:', error);
+        }
+    };
 
     const userId = localStorage.getItem('userId');
 
@@ -173,6 +183,49 @@ function ProjectPage() {
 
     return (
         <div className='single-project-container-dsk'>
+            {showDeleteModal && (
+                <div className="auth-modal-overlay">
+                    <div className="auth-modal">
+                        <button 
+                            className="close-modal" 
+                            onClick={() => setShowDeleteModal(false)}
+                        >
+                            <CloseIcon />
+                        </button>
+                        
+                        <div className="auth-modal-content">
+                            <h2>Delete Project</h2>
+                            <p>Are you sure you want to delete this project? This action cannot be undone and will result in:</p>
+                            <span>
+                                <span>Permanent removal of your project</span>
+                                <br></br>
+                                <span>Loss of all associated likes</span>
+                                <br></br>
+                                <span>Deletion of all comments and interactions</span>
+                                <br></br>
+                                <span>Removal of project from your profile</span>
+                                <span></span>
+                            </span>
+                            
+                            <div className="auth-buttons">
+                                <button 
+                                    className="auth-button login"
+                                    onClick={handleDeleteProject}
+                                >
+                                    Delete Project
+                                </button>
+                                <button 
+                                    className="auth-button register"
+                                    onClick={() => setShowDeleteModal(false)}
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+            
             {showAuthModal && (
                 <div className="auth-modal-overlay">
                     <div className="auth-modal">
@@ -204,7 +257,10 @@ function ProjectPage() {
                 {isAuthenticated && userId === project.owner._id && (
                     <div className='edit-and-delete-project'>
                         <EditIcon className='edit-project-pg' />
-                        <DeleteIcon className='delete-project-pg' />
+                        <DeleteIcon 
+                        className='delete-project-pg' 
+                        onClick={() => setShowDeleteModal(true)}
+                        />
                     </div>
                 )}
             </div>
