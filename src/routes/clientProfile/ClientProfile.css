@@ -28,7 +28,8 @@
 
 /* Especialización backgrounds */
 .client-profile-container.ux-ui {
-    border-bottom: 3px solid #FEFF00;
+    border: 2px solid #FEFF00;
+    border-radius: 12px;
 }
 
 .client-profile-container.ux-ui .section-heading .specialization-profile {
@@ -40,7 +41,8 @@
 }
 
 .client-profile-container.frontend {
-    border: 1px solid #D876D0;
+    border: 2px solid #D876D0;
+    border-radius: 12px;
 }
 
 .client-profile-container.frontend .section-heading .specialization-profile {
@@ -53,7 +55,8 @@
 }
 
 .client-profile-container.backend {
-    border-bottom: 3px solid #00A8A4;
+    border: 2px solid #00A8A4;
+    border-radius: 12px;
 }
 
 .client-profile-container.backend .section-heading .specialization-profile {
@@ -65,7 +68,8 @@
 }
 
 .client-profile-container.fullstack {
-    border-bottom: 3px solid #0156C1;
+    border: 2px solid #0156C1;
+    border-radius: 12px;
 }
 
 .client-profile-container.fullstack .section-heading .specialization-profile {
@@ -78,7 +82,8 @@
 }
 
 .client-profile-container.none {
-    border-bottom: 3px solid #FF4101;
+    border: 2px solid #FF4101;
+    border-radius: 12px;
 }
 
 .client-profile-container.none .section-heading .specialization-profile {
