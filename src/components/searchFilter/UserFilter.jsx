@@ -22,6 +22,21 @@ const UserFilter = () => {
     countries: false
   });
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (filterRef.current && !filterRef.current.contains(event.target)) {
+        setOpenSections({
+          search: false,
+          specializations: false,
+          countries: false
+        });
+      }
+    };
+  
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   // Cargar usuarios y extraer datos de filtrado
   useEffect(() => {
     const fetchData = async () => {
