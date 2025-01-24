@@ -166,7 +166,9 @@ const UserInfoContainer = ({ userData, onProfileUpdate }) => {
     };
 
     const updateUser = async (userId, data) => {
-        const websiteArray = formatUrlForBackend(data.contact.website);
+        const websiteArray = Array.isArray(data.contact.website) 
+            ? data.contact.website 
+            : formatUrlForBackend(data.contact.website);
 
         const updateData = {
             city: data.location.city,
