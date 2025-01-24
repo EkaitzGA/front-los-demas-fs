@@ -26,6 +26,7 @@ async function fetchData(route, method = 'GET', data = null) {
         console.log('Fetching:', url.toString(), fetchOptions);
 
         const response = await fetch(url.toString(), fetchOptions);
+        console.log("response", response)
         const responseData = await response.json();
 
         if (!response.ok) {
@@ -82,8 +83,43 @@ async function createOwnProject(data) {
     return await fetchData('projects', 'POST', data);
 }
 
-async function updateProject(id) {
-    return await fetchData(`projects/${id}`, 'PUT', data);
+// Update the fetch.js file
+
+async function updateProject(id, data) {
+    try {
+        const token = localStorage.getItem('token');
+        console.log('Updating project:', {
+            id,
+            formData: Array.from(data.entries())
+        });
+
+        const response = await fetch(`${BASE_URL}/projects/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            body: data
+        });
+
+        const responseData = await response.json();
+
+        if (!response.ok) {
+            throw new Error(responseData.message || 'Error updating project');
+        }
+
+        console.log('Update response:', responseData);
+        
+        return {
+            success: true,
+            data: responseData
+        };
+    } catch (error) {
+        console.error('Update error:', error);
+        return {
+            success: false,
+            message: error.message
+        };
+    }
 }
 
 async function getAllTypes() {

@@ -27,7 +27,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 6000;
 }
 
 .auth-modal {
@@ -39,6 +39,7 @@
     max-width: 400px;
     position: relative;
     animation: modalSlideIn 0.3s ease-out;
+    z-index: 6000;
 }
 
 .close-modal {
@@ -159,7 +160,7 @@
 
 .edit-project-pg,
 .delete-project-pg {
-    background-color: white;
+    color: white;
     border-radius: 50%;
     /* padding: 8px; */
     display: flex;
@@ -178,10 +179,10 @@
 }
 
 /* Estilos específicos para cada icono si los necesitas */
-.edit-project-pg:hover,
+/* .edit-project-pg:hover,
 .delete-project-pg:hover {
     background-color: #474747;
-}
+} */
 
 .left-column-first-line {
     grid-area: main-image;

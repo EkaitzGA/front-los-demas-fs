@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { getProjectsById, deleteProject} from '../../utils/api/fetch';
+import { getProjectsById, deleteProject, updateProject } from '../../utils/api/fetch';
 import { getRelativeTime } from '../../utils/dateUtils';
 import { useFilters } from '../../context/FilterProvider';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -10,6 +10,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { createChat } from '../../utils/api/fetch';
+import Modal from '../../components/modal/Modal';
 import './ProjectPage.css';
 
 function ProjectPage() {
@@ -24,6 +25,13 @@ function ProjectPage() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [showAuthModal, setShowAuthModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
+
+    const checkUrls = (url) => {
+        if (!url) return "";
+        if (url.startsWith("http")) return url;
+        return `${import.meta.env.VITE_BACKEND_URL}/${url}`;
+    };
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -54,7 +62,36 @@ function ProjectPage() {
             fetchProject();
         }
     }, [_id]);
+    
     const userId = localStorage.getItem('userId');
+
+    const handleEditClick = () => {
+        setShowEditModal(true);
+    };
+
+    const handleProjectUpdate = async (projectId, formData) => {
+        try {
+            setIsLoading(true);
+            const response = await updateProject(projectId, formData);
+            
+            if (response.success) {
+                const updatedProject = await getProjectsById(projectId);
+                if (updatedProject.success) {
+                    setProject(updatedProject.data);
+                    setShowEditModal(false);
+                } else {
+                    throw new Error('Failed to fetch updated project');
+                }
+            } else {
+                throw new Error(response.message || 'Failed to update project');
+            }
+        } catch (error) {
+            console.error('Error updating project:', error);
+            alert('Failed to update project. Please try again.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const handleDeleteProject = async () => {
         try {
@@ -65,13 +102,12 @@ function ProjectPage() {
         }
     };
 
-
     const checkIfProjectLiked = async (projectId) => {
         try {
             const token = localStorage.getItem('token');
             const userId = localStorage.getItem('userId');
 
-            const response = await fetch(`http://localhost:3002/users/${userId}`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/users/${userId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -96,7 +132,7 @@ function ProjectPage() {
         }
 
         try {
-            const response = await fetch('http://localhost:3002/users/like-project', {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/users/like-project`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -110,13 +146,12 @@ function ProjectPage() {
 
             if (response.ok) {
                 const result = await response.json();
-                console.log('Respuesta del servidor:', result);
                 const newLikeState = !isLiked;
                 setIsLiked(newLikeState);
                 setLikeCount(prevLikes => newLikeState ? prevLikes + 1 : prevLikes - 1);
             }
         } catch (error) {
-            console.error('Error al actualizar like:', error);
+            console.error('Error updating like:', error);
         }
     };
 
@@ -128,33 +163,26 @@ function ProjectPage() {
             }
 
             if (!project?._id) {
-                alert('No se encontró información del proyecto');
+                alert('No project information found');
                 return;
             }
 
             if (project.owner._id === userId) {
-                alert('No puedes iniciar un chat contigo mismo');
+                alert('You cannot start a chat with yourself');
                 return;
             }
 
             setIsLoading(true);
-            console.log('Creating chat with:', {
-                projectId: project._id,
-                ownerId: project.owner._id,
-                clientId: userId
-            });
-
             const response = await createChat(project._id, project.owner._id);
-            console.log('Create chat response:', response);
 
             if (response.success && response.data && response.data._id) {
                 navigate(`/chats/${response.data._id}`);
             } else {
-                throw new Error(response.message || 'Error al crear el chat');
+                throw new Error(response.message || 'Error creating chat');
             }
         } catch (error) {
             console.error('Error creating chat:', error);
-            alert(error.message || 'Error al crear el chat');
+            alert(error.message || 'Error creating chat');
         } finally {
             setIsLoading(false);
         }
@@ -172,52 +200,40 @@ function ProjectPage() {
     }
 
     if (error || !project) {
-        return <div>Proyecto no encontrado</div>;
+        return <div>Project not found</div>;
     }
 
-    const projectName = project.name || 'Sin nombre';
-    const ownerName = project.owner?.name || 'Anónimo';
+    const projectName = project.name || 'Untitled';
+    const ownerName = project.owner?.name || 'Anonymous';
     const ownerLastname = project.owner?.lastname || '';
     const projectUrl = project.url || '#';
-    const projectDescription = project.description || 'Sin descripción';
+    const projectDescription = project.description || 'No description available';
 
     return (
         <div className='single-project-container-dsk'>
             {showDeleteModal && (
                 <div className="auth-modal-overlay">
                     <div className="auth-modal">
-                        <button 
-                            className="close-modal" 
-                            onClick={() => setShowDeleteModal(false)}
-                        >
+                        <button className="close-modal" onClick={() => setShowDeleteModal(false)}>
                             <CloseIcon />
                         </button>
-                        
                         <div className="auth-modal-content">
                             <h2>Delete Project</h2>
                             <p>Are you sure you want to delete this project? This action cannot be undone and will result in:</p>
                             <span>
                                 <span>Permanent removal of your project</span>
-                                <br></br>
+                                <br />
                                 <span>Loss of all associated likes</span>
-                                <br></br>
+                                <br />
                                 <span>Deletion of all comments and interactions</span>
-                                <br></br>
+                                <br />
                                 <span>Removal of project from your profile</span>
-                                <span></span>
                             </span>
-                            
                             <div className="auth-buttons">
-                                <button 
-                                    className="auth-button login"
-                                    onClick={handleDeleteProject}
-                                >
+                                <button className="auth-button login" onClick={handleDeleteProject}>
                                     Delete Project
                                 </button>
-                                <button 
-                                    className="auth-button register"
-                                    onClick={() => setShowDeleteModal(false)}
-                                >
+                                <button className="auth-button register" onClick={() => setShowDeleteModal(false)}>
                                     Cancel
                                 </button>
                             </div>
@@ -225,7 +241,7 @@ function ProjectPage() {
                     </div>
                 </div>
             )}
-            
+
             {showAuthModal && (
                 <div className="auth-modal-overlay">
                     <div className="auth-modal">
@@ -248,6 +264,16 @@ function ProjectPage() {
                 </div>
             )}
 
+            {showEditModal && (
+                <Modal
+                    isOpen={showEditModal}
+                    onClose={() => setShowEditModal(false)}
+                    onProjectUpdated={handleProjectUpdate}
+                    userId={userId}
+                    projectToEdit={project}
+                />
+            )}
+
             <div className='button-back-navigation'>
                 <button onClick={() => navigate(-1)}>BACK</button>
             </div>
@@ -256,10 +282,13 @@ function ProjectPage() {
                 <h1>{projectName} by {ownerName} {ownerLastname}</h1>
                 {isAuthenticated && userId === project.owner._id && (
                     <div className='edit-and-delete-project'>
-                        <EditIcon className='edit-project-pg' />
+                        <EditIcon 
+                            className='edit-project-pg' 
+                            onClick={handleEditClick}
+                        />
                         <DeleteIcon 
-                        className='delete-project-pg' 
-                        onClick={() => setShowDeleteModal(true)}
+                            className='delete-project-pg' 
+                            onClick={() => setShowDeleteModal(true)}
                         />
                     </div>
                 )}
@@ -268,7 +297,7 @@ function ProjectPage() {
             <div className='left-column-first-line'>
                 {project.images && project.images[0] && (
                     <a href={projectUrl} target="_blank" rel="noopener noreferrer">
-                        <img src={project.images[0].url} alt={projectName} />
+                        <img src={checkUrls(project.images[0].url)} alt={projectName} />
                     </a>
                 )}
             </div>
@@ -277,10 +306,10 @@ function ProjectPage() {
                 <div>
                     <h5>STYLES</h5>
                     <div className="tags-container">
-                        {(project.styles || []).map((style) => (
+                        {(project.styles || []).map((style, index) => (
                             <Link
                                 to="/"
-                                key={style._id}
+                                key={`style-${style._id}-${index}`}
                                 className="tag"
                                 onClick={() => handleFilterClick('styles', style)}
                             >
@@ -292,10 +321,10 @@ function ProjectPage() {
                 <div>
                     <h5>TYPES</h5>
                     <div className="tags-container">
-                        {(project.types || []).map((type) => (
+                        {(project.types || []).map((type, index) => (
                             <Link
                                 to="/"
-                                key={type._id}
+                                key={`type-${type._id}-${index}`}
                                 className="tag"
                                 onClick={() => handleFilterClick('types', type)}
                             >
@@ -307,10 +336,10 @@ function ProjectPage() {
                 <div>
                     <h5>SUBJECTS</h5>
                     <div className="tags-container">
-                        {(project.subjects || []).map((subject) => (
+                        {(project.subjects || []).map((subject, index) => (
                             <Link
                                 to="/"
-                                key={subject._id}
+                                key={`subject-${subject._id}-${index}`}
                                 className="tag"
                                 onClick={() => handleFilterClick('subjects', subject)}
                             >
@@ -348,9 +377,12 @@ function ProjectPage() {
                     <div>
                         <h5>COLLABORATORS</h5>
                         <p>
-                            {project.team_members.map(member =>
-                                `${member.name || ''} ${member.lastname || ''}`
-                            ).join(', ')}
+                            {project.team_members.map((member, index) => (
+                                <span key={`member-${member._id || member.userId || index}`}>
+                                    {member.name || ''} {member.lastname || ''}
+                                    {index < project.team_members.length - 1 ? ', ' : ''}
+                                </span>
+                            ))}
                         </p>
                     </div>
                 )}
@@ -375,7 +407,7 @@ function ProjectPage() {
                 </div>
                 <div>
                     <h5>PUBLICATION</h5>
-                    <p>{project.date ? getRelativeTime(project.date) : 'Fecha no disponible'}</p>
+                    <p>{project.date ? getRelativeTime(project.date) : 'Date not available'}</p>
                 </div>
             </div>
         </div>
